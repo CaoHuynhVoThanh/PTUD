@@ -71,12 +71,12 @@ public class TrangChu_GUI extends JFrame {
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("D:\\PTUD\\TPUD\\src\\images\\icon.png"));
+		logo.setIcon(new ImageIcon("src\\images\\icon.png"));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("D:\\PTUD\\TPUD\\src\\images\\avt.png");
+		ImageIcon originalIcon = new ImageIcon("src\\images\\avt.png");
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -98,26 +98,17 @@ public class TrangChu_GUI extends JFrame {
 		lblNewLabel.setBounds(1220, 82, 135, 13);
 		panel_1.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Ngày:");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNewLabel_1.setForeground(new Color(255, 255, 255));
-		lblNewLabel_1.setBackground(new Color(0, 0, 0));
-		lblNewLabel_1.setBounds(480, 71, 86, 35);
-		panel_1.add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_1_1 = new JLabel("Thời gian:");
-		lblNewLabel_1_1.setForeground(Color.WHITE);
-		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNewLabel_1_1.setBackground(Color.BLACK);
-		lblNewLabel_1_1.setBounds(746, 71, 86, 35);
-		panel_1.add(lblNewLabel_1_1);
-		
 		JLabel lb_ngay = new JLabel("");
-		lb_ngay.setBounds(563, 84, 45, 13);
+		lb_ngay.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lb_ngay.setForeground(new Color(255, 255, 255));
+		lb_ngay.setBackground(new Color(0, 0, 0));
+		lb_ngay.setBounds(475, 57, 263, 54);
 		panel_1.add(lb_ngay);
 		
 		JLabel lb_thoiGian = new JLabel("");
-		lb_thoiGian.setBounds(842, 84, 45, 13);
+		lb_thoiGian.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lb_thoiGian.setForeground(new Color(255, 255, 255));
+		lb_thoiGian.setBounds(767, 57, 269, 54);
 		panel_1.add(lb_thoiGian);
 		
 		JLabel lblGio = new JLabel();
@@ -228,22 +219,5 @@ public class TrangChu_GUI extends JFrame {
 		mi_QuanLy.setBackground(new Color(255, 153, 0));
 		mi_QuanLy.setBounds(20, 439, 291, 61);
 		panel.add(mi_QuanLy);
-	}
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
 	}
 }
