@@ -285,7 +285,7 @@ public class GoiMon_GUI extends JFrame {
         JLabel lblImgMon1 = new JLabel("");
 		lblImgMon1.setBounds(38, 0, 100, 88);
 		pMon1.add(lblImgMon1);
-		lblImgMon1.setIcon(scaledIconMon1);
+		lblImgMon1.setIcon(new ImageIcon("D:\\ProjectPTUD\\PTUD\\src\\images\\mi_soba.png"));
 		
 		JPanel pThongTinMon1 = new JPanel();
 		pThongTinMon1.setBounds(0, 72, 180, 78);
@@ -351,6 +351,7 @@ public class GoiMon_GUI extends JFrame {
 		pMonAn.add(pMon3);
 		
 		JLabel lblImgMon3 = new JLabel("");
+		lblImgMon3.setIcon(new ImageIcon("D:\\ProjectPTUD\\PTUD\\src\\images\\kimpira.png"));
 		lblImgMon3.setBounds(38, 0, 100, 88);
 		pMon3.add(lblImgMon3);
 		
@@ -376,6 +377,74 @@ public class GoiMon_GUI extends JFrame {
 		btnThemMon3.setBackground(new Color(169, 169, 169));
 		btnThemMon3.setBounds(140, 0, 40, 40);
 		pMon3.add(btnThemMon3);
+		
+		JPanel pMon1_1 = new JPanel();
+		pMon1_1.setLayout(null);
+		pMon1_1.setBackground(Color.WHITE);
+		pMon1_1.setBounds(25, 196, 180, 151);
+		pMonAn.add(pMon1_1);
+		
+		JLabel lblImgMon1_1 = new JLabel("");
+		lblImgMon1_1.setIcon(new ImageIcon("D:\\ProjectPTUD\\PTUD\\src\\images\\mi_soba.png"));
+		lblImgMon1_1.setBounds(38, 0, 100, 88);
+		pMon1_1.add(lblImgMon1_1);
+		
+		JPanel pThongTinMon1_1 = new JPanel();
+		pThongTinMon1_1.setLayout(null);
+		pThongTinMon1_1.setBounds(0, 72, 180, 78);
+		pMon1_1.add(pThongTinMon1_1);
+		
+		JLabel lblGiaMon1_1 = new JLabel("200,000 VND");
+		lblGiaMon1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGiaMon1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblGiaMon1_1.setBounds(10, 22, 160, 18);
+		pThongTinMon1_1.add(lblGiaMon1_1);
+		
+		JLabel lblTenMon1_1 = new JLabel("Mì Soba");
+		lblTenMon1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTenMon1_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblTenMon1_1.setBounds(10, 45, 160, 24);
+		pThongTinMon1_1.add(lblTenMon1_1);
+		
+		JButton btnThemMon1_1 = new JButton("+");
+		btnThemMon1_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnThemMon1_1.setBackground(new Color(169, 169, 169));
+		btnThemMon1_1.setBounds(140, 0, 40, 40);
+		pMon1_1.add(btnThemMon1_1);
+		
+		JPanel pMon1_1_1 = new JPanel();
+		pMon1_1_1.setLayout(null);
+		pMon1_1_1.setBackground(Color.WHITE);
+		pMon1_1_1.setBounds(25, 375, 180, 151);
+		pMonAn.add(pMon1_1_1);
+		
+		JLabel lblImgMon1_1_1 = new JLabel("");
+		lblImgMon1_1_1.setIcon(new ImageIcon("D:\\ProjectPTUD\\PTUD\\src\\images\\mi_soba.png"));
+		lblImgMon1_1_1.setBounds(38, 0, 100, 88);
+		pMon1_1_1.add(lblImgMon1_1_1);
+		
+		JPanel pThongTinMon1_1_1 = new JPanel();
+		pThongTinMon1_1_1.setLayout(null);
+		pThongTinMon1_1_1.setBounds(0, 72, 180, 78);
+		pMon1_1_1.add(pThongTinMon1_1_1);
+		
+		JLabel lblGiaMon1_1_1 = new JLabel("200,000 VND");
+		lblGiaMon1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblGiaMon1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblGiaMon1_1_1.setBounds(10, 22, 160, 18);
+		pThongTinMon1_1_1.add(lblGiaMon1_1_1);
+		
+		JLabel lblTenMon1_1_1 = new JLabel("Mì Soba");
+		lblTenMon1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTenMon1_1_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblTenMon1_1_1.setBounds(10, 45, 160, 24);
+		pThongTinMon1_1_1.add(lblTenMon1_1_1);
+		
+		JButton btnThemMon1_1_1 = new JButton("+");
+		btnThemMon1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnThemMon1_1_1.setBackground(new Color(169, 169, 169));
+		btnThemMon1_1_1.setBounds(140, 0, 40, 40);
+		pMon1_1_1.add(btnThemMon1_1_1);
 		
 		
 		
