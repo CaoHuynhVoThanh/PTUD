@@ -238,53 +238,119 @@ public class TrangChu_GUI extends JFrame {
 		panel.add(mi_ThongKe_1);
 		
 		JPanel panel_trangchu = new JPanel();
+		panel_trangchu.setBackground(new Color(255, 255, 255));
 		panel_trangchu.setBounds(285, 133, 1254, 704);
 		contentPane.add(panel_trangchu);
 		panel_trangchu.setLayout(null);
 		
 		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel_2.setBackground(new Color(255, 255, 255));
 		panel_2.setBounds(21, 22, 1209, 253);
 		panel_trangchu.add(panel_2);
 		panel_2.setLayout(null);
 		
 		JPanel panel_5 = new JPanel();
+		panel_5.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
 		panel_5.setBackground(new Color(255, 153, 51));
-		panel_5.setBounds(76, 48, 288, 112);
+		panel_5.setBounds(77, 59, 288, 112);
 		panel_2.add(panel_5);
+		panel_5.setLayout(null);
+		
+		JLabel lblNewLabel_4 = new JLabel("19,999,999");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblNewLabel_4.setForeground(new Color(255, 255, 255));
+		lblNewLabel_4.setBounds(0, 10, 288, 56);
+		panel_5.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_5 = new JLabel("Tổng doanh thu");
+		lblNewLabel_5.setForeground(new Color(255, 255, 255));
+		lblNewLabel_5.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5.setBounds(0, 65, 288, 37);
+		panel_5.add(lblNewLabel_5);
 		
 		JPanel panel_5_1 = new JPanel();
+		panel_5_1.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
 		panel_5_1.setBackground(new Color(102, 102, 102));
-		panel_5_1.setBounds(840, 48, 288, 112);
+		panel_5_1.setBounds(841, 59, 288, 112);
 		panel_2.add(panel_5_1);
+		panel_5_1.setLayout(null);
+		
+		JLabel lblNewLabel_4_1_1 = new JLabel("154");
+		lblNewLabel_4_1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4_1_1.setForeground(Color.WHITE);
+		lblNewLabel_4_1_1.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblNewLabel_4_1_1.setBounds(0, 10, 288, 56);
+		panel_5_1.add(lblNewLabel_4_1_1);
+		
+		JLabel lblNewLabel_5_1_1 = new JLabel("Lượt dùng bàn");
+		lblNewLabel_5_1_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5_1_1.setForeground(Color.WHITE);
+		lblNewLabel_5_1_1.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_5_1_1.setBounds(0, 65, 288, 37);
+		panel_5_1.add(lblNewLabel_5_1_1);
 		
 		JPanel panel_5_2 = new JPanel();
+		panel_5_2.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
 		panel_5_2.setBackground(new Color(255, 204, 51));
-		panel_5_2.setBounds(459, 48, 288, 112);
+		panel_5_2.setBounds(460, 59, 288, 112);
 		panel_2.add(panel_5_2);
+		panel_5_2.setLayout(null);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("99");
+		lblNewLabel_4_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4_1.setForeground(Color.WHITE);
+		lblNewLabel_4_1.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblNewLabel_4_1.setBounds(0, 10, 288, 56);
+		panel_5_2.add(lblNewLabel_4_1);
+		
+		JLabel lblNewLabel_5_1 = new JLabel("Đơn đã thực hiện");
+		lblNewLabel_5_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5_1.setForeground(Color.WHITE);
+		lblNewLabel_5_1.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_5_1.setBounds(0, 65, 288, 37);
+		panel_5_2.add(lblNewLabel_5_1);
 		
 		JLabel lblNewLabel_1 = new JLabel("Thông tin trong ngày");
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 16));
 		lblNewLabel_1.setBounds(10, 10, 233, 28);
 		panel_2.add(lblNewLabel_1);
 		
+		JLabel lblNewLabel_6 = new JLabel("Tổng tiền trong két:");
+		lblNewLabel_6.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_6.setBounds(77, 196, 288, 28);
+		panel_2.add(lblNewLabel_6);
+		
+		JLabel lblNewLabel_6_1 = new JLabel("Tổng lượt khách:");
+		lblNewLabel_6_1.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_6_1.setBounds(460, 196, 288, 28);
+		panel_2.add(lblNewLabel_6_1);
+		
+		JLabel lblNewLabel_6_1_1 = new JLabel("Tổng món ăn bán ra:");
+		lblNewLabel_6_1_1.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_6_1_1.setBounds(841, 196, 288, 28);
+		panel_2.add(lblNewLabel_6_1_1);
+		
 		JPanel panel_3 = new JPanel();
+		panel_3.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel_3.setBackground(new Color(255, 255, 255));
 		panel_3.setBounds(21, 305, 575, 373);
 		panel_trangchu.add(panel_3);
 		panel_3.setLayout(null);
 		
 		JPanel panel_6 = new JPanel();
-		panel_6.setBorder(new LineBorder(new Color(0, 0, 0), 3, true));
-		panel_6.setBackground(new Color(255, 255, 255));
-		panel_6.setBounds(50, 89, 212, 237);
+		panel_6.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		panel_6.setBackground(new Color(255, 204, 102));
+		panel_6.setBounds(51, 62, 212, 237);
 		panel_3.add(panel_6);
 		panel_6.setLayout(null);
 		
 		JLabel lblNewLabel_2 = new JLabel("ĐƠN ĐẶT BÀN");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_2.setBounds(47, 10, 122, 24);
+		lblNewLabel_2.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_2.setBounds(42, 10, 134, 24);
 		panel_6.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_3 = new JLabel("Chờ nhận:");
@@ -307,7 +373,36 @@ public class TrangChu_GUI extends JFrame {
 		lblNewLabel_1_1.setBounds(10, 10, 233, 28);
 		panel_3.add(lblNewLabel_1_1);
 		
+		JPanel panel_6_1 = new JPanel();
+		panel_6_1.setLayout(null);
+		panel_6_1.setBorder(new LineBorder(new Color(255, 255, 255), 2, true));
+		panel_6_1.setBackground(new Color(255, 204, 102));
+		panel_6_1.setBounds(313, 62, 212, 237);
+		panel_3.add(panel_6_1);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("BÀN SỬ DỤNG");
+		lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_2_1.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_2_1.setBounds(42, 10, 134, 24);
+		panel_6_1.add(lblNewLabel_2_1);
+		
+		JLabel lblNewLabel_3_3 = new JLabel("Trống:");
+		lblNewLabel_3_3.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_3_3.setBounds(22, 65, 79, 24);
+		panel_6_1.add(lblNewLabel_3_3);
+		
+		JLabel lblNewLabel_3_1_1 = new JLabel("Đang giữ:");
+		lblNewLabel_3_1_1.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_3_1_1.setBounds(22, 99, 79, 24);
+		panel_6_1.add(lblNewLabel_3_1_1);
+		
+		JLabel lblNewLabel_3_2_1 = new JLabel("Đang phục vụ:");
+		lblNewLabel_3_2_1.setFont(new Font("Arial", Font.BOLD, 14));
+		lblNewLabel_3_2_1.setBounds(22, 133, 121, 24);
+		panel_6_1.add(lblNewLabel_3_2_1);
+		
 		JPanel panel_4 = new JPanel();
+		panel_4.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel_4.setBackground(new Color(255, 255, 255));
 		panel_4.setBounds(618, 305, 612, 373);
 		panel_trangchu.add(panel_4);
@@ -319,7 +414,7 @@ public class TrangChu_GUI extends JFrame {
 		panel_4.add(lblNewLabel_1_1_1);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 98, 592, 232);
+		scrollPane.setBounds(10, 63, 592, 232);
 		panel_4.add(scrollPane);
 		
 		table = new JTable();
@@ -335,6 +430,6 @@ public class TrangChu_GUI extends JFrame {
 				"T\u00EAn m\u00F3n", "Lo\u1EA1i m\u00F3n", "\u0110\u01A1n gi\u00E1", "L\u01B0\u1EE3t d\u00F9ng"
 			}
 		));
-		scrollPane.setColumnHeaderView(table);
+		scrollPane.setViewportView(table);
 	}
 }
