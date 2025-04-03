@@ -23,6 +23,7 @@ public class test1 {
 
         // Tạo JPopupMenu (Danh sách xổ xuống)
         JPopupMenu dropdownMenu = new JPopupMenu();
+        dropdownMenu.setBounds(90, 20, 150, 150);
         JMenuItem item1 = new JMenuItem("Bàn");
         JMenuItem item2 = new JMenuItem("Món");
         JMenuItem item3 = new JMenuItem("Nhân sự");
@@ -40,7 +41,7 @@ public class test1 {
         menuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dropdownMenu.show(menuButton, 0, menuButton.getHeight());
+                dropdownMenu.show(menuButton, 10, menuButton.getHeight()+10);
             }
         });
 
