@@ -10,6 +10,7 @@ import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
@@ -37,6 +38,11 @@ import javax.swing.JScrollBar;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
+import java.awt.GridLayout;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JCheckBox;
 
 public class ThanhToan_GUI extends JFrame {
 
@@ -46,6 +52,8 @@ public class ThanhToan_GUI extends JFrame {
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
+	private JTable table;
+	private JTable table_1;
 
 	/**
 	 * Launch the application.
@@ -314,6 +322,187 @@ public class ThanhToan_GUI extends JFrame {
 		panel_trangchu.add(panel_3);
 		panel_3.setLayout(null);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBounds(10, 10, 639, 381);
+		panel_3.add(scrollPane);
+		
+		JPanel panel_5 = new JPanel();
+		scrollPane.setViewportView(panel_5);
+		panel_5.setPreferredSize(new Dimension(620, 999));
+		panel_5.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JPanel panel_6_1 = new JPanel();
+		panel_6_1.setLayout(null);
+		panel_6_1.setPreferredSize(new Dimension(620, 100));
+		panel_6_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_6_1.setBackground(Color.WHITE);
+		panel_5.add(panel_6_1);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("");
+		lblNewLabel_2_1.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_1.setBounds(30, 10, 110, 80);
+		panel_6_1.add(lblNewLabel_2_1);
+		
+		JLabel lblNewLabel_4_1_1 = new JLabel("Số điện thoại: 098765321");
+		lblNewLabel_4_1_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_1_1.setBounds(165, 62, 196, 20);
+		panel_6_1.add(lblNewLabel_4_1_1);
+		
+		JLabel lblNewLabel_4_2 = new JLabel("Tên khách: Lê Vinh Quang");
+		lblNewLabel_4_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_2.setBounds(165, 44, 196, 20);
+		panel_6_1.add(lblNewLabel_4_2);
+		
+		JLabel lblNewLabel_3_1 = new JLabel("HD213411233");
+		lblNewLabel_3_1.setFont(new Font("Arial", Font.BOLD, 22));
+		lblNewLabel_3_1.setBounds(165, 20, 149, 20);
+		panel_6_1.add(lblNewLabel_3_1);
+		
+		JCheckBox chckbxNewCheckBox_1 = new JCheckBox();
+		chckbxNewCheckBox_1.setPreferredSize(new Dimension(200, 0));
+		chckbxNewCheckBox_1.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		chckbxNewCheckBox_1.setBackground(Color.WHITE);
+		chckbxNewCheckBox_1.setBounds(567, 30, 22, 34);
+		panel_6_1.add(chckbxNewCheckBox_1);
+		
+		JPanel panel_6_2 = new JPanel();
+		panel_6_2.setLayout(null);
+		panel_6_2.setPreferredSize(new Dimension(620, 100));
+		panel_6_2.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_6_2.setBackground(Color.WHITE);
+		panel_5.add(panel_6_2);
+		
+		JLabel lblNewLabel_2_2 = new JLabel("");
+		lblNewLabel_2_2.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_2.setBounds(30, 10, 110, 80);
+		panel_6_2.add(lblNewLabel_2_2);
+		
+		JLabel lblNewLabel_4_1_2 = new JLabel("Số điện thoại: 098765321");
+		lblNewLabel_4_1_2.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_1_2.setBounds(165, 62, 196, 20);
+		panel_6_2.add(lblNewLabel_4_1_2);
+		
+		JLabel lblNewLabel_4_3 = new JLabel("Tên khách: Lê Vinh Quang");
+		lblNewLabel_4_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_3.setBounds(165, 44, 196, 20);
+		panel_6_2.add(lblNewLabel_4_3);
+		
+		JLabel lblNewLabel_3_2 = new JLabel("HD213411233");
+		lblNewLabel_3_2.setFont(new Font("Arial", Font.BOLD, 22));
+		lblNewLabel_3_2.setBounds(165, 20, 149, 20);
+		panel_6_2.add(lblNewLabel_3_2);
+		
+		JCheckBox chckbxNewCheckBox_2 = new JCheckBox();
+		chckbxNewCheckBox_2.setPreferredSize(new Dimension(200, 100));
+		chckbxNewCheckBox_2.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		chckbxNewCheckBox_2.setBackground(Color.WHITE);
+		chckbxNewCheckBox_2.setBounds(567, 30, 22, 34);
+		panel_6_2.add(chckbxNewCheckBox_2);
+		
+		JPanel panel_6_4 = new JPanel();
+		panel_6_4.setLayout(null);
+		panel_6_4.setPreferredSize(new Dimension(620, 100));
+		panel_6_4.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_6_4.setBackground(Color.WHITE);
+		panel_5.add(panel_6_4);
+		
+		JLabel lblNewLabel_2_4 = new JLabel("");
+		lblNewLabel_2_4.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_4.setBounds(30, 10, 110, 80);
+		panel_6_4.add(lblNewLabel_2_4);
+		
+		JLabel lblNewLabel_4_1_4 = new JLabel("Số điện thoại: 098765321");
+		lblNewLabel_4_1_4.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_1_4.setBounds(165, 62, 196, 20);
+		panel_6_4.add(lblNewLabel_4_1_4);
+		
+		JLabel lblNewLabel_4_5 = new JLabel("Tên khách: Lê Vinh Quang");
+		lblNewLabel_4_5.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_5.setBounds(165, 44, 196, 20);
+		panel_6_4.add(lblNewLabel_4_5);
+		
+		JLabel lblNewLabel_3_4 = new JLabel("HD213411233");
+		lblNewLabel_3_4.setFont(new Font("Arial", Font.BOLD, 22));
+		lblNewLabel_3_4.setBounds(165, 20, 149, 20);
+		panel_6_4.add(lblNewLabel_3_4);
+		
+		JCheckBox chckbxNewCheckBox_4 = new JCheckBox();
+		chckbxNewCheckBox_4.setPreferredSize(new Dimension(200, 100));
+		chckbxNewCheckBox_4.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		chckbxNewCheckBox_4.setBackground(Color.WHITE);
+		chckbxNewCheckBox_4.setBounds(567, 30, 22, 34);
+		panel_6_4.add(chckbxNewCheckBox_4);
+		
+		JPanel panel_6_3 = new JPanel();
+		panel_6_3.setLayout(null);
+		panel_6_3.setPreferredSize(new Dimension(620, 100));
+		panel_6_3.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_6_3.setBackground(Color.WHITE);
+		panel_5.add(panel_6_3);
+		
+		JLabel lblNewLabel_2_3 = new JLabel("");
+		lblNewLabel_2_3.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_3.setBounds(30, 10, 110, 80);
+		panel_6_3.add(lblNewLabel_2_3);
+		
+		JLabel lblNewLabel_4_1_3 = new JLabel("Số điện thoại: 098765321");
+		lblNewLabel_4_1_3.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_1_3.setBounds(165, 62, 196, 20);
+		panel_6_3.add(lblNewLabel_4_1_3);
+		
+		JLabel lblNewLabel_4_4 = new JLabel("Tên khách: Lê Vinh Quang");
+		lblNewLabel_4_4.setFont(new Font("Arial", Font.PLAIN, 14));
+		lblNewLabel_4_4.setBounds(165, 44, 196, 20);
+		panel_6_3.add(lblNewLabel_4_4);
+		
+		JLabel lblNewLabel_3_3 = new JLabel("HD213411233");
+		lblNewLabel_3_3.setFont(new Font("Arial", Font.BOLD, 22));
+		lblNewLabel_3_3.setBounds(165, 20, 149, 20);
+		panel_6_3.add(lblNewLabel_3_3);
+		
+		JCheckBox chckbxNewCheckBox_3 = new JCheckBox();
+		chckbxNewCheckBox_3.setPreferredSize(new Dimension(200, 100));
+		chckbxNewCheckBox_3.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		chckbxNewCheckBox_3.setBackground(Color.WHITE);
+		chckbxNewCheckBox_3.setBounds(567, 30, 22, 34);
+		panel_6_3.add(chckbxNewCheckBox_3);
+		
+		JPanel panel_6 = new JPanel();
+		panel_6.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel_6.setBackground(new Color(255, 255, 255));
+		panel_6.setPreferredSize(new Dimension(620, 100));
+		panel_5.add(panel_6);
+		panel_6.setLayout(null);
+		
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2.setBounds(30, 10, 110, 80);
+		panel_6.add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_4_1 = new JLabel("Số điện thoại: 098765321");
+		lblNewLabel_4_1.setBounds(165, 62, 196, 20);
+		panel_6.add(lblNewLabel_4_1);
+		lblNewLabel_4_1.setFont(new Font("Arial", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_4 = new JLabel("Tên khách: Lê Vinh Quang");
+		lblNewLabel_4.setBounds(165, 44, 196, 20);
+		panel_6.add(lblNewLabel_4);
+		lblNewLabel_4.setFont(new Font("Arial", Font.PLAIN, 14));
+		
+		JLabel lblNewLabel_3 = new JLabel("HD213411233");
+		lblNewLabel_3.setBounds(165, 20, 149, 20);
+		panel_6.add(lblNewLabel_3);
+		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 22));
+		
+		JCheckBox chckbxNewCheckBox = new JCheckBox();
+		chckbxNewCheckBox.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		chckbxNewCheckBox.setBackground(new Color(255, 255, 255));
+		chckbxNewCheckBox.setBounds(567, 30, 22, 34);
+		chckbxNewCheckBox.setPreferredSize(new Dimension(200, 100));
+		panel_6.add(chckbxNewCheckBox);
+		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel_4.setBackground(new Color(255, 255, 255));
@@ -321,9 +510,92 @@ public class ThanhToan_GUI extends JFrame {
 		panel_trangchu.add(panel_4);
 		panel_4.setLayout(null);
 		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(21, 46, 483, 155);
+		panel_4.add(scrollPane_1);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null, null},
+			},
+			new String[] {
+				"M\u00E3 b\u00E0n", "Lo\u1EA1i", "V\u1ECB tr\u00ED", "\u0110\u00E3 c\u1ECDc", "Ph\u1EE5 thu", "Trang tr\u00ED", ""
+			}
+		));
+		scrollPane_1.setViewportView(table);
+		
+		JLabel lblNewLabel_5 = new JLabel("Thông tin đặt bàn");
+		lblNewLabel_5.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5.setBounds(167, 10, 190, 26);
+		panel_4.add(lblNewLabel_5);
+		
+		JLabel lblNewLabel_5_1 = new JLabel("Thông tin gọi món");
+		lblNewLabel_5_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5_1.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_5_1.setBounds(167, 245, 190, 26);
+		panel_4.add(lblNewLabel_5_1);
+		
+		JLabel lblNewLabel_5_1_1 = new JLabel("Tổng đặt bàn:");
+		lblNewLabel_5_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_1_1.setFont(new Font("Arial", Font.BOLD, 12));
+		lblNewLabel_5_1_1.setBounds(31, 211, 115, 26);
+		panel_4.add(lblNewLabel_5_1_1);
+		
+		JScrollPane scrollPane_1_1 = new JScrollPane();
+		scrollPane_1_1.setBounds(21, 281, 483, 217);
+		panel_4.add(scrollPane_1_1);
+		
+		table_1 = new JTable();
+		table_1.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+				{null, null, null, null, null},
+			},
+			new String[] {
+				"T\u00EAn m\u00F3n", "Lo\u1EA1i", "\u0110\u01A1n gi\u00E1", "S\u1ED1 l\u01B0\u1EE3ng", "Th\u00E0nh ti\u1EC1n"
+			}
+		));
+		scrollPane_1_1.setViewportView(table_1);
+		
+		JLabel lblNewLabel_5_1_1_1 = new JLabel("Tổng gọi món:");
+		lblNewLabel_5_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_1_1_1.setFont(new Font("Arial", Font.BOLD, 12));
+		lblNewLabel_5_1_1_1.setBounds(21, 508, 115, 26);
+		panel_4.add(lblNewLabel_5_1_1_1);
+		
+		JButton btnNewButton_2 = new JButton("New button");
+		btnNewButton_2.setForeground(new Color(255, 255, 255));
+		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 20));
+		btnNewButton_2.setBackground(new Color(255, 153, 0));
+		btnNewButton_2.setBounds(319, 588, 185, 41);
+		panel_4.add(btnNewButton_2);
+		
+		JButton btnNewButton_2_1 = new JButton("GỘP");
+		btnNewButton_2_1.setForeground(new Color(255, 255, 255));
+		btnNewButton_2_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnNewButton_2_1.setBackground(new Color(0, 0, 0));
+		btnNewButton_2_1.setBounds(21, 588, 115, 41);
+		panel_4.add(btnNewButton_2_1);
+		
+		JLabel lblNewLabel_5_1_2 = new JLabel("Tạm tính:");
+		lblNewLabel_5_1_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_1_2.setFont(new Font("Arial", Font.BOLD, 16));
+		lblNewLabel_5_1_2.setBounds(21, 544, 78, 26);
+		panel_4.add(lblNewLabel_5_1_2);
+		
+		JButton btnNewButton_2_1_1 = new JButton("TÁCH");
+		btnNewButton_2_1_1.setForeground(Color.WHITE);
+		btnNewButton_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btnNewButton_2_1_1.setBackground(Color.BLACK);
+		btnNewButton_2_1_1.setBounds(156, 588, 115, 41);
+		panel_4.add(btnNewButton_2_1_1);
+		
 		JPanel panel_3_1 = new JPanel();
 		panel_3_1.setLayout(null);
-		panel_3_1.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+		panel_3_1.setBorder(new TitledBorder(null, "Ghi ch\u00FA \u0111\u1EB7t m\u00F3n", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_3_1.setBackground(Color.WHITE);
 		panel_3_1.setBounds(32, 589, 658, 89);
 		panel_trangchu.add(panel_3_1);
