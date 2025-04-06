@@ -566,7 +566,7 @@ public class ThanhToan_GUI extends JFrame {
 		lblNewLabel_5_1_1_1.setBounds(21, 508, 115, 26);
 		panel_4.add(lblNewLabel_5_1_1_1);
 		
-		JButton btnNewButton_2 = new JButton("New button");
+		JButton btnNewButton_2 = new JButton("THANH TOÁN");
 		btnNewButton_2.setForeground(new Color(255, 255, 255));
 		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnNewButton_2.setBackground(new Color(255, 153, 0));
