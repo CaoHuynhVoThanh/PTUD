@@ -14,9 +14,12 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +36,15 @@ import javax.swing.JTable;
 import javax.swing.JTabbedPane;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+
+import com.toedter.calendar.JDateChooser;
+
+import connectDB.ConnectDB;
+import dao.Ban_DAO;
+import dao.KhuVuc_DAO;
+import entities.Ban;
+import entities.KhuVuc;
+
 import java.awt.SystemColor;
 import javax.swing.JScrollBar;
 import javax.swing.border.LineBorder;
@@ -47,13 +59,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 
-public class DatBan_GUI extends JFrame {
+public class DatBan_GUI extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textField;
-	private JTextField textField_1;
+	private JPanel panel_dsBan;
+	private JLabel lb_ma, lb_loai, lb_khuvuc, lb_vitri, lb_trangthai;
+	private JButton btn_chuyen, btn_huy, btn_datban, btn_themmon;
+	private JLabel lb_tenkh;
+	JComboBox<String> combMode;
+	JDateChooser dateChooser;
+	ArrayList<Ban> dsb = Ban_DAO.getAllBan();
+	ArrayList<KhuVuc> dskv = KhuVuc_DAO.getAllKhuVuc();
+	private ArrayList<JCheckBox> lcb = new ArrayList<>();
 
 	/**
 	 * Launch the application.
@@ -62,8 +83,11 @@ public class DatBan_GUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					ConnectDB con = new ConnectDB();
+					con.connect();
 					DatBan_GUI frame = new DatBan_GUI();
 					frame.setVisible(true);
+					con.disconnect();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -92,12 +116,12 @@ public class DatBan_GUI extends JFrame {
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\icon.png"));
+		logo.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\logo.png"));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\avt.png");
+		ImageIcon originalIcon = new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\avt.png");
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -262,114 +286,11 @@ public class DatBan_GUI extends JFrame {
 		scrollPane.setBounds(23, 189, 796, 484);
 		panel_trangchu.add(scrollPane);
 		
-		JPanel panel_4 = new JPanel();
-		panel_4.setPreferredSize(new Dimension(620, 999));
-		scrollPane.setViewportView(panel_4);
-		panel_4.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		panel_dsBan = new JPanel();
+		panel_dsBan.setPreferredSize(new Dimension(620, 999));
+		scrollPane.setViewportView(panel_dsBan);
+		panel_dsBan.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		
-		JButton btnNewButton_1 = new JButton("");
-		btnNewButton_1.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1.setOpaque(false);
-		btnNewButton_1.setContentAreaFilled(false);
-		btnNewButton_1.setBorderPainted(false);
-		panel_4.add(btnNewButton_1);
-		btnNewButton_1.setPreferredSize(new Dimension(180, 180));
-		
-		JButton btnNewButton_1_4 = new JButton("");
-		btnNewButton_1_4.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_4.setOpaque(false);
-		btnNewButton_1_4.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1_4.setContentAreaFilled(false);
-		btnNewButton_1_4.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_4);
-		
-		JButton btnNewButton_1_1 = new JButton("");
-		btnNewButton_1_1.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_1.setOpaque(false);
-		btnNewButton_1_1.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1_1.setContentAreaFilled(false);
-		btnNewButton_1_1.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_1);
-		
-		JButton btnNewButton_1_2 = new JButton("");
-		btnNewButton_1_2.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_2.setOpaque(false);
-		btnNewButton_1_2.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1_2.setContentAreaFilled(false);
-		btnNewButton_1_2.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_2);
-		
-		JButton btnNewButton_1_3 = new JButton("");
-		btnNewButton_1_3.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_3.setOpaque(false);
-		btnNewButton_1_3.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1_3.setContentAreaFilled(false);
-		btnNewButton_1_3.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_3);
-		
-		JButton btnNewButton_1_8 = new JButton("");
-		btnNewButton_1_8.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_8.setOpaque(false);
-		btnNewButton_1_8.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1_8.setContentAreaFilled(false);
-		btnNewButton_1_8.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_8);
-		
-		JButton btnNewButton_1_5 = new JButton("");
-		btnNewButton_1_5.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_5.setOpaque(false);
-		btnNewButton_1_5.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1_5.setContentAreaFilled(false);
-		btnNewButton_1_5.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_5);
-		
-		JButton btnNewButton_1_6 = new JButton("");
-		btnNewButton_1_6.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_6.setOpaque(false);
-		btnNewButton_1_6.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban2.png"));
-		btnNewButton_1_6.setContentAreaFilled(false);
-		btnNewButton_1_6.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_6);
-		
-		JButton btnNewButton_1_7 = new JButton("");
-		btnNewButton_1_7.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_7.setOpaque(false);
-		btnNewButton_1_7.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban4green.png"));
-		btnNewButton_1_7.setContentAreaFilled(false);
-		btnNewButton_1_7.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_7);
-		
-		JButton btnNewButton_1_7_1 = new JButton("");
-		btnNewButton_1_7_1.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_7_1.setOpaque(false);
-		btnNewButton_1_7_1.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban4green.png"));
-		btnNewButton_1_7_1.setContentAreaFilled(false);
-		btnNewButton_1_7_1.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_7_1);
-		
-		JButton btnNewButton_1_7_2 = new JButton("");
-		btnNewButton_1_7_2.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_7_2.setOpaque(false);
-		btnNewButton_1_7_2.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban4green.png"));
-		btnNewButton_1_7_2.setContentAreaFilled(false);
-		btnNewButton_1_7_2.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_7_2);
-		
-		JButton btnNewButton_1_7_3 = new JButton("");
-		btnNewButton_1_7_3.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_7_3.setOpaque(false);
-		btnNewButton_1_7_3.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban4green.png"));
-		btnNewButton_1_7_3.setContentAreaFilled(false);
-		btnNewButton_1_7_3.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_7_3);
-		
-		JButton btnNewButton_1_7_4 = new JButton("");
-		btnNewButton_1_7_4.setPreferredSize(new Dimension(180, 180));
-		btnNewButton_1_7_4.setOpaque(false);
-		btnNewButton_1_7_4.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\ban4green.png"));
-		btnNewButton_1_7_4.setContentAreaFilled(false);
-		btnNewButton_1_7_4.setBorderPainted(false);
-		panel_4.add(btnNewButton_1_7_4);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(10, 24, 1193, 144);
@@ -426,15 +347,16 @@ public class DatBan_GUI extends JFrame {
 		panel_5_3.setBounds(216, 101, 20, 20);
 		panel_2.add(panel_5_3);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(422, 10, 203, 31);
-		panel_2.add(textField_1);
-		
 		JLabel lblNewLabel_1_2 = new JLabel("Ngày:");
 		lblNewLabel_1_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_1_2.setBounds(367, 10, 61, 31);
+		lblNewLabel_1_2.setBounds(379, 10, 61, 31);
 		panel_2.add(lblNewLabel_1_2);
+		
+        dateChooser = new JDateChooser();
+        
+        dateChooser.setBounds(428, 10, 224, 31);
+        dateChooser.setDate(new Date());
+        panel_2.add(dateChooser);
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(398, 87, 172, 34);
@@ -475,13 +397,13 @@ public class DatBan_GUI extends JFrame {
 		JButton btnNewButton_3 = new JButton("Về hiện tại");
 		btnNewButton_3.setBackground(new Color(0, 0, 0));
 		btnNewButton_3.setForeground(new Color(255, 255, 255));
-		btnNewButton_3.setBounds(719, 15, 106, 26);
+		btnNewButton_3.setBounds(674, 11, 106, 29);
 		panel_2.add(btnNewButton_3);
 		
 		JButton btnNewButton_4 = new JButton("TÌM");
 		btnNewButton_4.setForeground(new Color(255, 255, 255));
 		btnNewButton_4.setBackground(new Color(255, 153, 0));
-		btnNewButton_4.setBounds(868, 10, 150, 34);
+		btnNewButton_4.setBounds(833, 10, 172, 41);
 		panel_2.add(btnNewButton_4);
 		
 		JPanel panel_3 = new JPanel();
@@ -489,55 +411,57 @@ public class DatBan_GUI extends JFrame {
 		panel_trangchu.add(panel_3);
 		panel_3.setLayout(null);
 		
-		JButton btnNewButton_2 = new JButton("ĐẶT BÀN");
-		btnNewButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton_2.setBackground(new Color(255, 153, 0));
-		btnNewButton_2.setForeground(new Color(255, 255, 255));
-		btnNewButton_2.setBounds(33, 410, 309, 38);
-		panel_3.add(btnNewButton_2);
+		btn_datban = new JButton("ĐẶT BÀN");
+		btn_datban.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btn_datban.setBackground(new Color(255, 153, 0));
+		btn_datban.setForeground(new Color(255, 255, 255));
+		btn_datban.setBounds(197, 410, 145, 38);
+		panel_3.add(btn_datban);
 		
-		JButton btnNewButton_2_1 = new JButton("CHUYỂN BÀN");
-		btnNewButton_2_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnNewButton_2_1.setForeground(new Color(255, 255, 255));
-		btnNewButton_2_1.setBackground(new Color(0, 0, 0));
-		btnNewButton_2_1.setBounds(33, 364, 139, 38);
-		panel_3.add(btnNewButton_2_1);
+		btn_chuyen = new JButton("CHUYỂN BÀN");
+		btn_chuyen.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btn_chuyen.setForeground(new Color(255, 255, 255));
+		btn_chuyen.setBackground(new Color(0, 0, 0));
+		btn_chuyen.setBounds(27, 364, 145, 38);
+		panel_3.add(btn_chuyen);
 		
-		JButton btnNewButton_2_2 = new JButton("HỦY ĐẶT BÀN");
-		btnNewButton_2_2.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btnNewButton_2_2.setForeground(new Color(255, 255, 255));
-		btnNewButton_2_2.setBackground(new Color(255, 0, 0));
-		btnNewButton_2_2.setBounds(197, 362, 145, 38);
-		panel_3.add(btnNewButton_2_2);
+		btn_huy = new JButton("HỦY ĐẶT BÀN");
+		btn_huy.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btn_huy.setForeground(new Color(255, 255, 255));
+		btn_huy.setBackground(new Color(255, 0, 0));
+		btn_huy.setBounds(197, 362, 145, 38);
+		panel_3.add(btn_huy);
+		
+		btn_themmon = new JButton("THÊM MÓN");
+		btn_themmon.setForeground(Color.WHITE);
+		btn_themmon.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btn_themmon.setBackground(new Color(255, 153, 0));
+		btn_themmon.setBounds(27, 410, 145, 38);
+		panel_3.add(btn_themmon);
 		
 		JLabel lblNewLabel_2 = new JLabel("Mã bàn:");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_2.setBounds(33, 71, 119, 27);
+		lblNewLabel_2.setBounds(33, 50, 70, 27);
 		panel_3.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_2_1 = new JLabel("Loại bàn:");
 		lblNewLabel_2_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_2_1.setBounds(33, 105, 119, 27);
+		lblNewLabel_2_1.setBounds(33, 84, 119, 27);
 		panel_3.add(lblNewLabel_2_1);
 		
 		JLabel lblNewLabel_2_2 = new JLabel("Vị trí:");
 		lblNewLabel_2_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_2_2.setBounds(33, 142, 119, 27);
+		lblNewLabel_2_2.setBounds(33, 121, 119, 27);
 		panel_3.add(lblNewLabel_2_2);
-		
-		JLabel lblNewLabel_2_3 = new JLabel("Mã bàn:");
-		lblNewLabel_2_3.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_2_3.setBounds(33, 179, 119, 27);
-		panel_3.add(lblNewLabel_2_3);
 		
 		JLabel lblNewLabel_2_4 = new JLabel("Khu vực:");
 		lblNewLabel_2_4.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_2_4.setBounds(33, 216, 119, 27);
+		lblNewLabel_2_4.setBounds(33, 158, 119, 27);
 		panel_3.add(lblNewLabel_2_4);
 		
 		JLabel lblNewLabel_2_5 = new JLabel("Trạng thái:");
 		lblNewLabel_2_5.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_2_5.setBounds(33, 253, 119, 27);
+		lblNewLabel_2_5.setBounds(33, 195, 119, 27);
 		panel_3.add(lblNewLabel_2_5);
 		
 		JLabel lblNewLabel_3 = new JLabel("THÔNG TIN BÀN");
@@ -545,5 +469,234 @@ public class DatBan_GUI extends JFrame {
 		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_3.setBounds(33, 10, 306, 30);
 		panel_3.add(lblNewLabel_3);
+		
+		lb_ma = new JLabel("");
+		lb_ma.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_ma.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_ma.setBounds(176, 50, 166, 27);
+		panel_3.add(lb_ma);
+		
+		lb_loai = new JLabel("");
+		lb_loai.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_loai.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_loai.setBounds(197, 84, 145, 27);
+		panel_3.add(lb_loai);
+		
+		lb_vitri = new JLabel("");
+		lb_vitri.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_vitri.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_vitri.setBounds(197, 121, 145, 27);
+		panel_3.add(lb_vitri);
+		
+		lb_khuvuc = new JLabel("");
+		lb_khuvuc.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_khuvuc.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_khuvuc.setBounds(197, 158, 145, 27);
+		panel_3.add(lb_khuvuc);
+		
+		lb_trangthai = new JLabel("");
+		lb_trangthai.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_trangthai.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_trangthai.setBounds(197, 195, 145, 27);
+		panel_3.add(lb_trangthai);
+		btn_chuyen.setEnabled(false);
+		btn_chuyen.addActionListener(this);
+		btn_huy.setEnabled(false);
+		btn_huy.addActionListener(this);
+		btn_datban.setEnabled(false);
+		btn_datban.addActionListener(this);
+		btn_themmon.setEnabled(false);
+		
+		combMode = new JComboBox<String>();
+		combMode.addItem("Đơn");
+		combMode.addItem("Nhiều");
+		combMode.setBounds(197, 304, 145, 38);
+		combMode.addActionListener(this);
+		panel_3.add(combMode);
+		
+		JLabel lblNewLabel_4 = new JLabel("Chế độ chọn:");
+		lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel_4.setBounds(27, 311, 120, 20);
+		panel_3.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_2_5_1 = new JLabel("Tên khách hàng:");
+		lblNewLabel_2_5_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_2_5_1.setBounds(33, 232, 139, 27);
+		panel_3.add(lblNewLabel_2_5_1);
+		
+		lb_tenkh = new JLabel("");
+		lb_tenkh.setHorizontalAlignment(SwingConstants.LEFT);
+		lb_tenkh.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lb_tenkh.setBounds(33, 269, 309, 27);
+		panel_3.add(lb_tenkh);
+		btn_themmon.addActionListener(this);
+		
+		loadBan();
+	}
+	
+	public void loadBan() {
+		panel_dsBan.removeAll(); // Xóa tất cả các component trong panel
+		panel_dsBan.revalidate(); // Cập nhật lại layout
+		panel_dsBan.repaint(); // Vẽ lại giao diện
+		dsb = Ban_DAO.getAllBan();
+		dskv = KhuVuc_DAO.getAllKhuVuc();
+		for (Ban x: dsb) {
+			String kv = x.getMaBan()+" "+ x.getTenKV();
+//			for (KhuVuc k: dskv) {
+//				if (k.getMaKV().equals(x.getMaKV())) {
+//					kv = x.getMaBan()+" "+ k.getTenKV();
+//					break;
+//				}
+//			}
+			JButton BanMoi = new JButton(kv);
+			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
+			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
+			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
+			BanMoi.setOpaque(false);
+			BanMoi.setContentAreaFilled(false);
+			BanMoi.setBorderPainted(false);
+			BanMoi.setPreferredSize(new Dimension(180, 180));
+			BanMoi.addActionListener(this);
+			panel_dsBan.add(BanMoi);
+		}
+		int y_size = (int) Math.ceil(dsb.size()/4);
+		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
+	}
+	public void loadBanWithCb() {
+		panel_dsBan.removeAll(); // Xóa tất cả các component trong panel
+		panel_dsBan.revalidate(); // Cập nhật lại layout
+		panel_dsBan.repaint(); // Vẽ lại giao diện
+		dsb = Ban_DAO.getAllBan();
+		dskv = KhuVuc_DAO.getAllKhuVuc();
+		for (Ban x: dsb) {
+			String kv = x.getMaBan()+" "+ x.getTenKV();
+//			for (KhuVuc k: dskv) {
+//				if (k.getMaKV().equals(x.getMaKV())) {
+//					kv = x.getMaBan()+" "+ k.getTenKV();
+//					break;
+//				}
+//			}
+			JButton BanMoi = new JButton(kv);
+			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
+			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
+			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
+			BanMoi.setOpaque(false);
+			BanMoi.setContentAreaFilled(false);
+			BanMoi.setBorderPainted(false);
+			BanMoi.setPreferredSize(new Dimension(180, 180));
+			BanMoi.addActionListener(this);
+			JCheckBox cb = new JCheckBox();
+			cb.addActionListener(this);
+			cb.setActionCommand(kv);
+//			if (x.getTinhTrang()==0) cb.setEnabled(false);
+			BanMoi.add(cb);
+			lcb.add(cb);
+			panel_dsBan.add(BanMoi);
+		}
+		int y_size = (int) Math.ceil(dsb.size()/4);
+		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		System.out.println(cmd);
+		String maban = cmd.substring(0, 4);
+		Boolean isBan = false;
+		Ban banchon = null;
+		for (Ban k: dsb) {
+			if (k.getMaBan().equals(maban)) {
+				isBan=true;
+				banchon = k;
+				break;
+			}
+		}
+		if (isBan && ((String) combMode.getSelectedItem()).equals("Đơn")) {
+			lb_ma.setText(banchon.getMaBan());
+			lb_vitri.setText("Lầu "+banchon.getViTri());
+			lb_loai.setText(banchon.getLoaiBan()+" người");
+			lb_khuvuc.setText(banchon.getTenKV());
+			String tt = "";
+			switch (banchon.getTinhTrang()) {
+			case 0: {
+				tt = "Ngưng phục vụ";
+				btn_chuyen.setEnabled(false);
+				btn_huy.setEnabled(false);
+				btn_datban.setEnabled(false);
+				btn_themmon.setEnabled(false);
+				lb_tenkh.setText("");
+				break;
+			}
+			case 2:{
+				tt = "Đang phục vụ";
+				btn_chuyen.setEnabled(true);
+				btn_huy.setEnabled(false);
+				btn_datban.setEnabled(false);
+				btn_themmon.setEnabled(true);
+				break;
+			}
+			case 3:{
+				tt = "Đặt trước";
+				btn_chuyen.setEnabled(true);
+				btn_huy.setEnabled(true);
+				btn_datban.setEnabled(false);
+				btn_themmon.setEnabled(true);
+				break;
+			}
+			default:
+				tt = "Trống";
+				btn_chuyen.setEnabled(false);
+				btn_huy.setEnabled(false);
+				btn_datban.setEnabled(true);
+				btn_themmon.setEnabled(false);
+				lb_tenkh.setText("");
+			}
+			lb_trangthai.setText(tt);
+		}
+		else if (isBan && !((String) combMode.getSelectedItem()).equals("Đơn")) {
+			btn_chuyen.setEnabled(false);
+			btn_huy.setEnabled(false);
+			btn_datban.setEnabled(true);
+			btn_themmon.setEnabled(false);
+		}
+		if (cmd.equals("ĐẶT BÀN")) {
+			try {
+				DatBanChiTiet_GUI dialog = new DatBanChiTiet_GUI();
+				Date selectedDate = dateChooser.getDate();
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String dateString = sdf.format(selectedDate);
+                ArrayList<Ban> dsBanChon = new ArrayList<>(); 
+                if (combMode.getSelectedIndex()==0 && !lb_ma.getText().equals("")) { 	
+                	dsBanChon.add(getBanTheoMa(lb_ma.getText()));             		               	
+                }
+                if (combMode.getSelectedIndex()==1) {
+                	for (JCheckBox x: lcb) {
+                		if (x.isSelected()==true) {
+//                			System.out.println(x.getActionCommand());
+                			dsBanChon.add(getBanTheoMa(x.getActionCommand().substring(0, 4)));
+                		}
+                	}
+                }
+				dialog.setDate(dateString);
+				dialog.setDsBan(dsBanChon);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			} catch (Exception er) {
+				er.printStackTrace();
+			}
+		}
+		if (cmd.equals("comboBoxChanged")) {
+			if (((String) combMode.getSelectedItem()).equals("Đơn")) loadBan();
+			else loadBanWithCb();
+		}
+		
+	}
+	public Ban getBanTheoMa(String ma) {
+		for (Ban x: dsb) {
+			if (x.getMaBan().equals(ma)) return x;
+		}
+		return null;
 	}
 }
