@@ -1,4 +1,5 @@
-/test/
 /gui/
-/entities/
 /dao/
+/entities/
+/connectDB/
+/test/

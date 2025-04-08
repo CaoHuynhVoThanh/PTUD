@@ -8,5 +8,9 @@
 	<classpathentry excluding="images/|images/" kind="src" path="src"/>
 	<classpathentry kind="lib" path="libs/jfreechart-1.0.19-demo.jar"/>
 	<classpathentry kind="lib" path="libs/mssql-jdbc-12.8.1.jre11.jar"/>
+<<<<<<< HEAD
+=======
+	<classpathentry kind="lib" path="libs/jcalendar-1.4.jar"/>
+>>>>>>> 159d21688eff351aeb204956debb18d795d48d07
 	<classpathentry kind="output" path="bin"/>
 </classpath>
