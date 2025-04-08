@@ -92,12 +92,12 @@ public class ThanhToan_GUI extends JFrame {
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\icon.png"));
+		logo.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\logo.png"));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\avt.png");
+		ImageIcon originalIcon = new ImageIcon("D:\\\\demoGit\\\\PTUD\\\\src\\\\images\\\\App\\\\avt.png");
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -341,7 +341,7 @@ public class ThanhToan_GUI extends JFrame {
 		panel_5.add(panel_6_1);
 		
 		JLabel lblNewLabel_2_1 = new JLabel("");
-		lblNewLabel_2_1.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_1.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\tabbleddb.png"));
 		lblNewLabel_2_1.setBounds(30, 10, 110, 80);
 		panel_6_1.add(lblNewLabel_2_1);
 		
@@ -375,7 +375,7 @@ public class ThanhToan_GUI extends JFrame {
 		panel_5.add(panel_6_2);
 		
 		JLabel lblNewLabel_2_2 = new JLabel("");
-		lblNewLabel_2_2.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_2.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\tabbleddb.png"));
 		lblNewLabel_2_2.setBounds(30, 10, 110, 80);
 		panel_6_2.add(lblNewLabel_2_2);
 		
@@ -409,7 +409,7 @@ public class ThanhToan_GUI extends JFrame {
 		panel_5.add(panel_6_4);
 		
 		JLabel lblNewLabel_2_4 = new JLabel("");
-		lblNewLabel_2_4.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_4.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\tabbleddb.png"));
 		lblNewLabel_2_4.setBounds(30, 10, 110, 80);
 		panel_6_4.add(lblNewLabel_2_4);
 		
@@ -443,7 +443,7 @@ public class ThanhToan_GUI extends JFrame {
 		panel_5.add(panel_6_3);
 		
 		JLabel lblNewLabel_2_3 = new JLabel("");
-		lblNewLabel_2_3.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\tabbleddb.png"));
+		lblNewLabel_2_3.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\tabbleddb.png"));
 		lblNewLabel_2_3.setBounds(30, 10, 110, 80);
 		panel_6_3.add(lblNewLabel_2_3);
 		
@@ -511,6 +511,7 @@ public class ThanhToan_GUI extends JFrame {
 		panel_4.setLayout(null);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		scrollPane_1.setBounds(21, 46, 483, 155);
 		panel_4.add(scrollPane_1);
 		
@@ -566,7 +567,7 @@ public class ThanhToan_GUI extends JFrame {
 		lblNewLabel_5_1_1_1.setBounds(21, 508, 115, 26);
 		panel_4.add(lblNewLabel_5_1_1_1);
 		
-		JButton btnNewButton_2 = new JButton("New button");
+		JButton btnNewButton_2 = new JButton("THANH TOÁN");
 		btnNewButton_2.setForeground(new Color(255, 255, 255));
 		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnNewButton_2.setBackground(new Color(255, 153, 0));
