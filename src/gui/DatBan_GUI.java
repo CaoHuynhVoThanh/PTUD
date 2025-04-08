@@ -13,10 +13,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -76,9 +79,11 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 	private JButton btn_chuyen, btn_huy, btn_datban, btn_themmon;
 	private JLabel lb_tenkh, lb_sdtkh;
 	JComboBox<String> combMode;
-	JDateChooser JDC_ngaychon;
+	JDateChooser JDC_ngaychon = new JDateChooser();
+    
 	JComboBox<String> comb_tinhtrang, comb_kv, comb_tang, comb_loaiban;
-	ArrayList<Ban> dsb = Ban_DAO.getAllBan();
+	ArrayList<Ban> dsb = new ArrayList<>();
+	JButton hiddenDateChange = new JButton("Date changed");
 	ArrayList<KhuVuc> dskv = KhuVuc_DAO.getAllKhuVuc();
 	public static JButton hiddenButton = new JButton("Xác nhận đặt bàn thành công");
 	private ArrayList<JCheckBox> lcb = new ArrayList<>();
@@ -106,6 +111,8 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 	 * Create the frame.
 	 */
 	public DatBan_GUI() {
+		JDC_ngaychon.setDate(new Date());
+		ArrayList<Ban> dsb = Ban_DAO.getAllBan(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setExtendedState(MAXIMIZED_BOTH);
 		this.setSize(1537, 864);
@@ -444,9 +451,15 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		JButton btn_tim = new JButton("TÌM");
 		btn_tim.setForeground(new Color(255, 255, 255));
 		btn_tim.setBackground(new Color(255, 153, 0));
-		btn_tim.setBounds(363, 13, 172, 31);
+		btn_tim.setBounds(363, 10, 91, 31);
 		btn_tim.addActionListener(this);
 		panel_2.add(btn_tim);
+		
+		JButton btn_tim_1 = new JButton("KHÔI PHỤC");
+		btn_tim_1.setForeground(Color.WHITE);
+		btn_tim_1.setBackground(new Color(0, 0, 0));
+		btn_tim_1.setBounds(466, 10, 104, 31);
+		panel_2.add(btn_tim_1);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(843, 189, 368, 484);
@@ -578,12 +591,32 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		lb_sdtkh.setBounds(209, 269, 133, 27);
 		panel_3.add(lb_sdtkh);
 		btn_themmon.addActionListener(this);
-		
+		hiddenDateChange.setVisible(false);
+		hiddenDateChange.addActionListener(this);
 		loadBan();
 //		for (Ban x: dsb) {
 //			System.out.println(x.getMaBan());
 //			System.out.println(x.getTinhTrang());
 //		}
+		comb_kv.addActionListener(this);
+		comb_loaiban.addActionListener(this);
+		comb_tang.addActionListener(this);
+		comb_tinhtrang.addActionListener(this);
+		JDC_ngaychon.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                Date selectedDate = JDC_ngaychon.getDate();
+                if (selectedDate != null) {
+                	hiddenDateChange.doClick();
+                }
+            }
+
+//			@Override
+//			public void propertyChange(PropertyChangeEvent evt) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+        });
 		hiddenButton.addActionListener(this);
 	}
 	
@@ -601,21 +634,16 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_dsBan.removeAll(); // Xóa tất cả các component trong panel
 		panel_dsBan.revalidate(); // Cập nhật lại layout
 		panel_dsBan.repaint(); // Vẽ lại giao diện
-		dsb = Ban_DAO.getAllBan();
+		dsb = Ban_DAO.getAllBan(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+//		System.out.println(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		dsb.sort(
 			    Comparator.comparingInt((Ban b) -> getPriority(b.getTinhTrang()))
 			              .thenComparing(Ban::getLoaiBan)
 			);
-
+		System.out.println(dsb.size());
 		dskv = KhuVuc_DAO.getAllKhuVuc();
 		for (Ban x: dsb) {
 			String kv = x.getMaBan()+" "+ x.getTenKV();
-//			for (KhuVuc k: dskv) {
-//				if (k.getMaKV().equals(x.getMaKV())) {
-//					kv = x.getMaBan()+" "+ k.getTenKV();
-//					break;
-//				}
-//			}
 			JButton BanMoi = new JButton(kv);
 			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
@@ -635,7 +663,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_dsBan.removeAll(); // Xóa tất cả các component trong panel
 		panel_dsBan.revalidate(); // Cập nhật lại layout
 		panel_dsBan.repaint(); // Vẽ lại giao diện
-		dsb = Ban_DAO.getAllBan();
+		dsb = Ban_DAO.getAllBan(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		dsb.sort(
 			    Comparator.comparingInt((Ban b) -> getPriority(b.getTinhTrang()))
 			              .thenComparing(Ban::getLoaiBan)
@@ -783,6 +811,10 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		if (cmd.equals("Xác nhận đặt bàn thành công")) {
 			combMode.setSelectedIndex(0);
 			loadBan();
+		}
+		if (cmd.equals("Date changed")) {
+			if (combMode.getSelectedIndex()==0) loadBan();
+			else loadBanWithCb();
 		}
 
 		
