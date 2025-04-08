@@ -19,9 +19,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
@@ -41,8 +44,10 @@ import com.toedter.calendar.JDateChooser;
 
 import connectDB.ConnectDB;
 import dao.Ban_DAO;
+import dao.KhachHang_DAO;
 import dao.KhuVuc_DAO;
 import entities.Ban;
+import entities.KhachHang;
 import entities.KhuVuc;
 
 import java.awt.SystemColor;
@@ -65,15 +70,17 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
+	private JTextField tf_tenkh;
 	private JPanel panel_dsBan;
 	private JLabel lb_ma, lb_loai, lb_khuvuc, lb_vitri, lb_trangthai;
 	private JButton btn_chuyen, btn_huy, btn_datban, btn_themmon;
-	private JLabel lb_tenkh;
+	private JLabel lb_tenkh, lb_sdtkh;
 	JComboBox<String> combMode;
-	JDateChooser dateChooser;
+	JDateChooser JDC_ngaychon;
+	JComboBox<String> comb_tinhtrang, comb_kv, comb_tang, comb_loaiban;
 	ArrayList<Ban> dsb = Ban_DAO.getAllBan();
 	ArrayList<KhuVuc> dskv = KhuVuc_DAO.getAllKhuVuc();
+	public static JButton hiddenButton = new JButton("Xác nhận đặt bàn thành công");
 	private ArrayList<JCheckBox> lcb = new ArrayList<>();
 
 	/**
@@ -297,10 +304,10 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_trangchu.add(panel_2);
 		panel_2.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(139, 10, 203, 31);
-		panel_2.add(textField);
-		textField.setColumns(10);
+		tf_tenkh = new JTextField();
+		tf_tenkh.setBounds(139, 10, 203, 31);
+		panel_2.add(tf_tenkh);
+		tf_tenkh.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Tên khách hàng:");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -349,62 +356,97 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Ngày:");
 		lblNewLabel_1_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_1_2.setBounds(379, 10, 61, 31);
+		lblNewLabel_1_2.setBounds(595, 10, 61, 31);
 		panel_2.add(lblNewLabel_1_2);
 		
-        dateChooser = new JDateChooser();
+        JDC_ngaychon = new JDateChooser();
         
-        dateChooser.setBounds(428, 10, 224, 31);
-        dateChooser.setDate(new Date());
-        panel_2.add(dateChooser);
+        JDC_ngaychon.setBounds(644, 10, 224, 31);
+        JDC_ngaychon.setDate(new Date());
+        panel_2.add(JDC_ngaychon);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(398, 87, 172, 34);
-		panel_2.add(comboBox);
+		comb_tang = new JComboBox<String>();
+		comb_tang.addItem("Toàn bộ");
+		ArrayList<Integer> viTriKhongTrung = (ArrayList<Integer>) dsb.stream()
+			    .map(Ban::getViTri)              // Lấy vị trí
+			    .distinct()                      // Loại bỏ trùng lặp
+			    .sorted()                        // Sắp xếp tăng dần
+			    .collect(Collectors.toList());   // Thu về danh sách
+		for (Integer i: viTriKhongTrung) {
+			comb_tang.addItem(i.toString());
+		}
+		comb_tang.setBounds(398, 87, 172, 34);
+		panel_2.add(comb_tang);
 		
 		JLabel lblNewLabel_1_2_1 = new JLabel("Tầng:");
 		lblNewLabel_1_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel_1_2_1.setBounds(398, 61, 61, 23);
 		panel_2.add(lblNewLabel_1_2_1);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(595, 87, 172, 34);
-		panel_2.add(comboBox_1);
+		comb_kv = new JComboBox<String>();
+		ArrayList<String> tenKhuVucKhongTrung = (ArrayList<String>) dsb.stream()
+			    .map(Ban::getTenKV)               // Lấy tên khu vực
+			    .filter(Objects::nonNull)         // Bỏ null nếu có
+			    .distinct()                       // Loại trùng lặp
+			    .sorted()                         // Sắp xếp tăng dần
+			    .collect(Collectors.toList());    // Thu về danh sách
+		comb_kv.addItem("Toàn bộ");
+		for (String s: tenKhuVucKhongTrung) {
+			comb_kv.addItem(s);
+		}
+		comb_kv.setBounds(595, 87, 172, 34);
+		panel_2.add(comb_kv);
 		
 		JLabel lblNewLabel_1_2_1_1 = new JLabel("Khu vực:");
 		lblNewLabel_1_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel_1_2_1_1.setBounds(595, 61, 61, 23);
 		panel_2.add(lblNewLabel_1_2_1_1);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(798, 87, 172, 34);
-		panel_2.add(comboBox_2);
+		comb_loaiban = new JComboBox<String>();
+		ArrayList<Integer> loaiBanKhongTrung = (ArrayList<Integer>) dsb.stream()
+			    .map(Ban::getLoaiBan)           // Lấy giá trị loaiBan
+			    .distinct()                     // Loại trùng
+			    .sorted()                       // Sắp xếp tăng dần
+			    .collect(Collectors.toList()); // Thu về danh sách
+		comb_loaiban.addItem("Toàn bộ");
+		for (Integer i: loaiBanKhongTrung) {
+			comb_loaiban.addItem(i.toString());
+		}
+		comb_loaiban.setBounds(798, 87, 172, 34);
+		panel_2.add(comb_loaiban);
 		
 		JLabel lblNewLabel_1_2_1_2 = new JLabel("Loại bàn:");
 		lblNewLabel_1_2_1_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel_1_2_1_2.setBounds(798, 61, 61, 23);
 		panel_2.add(lblNewLabel_1_2_1_2);
 		
-		JComboBox comboBox_3 = new JComboBox();
-		comboBox_3.setBounds(1000, 90, 172, 34);
-		panel_2.add(comboBox_3);
+		comb_tinhtrang = new JComboBox<String>();
+		comb_tinhtrang.addItem("Toàn bộ");
+		comb_tinhtrang.addItem("Trống");
+		comb_tinhtrang.addItem("Đang sử dụng");
+		comb_tinhtrang.addItem("Đặt trước");
+		comb_tinhtrang.addItem("Ngừng phục vụ");
+		comb_tinhtrang.setBounds(1000, 90, 172, 34);
+		panel_2.add(comb_tinhtrang);
 		
 		JLabel lblNewLabel_1_2_1_3 = new JLabel("Tình trạng:");
 		lblNewLabel_1_2_1_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNewLabel_1_2_1_3.setBounds(1000, 64, 82, 23);
 		panel_2.add(lblNewLabel_1_2_1_3);
 		
-		JButton btnNewButton_3 = new JButton("Về hiện tại");
-		btnNewButton_3.setBackground(new Color(0, 0, 0));
-		btnNewButton_3.setForeground(new Color(255, 255, 255));
-		btnNewButton_3.setBounds(674, 11, 106, 29);
-		panel_2.add(btnNewButton_3);
+		JButton btn_dateReset = new JButton("Về hiện tại");
+		btn_dateReset.setBackground(new Color(0, 0, 0));
+		btn_dateReset.setForeground(new Color(255, 255, 255));
+		btn_dateReset.setBounds(890, 11, 106, 29);
+		btn_dateReset.addActionListener(this);
+		panel_2.add(btn_dateReset);
 		
-		JButton btnNewButton_4 = new JButton("TÌM");
-		btnNewButton_4.setForeground(new Color(255, 255, 255));
-		btnNewButton_4.setBackground(new Color(255, 153, 0));
-		btnNewButton_4.setBounds(833, 10, 172, 41);
-		panel_2.add(btnNewButton_4);
+		JButton btn_tim = new JButton("TÌM");
+		btn_tim.setForeground(new Color(255, 255, 255));
+		btn_tim.setBackground(new Color(255, 153, 0));
+		btn_tim.setBounds(363, 13, 172, 31);
+		btn_tim.addActionListener(this);
+		panel_2.add(btn_tim);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(843, 189, 368, 484);
@@ -519,19 +561,40 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		lblNewLabel_4.setBounds(27, 311, 120, 20);
 		panel_3.add(lblNewLabel_4);
 		
-		JLabel lblNewLabel_2_5_1 = new JLabel("Tên khách hàng:");
+		JLabel lblNewLabel_2_5_1 = new JLabel("Thông tin khách đặt:");
 		lblNewLabel_2_5_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblNewLabel_2_5_1.setBounds(33, 232, 139, 27);
+		lblNewLabel_2_5_1.setBounds(33, 232, 267, 27);
 		panel_3.add(lblNewLabel_2_5_1);
 		
 		lb_tenkh = new JLabel("");
 		lb_tenkh.setHorizontalAlignment(SwingConstants.LEFT);
-		lb_tenkh.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lb_tenkh.setBounds(33, 269, 309, 27);
+		lb_tenkh.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lb_tenkh.setBounds(33, 269, 166, 27);
 		panel_3.add(lb_tenkh);
+		
+		lb_sdtkh = new JLabel("");
+		lb_sdtkh.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_sdtkh.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lb_sdtkh.setBounds(209, 269, 133, 27);
+		panel_3.add(lb_sdtkh);
 		btn_themmon.addActionListener(this);
 		
 		loadBan();
+//		for (Ban x: dsb) {
+//			System.out.println(x.getMaBan());
+//			System.out.println(x.getTinhTrang());
+//		}
+		hiddenButton.addActionListener(this);
+	}
+	
+	private static int getPriority(int trangThai) {
+	    switch (trangThai) {
+	        case 1: return 0;
+	        case 2: return 1;
+	        case 3: return 2;
+	        case 0: return 3;
+	        default: return 4; // nếu có giá trị khác
+	    }
 	}
 	
 	public void loadBan() {
@@ -539,6 +602,11 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_dsBan.revalidate(); // Cập nhật lại layout
 		panel_dsBan.repaint(); // Vẽ lại giao diện
 		dsb = Ban_DAO.getAllBan();
+		dsb.sort(
+			    Comparator.comparingInt((Ban b) -> getPriority(b.getTinhTrang()))
+			              .thenComparing(Ban::getLoaiBan)
+			);
+
 		dskv = KhuVuc_DAO.getAllKhuVuc();
 		for (Ban x: dsb) {
 			String kv = x.getMaBan()+" "+ x.getTenKV();
@@ -568,34 +636,43 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_dsBan.revalidate(); // Cập nhật lại layout
 		panel_dsBan.repaint(); // Vẽ lại giao diện
 		dsb = Ban_DAO.getAllBan();
+		dsb.sort(
+			    Comparator.comparingInt((Ban b) -> getPriority(b.getTinhTrang()))
+			              .thenComparing(Ban::getLoaiBan)
+			);
+
 		dskv = KhuVuc_DAO.getAllKhuVuc();
+		int cnt=0;
 		for (Ban x: dsb) {
-			String kv = x.getMaBan()+" "+ x.getTenKV();
-//			for (KhuVuc k: dskv) {
-//				if (k.getMaKV().equals(x.getMaKV())) {
-//					kv = x.getMaBan()+" "+ k.getTenKV();
-//					break;
+			if (x.getTinhTrang()==1) {
+				cnt+=1;
+				String kv = x.getMaBan()+" "+ x.getTenKV();
+//				for (KhuVuc k: dskv) {
+//					if (k.getMaKV().equals(x.getMaKV())) {
+//						kv = x.getMaBan()+" "+ k.getTenKV();
+//						break;
+//					}
 //				}
-//			}
-			JButton BanMoi = new JButton(kv);
-			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
-			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
-			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
-			BanMoi.setOpaque(false);
-			BanMoi.setContentAreaFilled(false);
-			BanMoi.setBorderPainted(false);
-			BanMoi.setPreferredSize(new Dimension(180, 180));
-			BanMoi.addActionListener(this);
-			JCheckBox cb = new JCheckBox();
-			cb.addActionListener(this);
-			cb.setActionCommand(kv);
-//			if (x.getTinhTrang()==0) cb.setEnabled(false);
-			BanMoi.add(cb);
-			lcb.add(cb);
-			panel_dsBan.add(BanMoi);
+				JButton BanMoi = new JButton(kv);
+				BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
+				BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
+				BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
+				BanMoi.setOpaque(false);
+				BanMoi.setContentAreaFilled(false);
+				BanMoi.setBorderPainted(false);
+				BanMoi.setPreferredSize(new Dimension(180, 180));
+				BanMoi.addActionListener(this);
+				JCheckBox cb = new JCheckBox();
+				cb.addActionListener(this);
+				cb.setActionCommand(kv);
+				if (x.getTinhTrang()==0) cb.setEnabled(false);
+				BanMoi.add(cb);
+				lcb.add(cb);
+				panel_dsBan.add(BanMoi);
+			}
 		}
-		int y_size = (int) Math.ceil(dsb.size()/4);
+		int y_size = (int) Math.ceil(cnt/4);
 		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
 	}
 
@@ -627,6 +704,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 				btn_datban.setEnabled(false);
 				btn_themmon.setEnabled(false);
 				lb_tenkh.setText("");
+				lb_sdtkh.setText("");
 				break;
 			}
 			case 2:{
@@ -635,6 +713,9 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 				btn_huy.setEnabled(false);
 				btn_datban.setEnabled(false);
 				btn_themmon.setEnabled(true);
+				KhachHang kh = KhachHang_DAO.getKhachHangMoiNhatCuaBan(banchon.getMaBan());
+				lb_tenkh.setText(kh.getTenKH());
+				lb_sdtkh.setText(kh.getSoDienThoai());
 				break;
 			}
 			case 3:{
@@ -643,6 +724,9 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 				btn_huy.setEnabled(true);
 				btn_datban.setEnabled(false);
 				btn_themmon.setEnabled(true);
+				KhachHang kh = KhachHang_DAO.getKhachHangMoiNhatCuaBan(banchon.getMaBan());
+				lb_sdtkh.setText(kh.getSoDienThoai());
+				lb_tenkh.setText(kh.getTenKH());
 				break;
 			}
 			default:
@@ -652,6 +736,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 				btn_datban.setEnabled(true);
 				btn_themmon.setEnabled(false);
 				lb_tenkh.setText("");
+				lb_sdtkh.setText("");
 			}
 			lb_trangthai.setText(tt);
 		}
@@ -664,7 +749,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		if (cmd.equals("ĐẶT BÀN")) {
 			try {
 				DatBanChiTiet_GUI dialog = new DatBanChiTiet_GUI();
-				Date selectedDate = dateChooser.getDate();
+				Date selectedDate = JDC_ngaychon.getDate();
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String dateString = sdf.format(selectedDate);
                 ArrayList<Ban> dsBanChon = new ArrayList<>(); 
@@ -681,16 +766,25 @@ public class DatBan_GUI extends JFrame implements ActionListener{
                 }
 				dialog.setDate(dateString);
 				dialog.setDsBan(dsBanChon);
+
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			} catch (Exception er) {
 				er.printStackTrace();
 			}
 		}
+		if (cmd.equals("XÁC NHẬN")) {
+			System.out.println("Hihi");
+		}
 		if (cmd.equals("comboBoxChanged")) {
 			if (((String) combMode.getSelectedItem()).equals("Đơn")) loadBan();
 			else loadBanWithCb();
 		}
+		if (cmd.equals("Xác nhận đặt bàn thành công")) {
+			combMode.setSelectedIndex(0);
+			loadBan();
+		}
+
 		
 	}
 	public Ban getBanTheoMa(String ma) {

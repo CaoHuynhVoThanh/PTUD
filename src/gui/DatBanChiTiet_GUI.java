@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -44,11 +45,14 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	private JTextField tf_ngayNhan;
 	private JTextField tf_tenkh;
 	private JTable table;
+	JRadioButton rd_dungngay;
+	JRadioButton rd_dattruoc;
 	JSpinner tf_sokhach;
 	JComboBox<String> combPhut;
 	JComboBox<String> combGio;
-	JButton okButton;
+	public static JButton okButton;
 	JLabel lb_coc;
+	ArrayList<Ban> dsbd;
 
 	/**
 	 * Launch the application.
@@ -224,14 +228,16 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		
 		ButtonGroup group = new ButtonGroup();
 
-		JRadioButton rd_dattruoc = new JRadioButton("Đặt trước");
+		rd_dattruoc = new JRadioButton("Đặt trước");
 		rd_dattruoc.setBounds(421, 186, 103, 21);
 		contentPanel.add(rd_dattruoc);
+		rd_dattruoc.addActionListener(this);
 		group.add(rd_dattruoc);
 		
-		JRadioButton rd_dungngay = new JRadioButton("Dùng ngay");
+		rd_dungngay = new JRadioButton("Dùng ngay");
 		rd_dungngay.setBounds(559, 186, 103, 21);
 		contentPanel.add(rd_dungngay);
+		rd_dungngay.addActionListener(this);
 		group.add(rd_dungngay);
 		rd_dattruoc.setSelected(true);
 		
@@ -260,8 +266,9 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	}
 	
 	public void setDsBan(ArrayList<Ban> ds) {
+		dsbd = ds;
 	    DefaultTableModel dtm = new DefaultTableModel(
-	        new Object[]{"Mã Bàn", "Loại Bàn", "Phụ Phí"}, 0);
+	    new Object[]{"Mã Bàn", "Loại Bàn", "Phụ Phí"}, 0);
 	    double tongTien =0;
 	    for (Ban x : ds) {
 	        System.out.println(x.getMaBan()); // Kiểm tra log
@@ -296,10 +303,25 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		int soKhach = (int) tf_sokhach.getValue();
 		double tiencoc = Double.parseDouble(lb_coc.getText());
 		LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
+		String hoten = tf_tenkh.getText();
+		String sdt = tf_sdt.getText();
 		System.out.println(dateTime);
+		createKhachHang(makh, hoten, sdt);
 		
-		DonDatBan_DAO.insertDonDatBan(ma, null, currenUser.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, false);
-		
+		boolean isDungNgay = rd_dungngay.isSelected();
+		DonDatBan_DAO.insertDonDatBan(ma, null, currenUser.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, isDungNgay);
+		for (Ban x: dsbd) {
+			createChiTietDDB(ma, x.getMaBan(), null);
+		}
+		return true;
+	}
+	public boolean createKhachHang(String makh, String tenKH, String sdt) {
+		KhachHang_DAO.insertKhachHang(makh, tenKH, sdt, LocalDate.now());
+		return true;
+	}
+	
+	public boolean createChiTietDDB(String madon, String maban, String madgm) {
+		DonDatBan_DAO.insertChiTietDonDatBan(madon, maban, madgm);
 		return true;
 	}
 
@@ -308,9 +330,25 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		String cmd = e.getActionCommand();
 		System.out.println(cmd);
 		if (cmd.equals("XÁC NHẬN")) {
-			createDDB();
+			if (JOptionPane.showConfirmDialog(null, "Xác nhận đặt bàn không?")==JOptionPane.YES_OPTION) {
+				if (createDDB()) {
+					JOptionPane.showMessageDialog(null, "Đặt bàn thành công!");
+					DatBan_GUI.hiddenButton.doClick();
+					this.dispose();
+				}
+			}
 		}
 		
+		if (cmd.equals("Dùng ngay")) {
+			lb_coc.setText("0.0");
+		}
+		if (cmd.equals("Đặt trước")) {
+			double tongTien =0;
+		    for (Ban x : dsbd) {
+		        tongTien+=x.getPhuPhi();
+		        lb_coc.setText(tongTien+"");
+		    }
+		}
 	}
 
 }

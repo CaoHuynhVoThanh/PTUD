@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -31,8 +32,11 @@ public class Ban_DAO {
 	        	if (tt==0) k=0;
 	        	else{
 	        		if (value==null) k=1;
-	        		else if ((int)value==0) k=2;
-	        		else k=3;
+	        		else {
+	        			boolean ck = (boolean) value;
+	        			if (ck==false) k=3;
+	        			else k=2;
+	        			}
 	        	}
 	        	Ban ban = new Ban(ma, loai, vt, so, k, tenkv, phuPhi);
 	        	dsBan.add(ban);
@@ -42,5 +46,25 @@ public class Ban_DAO {
 		} 
 		return dsBan;
 	}
+    public static ArrayList<Integer> getDistinctViTri() {
+        ArrayList<Integer> danhSachViTri = new ArrayList<>();
+        String sql = "SELECT DISTINCT viTri FROM Ban ORDER BY viTri";
+        ConnectDB.getInstance().connect();;
+		Connection conN = ConnectDB.getInstance().getConnection();
+        try{
+             PreparedStatement stmt = conN.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int viTri = rs.getInt("viTri");
+                danhSachViTri.add(viTri);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return danhSachViTri;
+    }
 	
 }

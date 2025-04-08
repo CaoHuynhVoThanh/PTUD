@@ -54,4 +54,22 @@ public class DonDatBan_DAO {
 				return false;
 		}
 	}
+	 public static boolean insertChiTietDonDatBan(String maDDB, String maBan, String maDGM) {
+	        String sql = "INSERT INTO ChiTietDonDatBan (maDDB, maBan, maDGM) VALUES (?, ?, ?)";
+	        ConnectDB.getInstance().connect();;
+			Connection conN = ConnectDB.getInstance().getConnection();
+	        try{
+	             PreparedStatement pst = conN.prepareStatement(sql);
+	            pst.setString(1, maDDB);
+	            pst.setString(2, maBan);
+	            pst.setString(3, maDGM);
+
+	            int rowsInserted = pst.executeUpdate();
+	            return rowsInserted > 0;
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
 }
