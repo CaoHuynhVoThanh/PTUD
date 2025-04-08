@@ -130,12 +130,12 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\logo.png"));
+		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\avt.png");
+		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);

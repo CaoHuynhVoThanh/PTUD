@@ -81,9 +81,9 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 	private JScrollPane scrollPane_Mon;
 	private ArrayList<Mon> dsMon;
 	private ArrayList<Mon> dsMonHienThi;
-	private JComboBox comboLoaiMon;
+	private JComboBox<String> comboLoaiMon;
 	private String ghiChu = "";
-	private JComboBox comboBan;
+	private JComboBox<?> comboBan;
 	/**
 	 * Launch the application.
 	 */
@@ -125,12 +125,12 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\icon.png"));
+		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\avt.png");
+		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -330,7 +330,7 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 			}
 		});
 		btnTimKiem.setBounds(650, 29, 50, 45);
-		ImageIcon iconTim = new ImageIcon("D:\\ProjectPTUD\\PTUD\\src\\images\\iconSearch.png");
+		ImageIcon iconTim = new ImageIcon("src\\images\\App\\iconSearch.png");
 		Image imgTim = iconTim.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 		btnTimKiem.setIcon(new ImageIcon(imgTim));
 		btnTimKiem.setFocusPainted(false);
