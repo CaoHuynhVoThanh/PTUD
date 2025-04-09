@@ -642,6 +642,12 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			);
 		System.out.println(dsb.size());
 		dskv = KhuVuc_DAO.getAllKhuVuc();
+		
+		String condtang = (String) comb_tang.getSelectedItem();
+		String condkv = (String) comb_kv.getSelectedItem();
+		String condloai = (String) comb_loaiban.getSelectedItem();
+		String condtt = (String) comb_tinhtrang.getSelectedItem();
+		
 		for (Ban x: dsb) {
 			String kv = x.getMaBan()+" "+ x.getTenKV();
 			JButton BanMoi = new JButton(kv);
