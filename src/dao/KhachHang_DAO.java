@@ -78,13 +78,14 @@ public class KhachHang_DAO {
 	    KhachHang kh = null;
 	    ConnectDB.getInstance().connect();;
 		Connection conN = ConnectDB.getInstance().getConnection();
-	    String sql = "SELECT TOP 1 kh.maKH, kh.tenKH, kh.soDienThoai, kh.ngayTao " +
-	                 "FROM Ban b " +
-	                 "JOIN ChiTietDonDatBan ct ON b.maBan = ct.maBan " +
-	                 "JOIN DonDatBan ddb ON ct.maDDB = ddb.maDDB " +
-	                 "JOIN KhachHang kh ON ddb.maKH = kh.maKH " +
-	                 "WHERE b.maBan = ? " +
-	                 "ORDER BY ddb.thoiGianDat DESC";
+		String sql = "SELECT TOP 1 kh.maKH, kh.tenKH, kh.soDienThoai, kh.ngayTao " +
+	             "FROM Ban b " +
+	             "JOIN ChiTietDonDatBan ct ON b.maBan = ct.maBan " +
+	             "JOIN DonDatBan ddb ON ct.maDDB = ddb.maDDB " +
+	             "JOIN KhachHang kh ON ddb.maKH = kh.maKH " +
+	             "WHERE b.maBan = ? AND CONVERT(date, ddb.thoiGianDat) = CONVERT(date, GETDATE()) " +
+	             "ORDER BY ddb.thoiGianDat DESC";
+
 	    
 	    try (PreparedStatement ps = conN.prepareStatement(sql)) {
 	        ps.setString(1, maBan);

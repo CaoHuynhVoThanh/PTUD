@@ -76,7 +76,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 	private JTextField tf_tenkh;
 	private JPanel panel_dsBan;
 	private JLabel lb_ma, lb_loai, lb_khuvuc, lb_vitri, lb_trangthai;
-	private JButton btn_chuyen, btn_huy, btn_datban, btn_themmon;
+	private JButton btn_chuyen, btn_dattruoc, btn_themmon, btn_dungngay;
 	private JLabel lb_tenkh, lb_sdtkh;
 	JComboBox<String> combMode;
 	JDateChooser JDC_ngaychon = new JDateChooser();
@@ -448,7 +448,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		btn_dateReset.addActionListener(this);
 		panel_2.add(btn_dateReset);
 		
-		JButton btn_tim = new JButton("TÌM");
+		JButton btn_tim = new JButton("TÌM TÊN");
 		btn_tim.setForeground(new Color(255, 255, 255));
 		btn_tim.setBackground(new Color(255, 153, 0));
 		btn_tim.setBounds(363, 10, 91, 31);
@@ -459,6 +459,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		btn_tim_1.setForeground(Color.WHITE);
 		btn_tim_1.setBackground(new Color(0, 0, 0));
 		btn_tim_1.setBounds(466, 10, 104, 31);
+		btn_tim_1.addActionListener(this);
 		panel_2.add(btn_tim_1);
 		
 		JPanel panel_3 = new JPanel();
@@ -466,12 +467,12 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_trangchu.add(panel_3);
 		panel_3.setLayout(null);
 		
-		btn_datban = new JButton("ĐẶT BÀN");
-		btn_datban.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btn_datban.setBackground(new Color(255, 153, 0));
-		btn_datban.setForeground(new Color(255, 255, 255));
-		btn_datban.setBounds(197, 410, 145, 38);
-		panel_3.add(btn_datban);
+		btn_dattruoc = new JButton("ĐẶT TRƯỚC");
+		btn_dattruoc.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btn_dattruoc.setBackground(new Color(255, 153, 0));
+		btn_dattruoc.setForeground(new Color(255, 255, 255));
+		btn_dattruoc.setBounds(197, 410, 145, 38);
+		panel_3.add(btn_dattruoc);
 		
 		btn_chuyen = new JButton("CHUYỂN BÀN");
 		btn_chuyen.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -480,18 +481,11 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		btn_chuyen.setBounds(27, 364, 145, 38);
 		panel_3.add(btn_chuyen);
 		
-		btn_huy = new JButton("HỦY ĐẶT BÀN");
-		btn_huy.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btn_huy.setForeground(new Color(255, 255, 255));
-		btn_huy.setBackground(new Color(255, 0, 0));
-		btn_huy.setBounds(197, 362, 145, 38);
-		panel_3.add(btn_huy);
-		
 		btn_themmon = new JButton("THÊM MÓN");
 		btn_themmon.setForeground(Color.WHITE);
-		btn_themmon.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btn_themmon.setBackground(new Color(255, 153, 0));
-		btn_themmon.setBounds(27, 410, 145, 38);
+		btn_themmon.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btn_themmon.setBackground(new Color(0, 0, 0));
+		btn_themmon.setBounds(197, 363, 145, 38);
 		panel_3.add(btn_themmon);
 		
 		JLabel lblNewLabel_2 = new JLabel("Mã bàn:");
@@ -556,16 +550,15 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_3.add(lb_trangthai);
 		btn_chuyen.setEnabled(false);
 		btn_chuyen.addActionListener(this);
-		btn_huy.setEnabled(false);
-		btn_huy.addActionListener(this);
-		btn_datban.setEnabled(false);
-		btn_datban.addActionListener(this);
+		btn_dattruoc.setEnabled(false);
+		btn_dattruoc.addActionListener(this);
 		btn_themmon.setEnabled(false);
 		
 		combMode = new JComboBox<String>();
 		combMode.addItem("Đơn");
 		combMode.addItem("Nhiều");
 		combMode.setBounds(197, 304, 145, 38);
+		combMode.setActionCommand("Change Mode");
 		combMode.addActionListener(this);
 		panel_3.add(combMode);
 		
@@ -590,10 +583,19 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		lb_sdtkh.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lb_sdtkh.setBounds(209, 269, 133, 27);
 		panel_3.add(lb_sdtkh);
+		
+		btn_dungngay = new JButton("DÙNG NGAY");
+		btn_dungngay.setForeground(Color.WHITE);
+		btn_dungngay.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btn_dungngay.setEnabled(false);
+		btn_dungngay.setBackground(new Color(255, 153, 0));
+		btn_dungngay.setBounds(27, 410, 145, 38);
+		panel_3.add(btn_dungngay);
 		btn_themmon.addActionListener(this);
 		hiddenDateChange.setVisible(false);
 		hiddenDateChange.addActionListener(this);
-		loadBan();
+		loadAllBan();
+		displayBan(dsb);
 //		for (Ban x: dsb) {
 //			System.out.println(x.getMaBan());
 //			System.out.println(x.getTinhTrang());
@@ -602,6 +604,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		comb_loaiban.addActionListener(this);
 		comb_tang.addActionListener(this);
 		comb_tinhtrang.addActionListener(this);
+		btn_dungngay.addActionListener(this);
 		JDC_ngaychon.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -630,63 +633,74 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 	    }
 	}
 	
-	public void loadBan() {
+	public void displayBan(ArrayList<Ban> ds) {
 		panel_dsBan.removeAll(); // Xóa tất cả các component trong panel
 		panel_dsBan.revalidate(); // Cập nhật lại layout
 		panel_dsBan.repaint(); // Vẽ lại giao diện
-		dsb = Ban_DAO.getAllBan(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-//		System.out.println(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		dsb.sort(
+		String condkv = (String) comb_kv.getSelectedItem();
+		ds = filterKhuVuc(ds, condkv);
+		String condt = (String) comb_tang.getSelectedItem();
+		ds = filterTang(ds, condt);
+		String condl = (String) comb_loaiban.getSelectedItem();
+		ds = filterLoaiBan(ds, condl);
+		String condtt = (String) comb_tinhtrang.getSelectedItem();
+		ds = filterTinhTrang(ds, condtt);
+		String ten = tf_tenkh.getText();
+		ds = filterTenKH(ds, ten);
+		ds.sort(
 			    Comparator.comparingInt((Ban b) -> getPriority(b.getTinhTrang()))
 			              .thenComparing(Ban::getLoaiBan)
 			);
-		System.out.println(dsb.size());
+		System.out.println(ds.size());
 		dskv = KhuVuc_DAO.getAllKhuVuc();
 		
-		String condtang = (String) comb_tang.getSelectedItem();
-		String condkv = (String) comb_kv.getSelectedItem();
-		String condloai = (String) comb_loaiban.getSelectedItem();
-		String condtt = (String) comb_tinhtrang.getSelectedItem();
-		
-		for (Ban x: dsb) {
-			String kv = x.getMaBan()+" "+ x.getTenKV();
-			JButton BanMoi = new JButton(kv);
-			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
-			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
-			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
-			BanMoi.setOpaque(false);
-			BanMoi.setContentAreaFilled(false);
-			BanMoi.setBorderPainted(false);
-			BanMoi.setPreferredSize(new Dimension(180, 180));
-			BanMoi.addActionListener(this);
-			panel_dsBan.add(BanMoi);
-		}
-		int y_size = (int) Math.ceil(dsb.size()/4);
+//		String condtang = (String) comb_tang.getSelectedItem();
+//		String condkv = (String) comb_kv.getSelectedItem();
+//		String condloai = (String) comb_loaiban.getSelectedItem();
+//		int condtt = comb_tinhtrang.getSelectedIndex();
+		for (Ban x: ds) {
+				String kv = x.getMaBan()+" "+ x.getTenKV();
+				JButton BanMoi = new JButton(kv);
+				BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
+				BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
+				BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
+				BanMoi.setOpaque(false);
+				BanMoi.setContentAreaFilled(false);
+				BanMoi.setBorderPainted(false);
+				BanMoi.setPreferredSize(new Dimension(180, 180));
+				BanMoi.addActionListener(this);
+				panel_dsBan.add(BanMoi);
+			}
+//		}
+		int y_size = (int) Math.ceil(ds.size()/4);
 		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
 	}
-	public void loadBanWithCb() {
+	public void displayBanWithCb(ArrayList<Ban> ds) {
 		panel_dsBan.removeAll(); // Xóa tất cả các component trong panel
 		panel_dsBan.revalidate(); // Cập nhật lại layout
 		panel_dsBan.repaint(); // Vẽ lại giao diện
-		dsb = Ban_DAO.getAllBan(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		dsb.sort(
+		String condkv = (String) comb_kv.getSelectedItem();
+		ds = filterKhuVuc(ds, condkv);
+		String condt = (String) comb_tang.getSelectedItem();
+		ds = filterTang(ds, condt);
+		String condl = (String) comb_loaiban.getSelectedItem();
+		ds = filterLoaiBan(ds, condl);
+		String condtt = (String) comb_tinhtrang.getSelectedItem();
+		ds = filterTinhTrang(ds, condtt);
+		String ten = tf_tenkh.getText();
+		ds = filterTenKH(ds, ten);
+		ds.sort(
 			    Comparator.comparingInt((Ban b) -> getPriority(b.getTinhTrang()))
 			              .thenComparing(Ban::getLoaiBan)
 			);
 
 		dskv = KhuVuc_DAO.getAllKhuVuc();
 		int cnt=0;
-		for (Ban x: dsb) {
+		for (Ban x: ds) {
 			if (x.getTinhTrang()==1) {
 				cnt+=1;
 				String kv = x.getMaBan()+" "+ x.getTenKV();
-//				for (KhuVuc k: dskv) {
-//					if (k.getMaKV().equals(x.getMaKV())) {
-//						kv = x.getMaBan()+" "+ k.getTenKV();
-//						break;
-//					}
-//				}
 				JButton BanMoi = new JButton(kv);
 				BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
 				BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
@@ -708,6 +722,62 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		}
 		int y_size = (int) Math.ceil(cnt/4);
 		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
+	}
+	
+	public void loadAllBan() {
+		dsb = Ban_DAO.getAllBan(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+	}
+	
+	public ArrayList<Ban> filterTang(ArrayList<Ban> dsb, String tang){
+		if (tang.equals("Toàn bộ")) return dsb;
+		int soTang = Integer.parseInt(tang);
+		ArrayList<Ban> newDsb = new ArrayList<>();
+		for (Ban x: dsb) {
+			if (x.getViTri()==soTang) newDsb.add(x);
+		}
+		return newDsb;
+	}
+	
+	public ArrayList<Ban> filterKhuVuc(ArrayList<Ban> dsb, String kv){
+		if (kv.equals("Toàn bộ")) return dsb;
+		ArrayList<Ban> newDsb = new ArrayList<>();
+		for (Ban x: dsb) {
+			if (x.getTenKV().equals(kv)) newDsb.add(x);
+		}
+		return newDsb;
+	}
+	public ArrayList<Ban> filterLoaiBan(ArrayList<Ban> dsb, String loaiBan){
+		if (loaiBan.equals("Toàn bộ")) return dsb;
+		int k = Integer.parseInt(loaiBan);
+		ArrayList<Ban> newDsb = new ArrayList<>();
+		for (Ban x: dsb) {
+			if (x.getLoaiBan()==k) newDsb.add(x);
+		}
+		return newDsb;
+	}
+	public ArrayList<Ban> filterTinhTrang(ArrayList<Ban> dsb, String tinhTrang){
+		if (tinhTrang.equals("Toàn bộ")) return dsb;
+		ArrayList<Ban> newDsb = new ArrayList<>();
+		int k;
+		if (tinhTrang.equals("Trống")) k=1;
+		else if (tinhTrang.equals("Đang sử dụng")) k=2;
+		else if (tinhTrang.equals("Đặt trước")) k=3;
+		else k=0;
+		for (Ban x: dsb) {
+			if (x.getTinhTrang()==k) newDsb.add(x);
+		}
+		return newDsb;
+	}
+	public ArrayList<Ban> filterTenKH(ArrayList<Ban> dsb, String tenKH){
+		if (tenKH.equalsIgnoreCase("")) return dsb;
+		ArrayList<Ban> newDsb = new ArrayList<>();
+		for (Ban x: dsb) {
+			if (x.getTinhTrang()==2 || x.getTinhTrang()==3) {
+				KhachHang kh = KhachHang_DAO.getKhachHangMoiNhatCuaBan(x.getMaBan());
+				if (kh.getTenKH().equalsIgnoreCase(tenKH)) newDsb.add(x);
+			}
+		}
+		return newDsb;
 	}
 
 	@Override
@@ -734,8 +804,8 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			case 0: {
 				tt = "Ngưng phục vụ";
 				btn_chuyen.setEnabled(false);
-				btn_huy.setEnabled(false);
-				btn_datban.setEnabled(false);
+				btn_dattruoc.setEnabled(false);
+				btn_dungngay.setEnabled(false);
 				btn_themmon.setEnabled(false);
 				lb_tenkh.setText("");
 				lb_sdtkh.setText("");
@@ -744,8 +814,8 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			case 2:{
 				tt = "Đang phục vụ";
 				btn_chuyen.setEnabled(true);
-				btn_huy.setEnabled(false);
-				btn_datban.setEnabled(false);
+				btn_dungngay.setEnabled(false);
+				btn_dattruoc.setEnabled(false);
 				btn_themmon.setEnabled(true);
 				KhachHang kh = KhachHang_DAO.getKhachHangMoiNhatCuaBan(banchon.getMaBan());
 				lb_tenkh.setText(kh.getTenKH());
@@ -755,8 +825,8 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			case 3:{
 				tt = "Đặt trước";
 				btn_chuyen.setEnabled(true);
-				btn_huy.setEnabled(true);
-				btn_datban.setEnabled(false);
+				btn_dungngay.setEnabled(false);
+				btn_dattruoc.setEnabled(false);
 				btn_themmon.setEnabled(true);
 				KhachHang kh = KhachHang_DAO.getKhachHangMoiNhatCuaBan(banchon.getMaBan());
 				lb_sdtkh.setText(kh.getSoDienThoai());
@@ -766,8 +836,8 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			default:
 				tt = "Trống";
 				btn_chuyen.setEnabled(false);
-				btn_huy.setEnabled(false);
-				btn_datban.setEnabled(true);
+				btn_dungngay.setEnabled(true);
+				btn_dattruoc.setEnabled(true);
 				btn_themmon.setEnabled(false);
 				lb_tenkh.setText("");
 				lb_sdtkh.setText("");
@@ -776,13 +846,40 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		}
 		else if (isBan && !((String) combMode.getSelectedItem()).equals("Đơn")) {
 			btn_chuyen.setEnabled(false);
-			btn_huy.setEnabled(false);
-			btn_datban.setEnabled(true);
+			btn_dungngay.setEnabled(true);
+			btn_dattruoc.setEnabled(true);
 			btn_themmon.setEnabled(false);
 		}
-		if (cmd.equals("ĐẶT BÀN")) {
+		if (cmd.equals("ĐẶT TRƯỚC")) {
 			try {
 				DatBanChiTiet_GUI dialog = new DatBanChiTiet_GUI();
+				Date selectedDate = JDC_ngaychon.getDate();
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String dateString = sdf.format(selectedDate);
+                ArrayList<Ban> dsBanChon = new ArrayList<>(); 
+                if (combMode.getSelectedIndex()==0 && !lb_ma.getText().equals("")) { 	
+                	dsBanChon.add(getBanTheoMa(lb_ma.getText()));             		               	
+                }
+                if (combMode.getSelectedIndex()==1) {
+                	for (JCheckBox x: lcb) {
+                		if (x.isSelected()==true) {
+//                			System.out.println(x.getActionCommand());
+                			dsBanChon.add(getBanTheoMa(x.getActionCommand().substring(0, 4)));
+                		}
+                	}
+                }
+				dialog.setDate(dateString);
+				dialog.setDsBan(dsBanChon);
+
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			} catch (Exception er) {
+				er.printStackTrace();
+			}
+		}
+		if (cmd.equals("DÙNG NGAY")) {
+			try {
+				DungNgayChiTiet_GUI dialog = new DungNgayChiTiet_GUI();
 				Date selectedDate = JDC_ngaychon.getDate();
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String dateString = sdf.format(selectedDate);
@@ -810,17 +907,35 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		if (cmd.equals("XÁC NHẬN")) {
 			System.out.println("Hihi");
 		}
-		if (cmd.equals("comboBoxChanged")) {
-			if (((String) combMode.getSelectedItem()).equals("Đơn")) loadBan();
-			else loadBanWithCb();
+		if (cmd.equals("Change Mode")) {
+			if (((String) combMode.getSelectedItem()).equals("Đơn")) displayBan(dsb);
+			else displayBanWithCb(dsb);
 		}
 		if (cmd.equals("Xác nhận đặt bàn thành công")) {
 			combMode.setSelectedIndex(0);
-			loadBan();
+			loadAllBan();
+			displayBan(dsb);
 		}
 		if (cmd.equals("Date changed")) {
-			if (combMode.getSelectedIndex()==0) loadBan();
-			else loadBanWithCb();
+			loadAllBan();
+			if (combMode.getSelectedIndex()==0) displayBan(dsb);
+			else displayBanWithCb(dsb);
+		}
+		if (cmd.equals("comboBoxChanged")) {
+			if (combMode.getSelectedIndex()==0) displayBan(dsb);
+			else displayBanWithCb(dsb);
+		}
+		if (cmd.equals("Về hiện tại")) {
+			JDC_ngaychon.setDate(new Date());
+		}
+		if (cmd.equals("TÌM TÊN")) {
+			ArrayList<Ban> dstheoten = filterTenKH(dsb, tf_tenkh.getText());
+			displayBan(dstheoten);
+		}
+		if (cmd.equals("KHÔI PHỤC")) {
+			tf_tenkh.setText("");
+			loadAllBan();
+			displayBan(dsb);
 		}
 
 		
