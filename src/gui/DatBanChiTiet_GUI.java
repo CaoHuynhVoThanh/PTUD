@@ -242,6 +242,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		cancelButton.setForeground(new Color(255, 255, 255));
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
+		cancelButton.addActionListener(this);
 	
 		
 		
@@ -292,9 +293,8 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		String sdt = tf_sdt.getText();
 		System.out.println(dateTime);
 		createKhachHang(makh, hoten, sdt);
-		
-		boolean isDungNgay = false;
-		DonDatBan_DAO.insertDonDatBan(ma, null, currenUser.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, isDungNgay);
+
+		DonDatBan_DAO.insertDonDatBan(ma, null, currenUser.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, 1);
 		for (Ban x: dsbd) {
 			createChiTietDDB(ma, x.getMaBan(), null);
 		}
@@ -333,6 +333,9 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		        tongTien+=x.getPhuPhi();
 		        lb_coc.setText(tongTien+"");
 		    }
+		}
+		if (cmd.equals("Cancel")) {
+			this.dispose();
 		}
 	}
 

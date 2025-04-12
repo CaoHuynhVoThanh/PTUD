@@ -47,6 +47,7 @@ import com.toedter.calendar.JDateChooser;
 
 import connectDB.ConnectDB;
 import dao.Ban_DAO;
+import dao.ChuyenBan_GUI;
 import dao.KhachHang_DAO;
 import dao.KhuVuc_DAO;
 import entities.Ban;
@@ -85,9 +86,9 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 	ArrayList<Ban> dsb = new ArrayList<>();
 	JButton hiddenDateChange = new JButton("Date changed");
 	ArrayList<KhuVuc> dskv = KhuVuc_DAO.getAllKhuVuc();
-	public static JButton hiddenButton = new JButton("Xác nhận đặt bàn thành công");
+	public static JButton hiddenButton = new JButton("Thành công");
 	private ArrayList<JCheckBox> lcb = new ArrayList<>();
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -307,7 +308,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(10, 24, 1193, 144);
+		panel_2.setBounds(23, 24, 1188, 144);
 		panel_trangchu.add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -370,6 +371,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
         
         JDC_ngaychon.setBounds(644, 10, 224, 31);
         JDC_ngaychon.setDate(new Date());
+        JDC_ngaychon.setMinSelectableDate(new java.util.Date());
         panel_2.add(JDC_ngaychon);
 		
 		comb_tang = new JComboBox<String>();
@@ -794,6 +796,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 				break;
 			}
 		}
+		System.out.println((String) combMode.getSelectedItem());
 		if (isBan && ((String) combMode.getSelectedItem()).equals("Đơn")) {
 			lb_ma.setText(banchon.getMaBan());
 			lb_vitri.setText("Lầu "+banchon.getViTri());
@@ -836,7 +839,10 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			default:
 				tt = "Trống";
 				btn_chuyen.setEnabled(false);
-				btn_dungngay.setEnabled(true);
+				btn_dungngay.setEnabled(
+					    new SimpleDateFormat("yyyyMMdd").format(JDC_ngaychon.getDate())
+					        .equals(new SimpleDateFormat("yyyyMMdd").format(new Date()))
+					);
 				btn_dattruoc.setEnabled(true);
 				btn_themmon.setEnabled(false);
 				lb_tenkh.setText("");
@@ -844,12 +850,58 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			}
 			lb_trangthai.setText(tt);
 		}
-		else if (isBan && !((String) combMode.getSelectedItem()).equals("Đơn")) {
-			btn_chuyen.setEnabled(false);
-			btn_dungngay.setEnabled(true);
-			btn_dattruoc.setEnabled(true);
-			btn_themmon.setEnabled(false);
+		else if (isBan && ((String) combMode.getSelectedItem()).equals("Nhiều")) {
+			lb_ma.setText(banchon.getMaBan());
+			lb_vitri.setText("Lầu "+banchon.getViTri());
+			lb_loai.setText(banchon.getLoaiBan()+" người");
+			lb_khuvuc.setText(banchon.getTenKV());
+			String tt = "";
+			switch (banchon.getTinhTrang()) {
+			case 0: {
+				tt = "Ngưng phục vụ";
+				btn_chuyen.setEnabled(false);
+				btn_dungngay.setEnabled(true);
+				btn_dattruoc.setEnabled(true);
+				btn_themmon.setEnabled(false);
+				lb_tenkh.setText("");
+				lb_sdtkh.setText("");
+				break;
+			}
+			case 2:{
+				tt = "Đang phục vụ";
+				btn_chuyen.setEnabled(false);
+				btn_dungngay.setEnabled(true);
+				btn_dattruoc.setEnabled(true);
+				btn_themmon.setEnabled(false);
+				KhachHang kh = KhachHang_DAO.getKhachHangMoiNhatCuaBan(banchon.getMaBan());
+				lb_tenkh.setText(kh.getTenKH());
+				lb_sdtkh.setText(kh.getSoDienThoai());
+				break;
+			}
+			case 3:{
+				tt = "Đặt trước";
+				btn_chuyen.setEnabled(false);
+				btn_dungngay.setEnabled(true);
+				btn_dattruoc.setEnabled(true);
+				btn_themmon.setEnabled(false);
+				KhachHang kh = KhachHang_DAO.getKhachHangMoiNhatCuaBan(banchon.getMaBan());
+				lb_sdtkh.setText(kh.getSoDienThoai());
+				lb_tenkh.setText(kh.getTenKH());
+				break;
+			}
+			default:
+				tt = "Trống";
+				btn_chuyen.setEnabled(false);
+				btn_dungngay.setEnabled(true);
+				btn_dattruoc.setEnabled(true);
+				btn_themmon.setEnabled(false);
+				lb_tenkh.setText("");
+				lb_sdtkh.setText("");
+			}
+			lb_trangthai.setText(tt);
+			
 		}
+		
 		if (cmd.equals("ĐẶT TRƯỚC")) {
 			try {
 				DatBanChiTiet_GUI dialog = new DatBanChiTiet_GUI();
@@ -911,7 +963,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			if (((String) combMode.getSelectedItem()).equals("Đơn")) displayBan(dsb);
 			else displayBanWithCb(dsb);
 		}
-		if (cmd.equals("Xác nhận đặt bàn thành công")) {
+		if (cmd.equals("Thành công")) {
 			combMode.setSelectedIndex(0);
 			loadAllBan();
 			displayBan(dsb);
@@ -936,6 +988,22 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			tf_tenkh.setText("");
 			loadAllBan();
 			displayBan(dsb);
+		}
+		if (cmd.equals("CHUYỂN BÀN")) {
+			Ban ban = null;
+			ArrayList<Ban> dsbc = new ArrayList<>();
+			for (Ban k: dsb) {
+				if (k.getMaBan().equals(lb_ma.getText())) {
+					isBan=true;
+					ban = k;
+				}
+				if ((k.getTinhTrang()==1 || k.getMaBan().equals(lb_ma.getText())) && lb_loai.getText().equals(k.getLoaiBan()+" người")) dsbc.add(k);
+			}
+			ChuyenBan_GUI dialog = new ChuyenBan_GUI();
+			dialog.setModal(ban, dsbc);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setBounds(550, 200, 450, 300);
+			dialog.setVisible(true);
 		}
 
 		
