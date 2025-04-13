@@ -830,7 +830,7 @@ public class GoiMon_GUI extends JFrame{
 	        
 	        String ngayThangNam = ngayChon.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 	        int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(ngayChon) + 1;
-	        String maDGMMoi = String.format("GM%s-%05d", ngayThangNam, soThuTu);
+	        String maDGMMoi = String.format("GM%s%05d", ngayThangNam, soThuTu);
 	        LocalDateTime thoiGian = LocalDateTime.now();
 	        
 	        // 1. First create the DonGoiMon

@@ -82,7 +82,7 @@ public class ChiTietDonGoiMon_DAO {
 	    }
 	    return n > 0;
 	}
-	public int layTongSoLuongMonBanRa() {
+	public static int layTongSoLuongMonBanRa() {
 	    int tongSoLuong = 0;
 	    ConnectDB.getInstance();
 	    Connection conN = ConnectDB.getInstance().getConnection();

@@ -125,8 +125,6 @@ public class Ban_DAO {
 	return true;
     }
     
-//    public static boolean chuyenBan(String ma) {
-//    	
-//    }
+
 	
 }
