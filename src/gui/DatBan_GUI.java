@@ -485,9 +485,9 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		
 		btn_themmon = new JButton("THÊM MÓN");
 		btn_themmon.setForeground(Color.WHITE);
-		btn_themmon.setFont(new Font("Tahoma", Font.BOLD, 12));
-		btn_themmon.setBackground(new Color(0, 0, 0));
-		btn_themmon.setBounds(197, 363, 145, 38);
+		btn_themmon.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btn_themmon.setBackground(new Color(255, 153, 0));
+		btn_themmon.setBounds(27, 410, 145, 38);
 		btn_themmon.addActionListener(e -> {
 			String maBan = lb_ma.getText();
 		    // Tạo và hiển thị form GoiMon_GUI
