@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 /connectDB/
 /dao/
 /entities/
 /gui/
 /images/
 /test/
+=======
+/dao/
+/gui/
+>>>>>>> origin/main

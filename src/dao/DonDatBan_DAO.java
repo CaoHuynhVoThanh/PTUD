@@ -33,7 +33,7 @@ public class DonDatBan_DAO {
 	}
 	 public static boolean insertDonDatBan(String maDDB, String maHD, String maNV, String maKH,
             LocalDateTime thoiGianDat, LocalDateTime thoiGianNhan,
-            int soKhach, double tienCoc, boolean trangThai) {
+            int soKhach, double tienCoc, int trangThai) {
 			String sql = "INSERT INTO DonDatBan (maDDB, maHD, maNV, maKH, thoiGianDat, thoiGianNhan, soKhach, tienCoc, trangThai) " +
 			"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				
@@ -48,7 +48,7 @@ public class DonDatBan_DAO {
 				pst.setTimestamp(6, Timestamp.valueOf(thoiGianNhan));
 				pst.setInt(7, soKhach);
 				pst.setDouble(8, tienCoc);
-				pst.setBoolean(9, trangThai);
+				pst.setInt(9, trangThai);
 				
 				int rowsInserted = pst.executeUpdate();
 				return rowsInserted > 0;
