@@ -680,6 +680,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			panel_dsBan.add(BanMoi);
 		}
 		int y_size = (int) Math.ceil(dsb.size()/4);
+
 		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
 	}
 	public void displayBanWithCb(ArrayList<Ban> ds) {
