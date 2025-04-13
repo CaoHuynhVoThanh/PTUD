@@ -94,6 +94,7 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_Mon;
 	private ArrayList<Mon> dsMon;
 	private ArrayList<Mon> dsMonHienThi;
+
 	private ArrayList<Ban> dsBan;
 	private JComboBox comboLoaiMon;
 	private String ghiChu = "";
@@ -103,6 +104,7 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_DoUong;
 	private JDateChooser dateChooser = new JDateChooser();
 	private JTextArea txtGhiChu = new JTextArea();
+
 	/**
 	 * Launch the application.
 	 */
