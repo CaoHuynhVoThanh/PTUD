@@ -1,5 +1,6 @@
-/gui/
+/connectDB/
 /dao/
 /entities/
-/connectDB/
+/gui/
+/images/
 /test/

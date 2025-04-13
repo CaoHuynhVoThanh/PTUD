@@ -10,13 +10,19 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import com.toedter.calendar.JDateChooser;
+
 import connectDB.ConnectDB;
+import dao.Ban_DAO;
+import dao.ChiTietDonDatBan_DAO;
 import dao.ChiTietDonGoiMon_DAO;
 import dao.DonGoiMon_DAO;
 import dao.Mon_DAO;
+import entities.Ban;
 import entities.ChiTietDonGoiMon;
 import entities.DonGoiMon;
 import entities.Mon;
@@ -34,19 +40,25 @@ import javax.swing.JTextField;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.EventObject;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -66,10 +78,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 
-public class GoiMon_GUI extends JFrame implements ActionListener, TableModelListener{
+public class GoiMon_GUI extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -81,9 +94,15 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 	private JScrollPane scrollPane_Mon;
 	private ArrayList<Mon> dsMon;
 	private ArrayList<Mon> dsMonHienThi;
+	private ArrayList<Ban> dsBan;
 	private JComboBox comboLoaiMon;
 	private String ghiChu = "";
 	private JComboBox comboBan;
+	private JLabel lblMaBan;
+	private ArrayList<Mon> dsDoUong;
+	private JScrollPane scrollPane_DoUong;
+	private JDateChooser dateChooser = new JDateChooser();
+	private JTextArea txtGhiChu = new JTextArea();
 	/**
 	 * Launch the application.
 	 */
@@ -106,8 +125,13 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 	public GoiMon_GUI() {
 		con = new ConnectDB();
 		con.getInstance().connect();
-		dsMon = Mon_DAO.getAllMon();
+		dsMon = Mon_DAO.getAllMonAn();
+		dsDoUong = Mon_DAO.getAllDoUong();
 		dsMonHienThi = new ArrayList<>(dsMon);
+		Date today = new Date();
+        dateChooser.setDate(today);
+        txtGhiChu.setText(""); 
+		dsBan = Ban_DAO.getAllBan(LocalDate.now());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setExtendedState(MAXIMIZED_BOTH);
 		this.setSize(1537, 864);
@@ -125,12 +149,12 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\icon.png"));
+		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\avt.png");
+		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -195,13 +219,13 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JMenuItem mi_TrangChu = new JMenuItem("      TRANG CHỦ");
+		JMenuItem mi_TrangChu = new JMenuItem("              TRANG CHỦ");
 		mi_TrangChu.setBackground(new Color(255, 153, 0));
 		mi_TrangChu.setSelected(true);
-		mi_TrangChu.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_TrangChu.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_TrangChu.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_TrangChu.setForeground(new Color(255, 255, 255));
-		mi_TrangChu.setBounds(20, 77, 291, 61);
+		mi_TrangChu.setBounds(20, 48, 291, 61);
 		panel.add(mi_TrangChu);
 		
 		JButton btnNewButton = new JButton("ĐĂNG XUẤT");
@@ -211,68 +235,78 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		btnNewButton.setBounds(89, 641, 164, 42);
 		panel.add(btnNewButton);
 		
-		JMenuItem mi_DatBan = new JMenuItem("      ĐẶT BÀN");
+		JMenuItem mi_DatBan = new JMenuItem("              ĐẶT BÀN");
 		mi_DatBan.setSelected(true);
 		mi_DatBan.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_DatBan.setForeground(Color.WHITE);
-		mi_DatBan.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_DatBan.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_DatBan.setBackground(new Color(255, 153, 0));
-		mi_DatBan.setBounds(20, 138, 291, 61);
+		mi_DatBan.setBounds(20, 109, 291, 61);
 		panel.add(mi_DatBan);
 		
-		JMenuItem mi_NhanBan = new JMenuItem("      NHẬN BÀN");
+		JMenuItem mi_NhanBan = new JMenuItem("              NHẬN BÀN");
 		mi_NhanBan.setSelected(true);
 		mi_NhanBan.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_NhanBan.setForeground(Color.WHITE);
-		mi_NhanBan.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_NhanBan.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_NhanBan.setBackground(new Color(255, 153, 0));
-		mi_NhanBan.setBounds(20, 200, 291, 61);
+		mi_NhanBan.setBounds(20, 171, 291, 61);
 		panel.add(mi_NhanBan);
 		
-		JMenuItem mi_GoiMon = new JMenuItem("      GỌI MÓN");
+		JMenuItem mi_GoiMon = new JMenuItem("              GỌI MÓN");
 		mi_GoiMon.setSelected(true);
 		mi_GoiMon.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_GoiMon.setForeground(Color.WHITE);
-		mi_GoiMon.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_GoiMon.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_GoiMon.setBackground(new Color(255, 153, 0));
-		mi_GoiMon.setBounds(20, 262, 291, 61);
+		mi_GoiMon.setBounds(20, 233, 291, 61);
 		panel.add(mi_GoiMon);
 		
-		JMenuItem mi_ThanhToan = new JMenuItem("      THANH TOÁN");
+		JMenuItem mi_ThanhToan = new JMenuItem("              THANH TOÁN");
 		mi_ThanhToan.setSelected(true);
 		mi_ThanhToan.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_ThanhToan.setForeground(Color.WHITE);
-		mi_ThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_ThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_ThanhToan.setBackground(new Color(255, 153, 0));
-		mi_ThanhToan.setBounds(20, 322, 291, 61);
+		mi_ThanhToan.setBounds(20, 293, 291, 61);
 		panel.add(mi_ThanhToan);
 		
-		JMenuItem mi_LichSu = new JMenuItem("      LỊCH SỬ");
+		JMenuItem mi_LichSu = new JMenuItem("              LỊCH SỬ");
 		mi_LichSu.setSelected(true);
 		mi_LichSu.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_LichSu.setForeground(Color.WHITE);
-		mi_LichSu.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_LichSu.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_LichSu.setBackground(new Color(255, 153, 0));
-		mi_LichSu.setBounds(20, 382, 291, 61);
+		mi_LichSu.setBounds(20, 353, 291, 61);
 		panel.add(mi_LichSu);
 		
-		JMenuItem mi_ThongKe = new JMenuItem("      THỐNG KÊ");
+		JMenuItem mi_ThongKe = new JMenuItem("              THỐNG KÊ");
 		mi_ThongKe.setSelected(true);
 		mi_ThongKe.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_ThongKe.setForeground(Color.WHITE);
-		mi_ThongKe.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_ThongKe.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_ThongKe.setBackground(new Color(255, 153, 0));
-		mi_ThongKe.setBounds(20, 498, 291, 61);
+		mi_ThongKe.setBounds(20, 478, 291, 61);
 		panel.add(mi_ThongKe);
 		
-		JMenuItem mi_QuanLy = new JMenuItem("      QUẢN LÝ");
+		JMenuItem mi_QuanLy = new JMenuItem("              QUẢN LÝ");
 		mi_QuanLy.setSelected(true);
 		mi_QuanLy.setHorizontalAlignment(SwingConstants.LEFT);
 		mi_QuanLy.setForeground(Color.WHITE);
-		mi_QuanLy.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		mi_QuanLy.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_QuanLy.setBackground(new Color(255, 153, 0));
-		mi_QuanLy.setBounds(20, 439, 291, 61);
+		mi_QuanLy.setBounds(20, 417, 291, 61);
 		panel.add(mi_QuanLy);
+		
+		JMenuItem mi_ThongKe_1 = new JMenuItem("              TRỢ GIÚP");
+		mi_ThongKe_1.setSelected(true);
+		mi_ThongKe_1.setHorizontalAlignment(SwingConstants.LEFT);
+		mi_ThongKe_1.setForeground(Color.WHITE);
+		mi_ThongKe_1.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		mi_ThongKe_1.setBackground(new Color(255, 153, 0));
+		mi_ThongKe_1.setBounds(20, 541, 291, 61);
+		panel.add(mi_ThongKe_1);
+
 		JPanel pGoiMon = new JPanel();
 		pGoiMon.setBounds(286, 138, 1237, 689);
 		contentPane.add(pGoiMon);
@@ -301,24 +335,33 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		txtTimKiem.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        timKiemMon();
+		        timKiemMonTheoTen();
 		    }
 		});
         txtTimKiem.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		txtTimKiem.setBounds(24, 29, 304, 45);
+		txtTimKiem.setBounds(24, 29, 230, 45);
 		pGoiMon.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
 		
 		comboBan = new JComboBox();
-		comboBan.setModel(new DefaultComboBoxModel(new String[] {"Mã bàn", "A1-01", "A1-02"}));
 		comboBan.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		comboBan.setBounds(508, 35, 111, 33);
+		comboBan.setBounds(463, 35, 100, 33);
 		pGoiMon.add(comboBan);
-		
+		loadComboBan(dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		comboBan.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        String maBan = comboBan.getSelectedItem().toString();
+		        if (!maBan.equals("Chọn bàn")) {
+		            updateMaBan();
+		            loadDonGoiMonTheoBan(maBan);
+		        }
+		    }
+		});
 		comboLoaiMon = new JComboBox();
 		comboLoaiMon.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		comboLoaiMon.setModel(new DefaultComboBoxModel(new String[] {"Loại món", "Mì", "Cơm", "Sushi", "Sashimi"}));
-		comboLoaiMon.setBounds(361, 35, 124, 33);
+		comboLoaiMon.setBounds(353, 35, 100, 33);
 		pGoiMon.add(comboLoaiMon);
 		loadComboLoaiMon();
 		
@@ -326,16 +369,33 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		btnTimKiem.setBackground(new Color(255, 153, 0));
 		btnTimKiem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				timKiemMon();
+				timKiemMonTheoTen();
 			}
 		});
-		btnTimKiem.setBounds(650, 29, 50, 45);
-		ImageIcon iconTim = new ImageIcon("D:\\ProjectPTUD\\PTUD\\src\\images\\iconSearch.png");
+		btnTimKiem.setBounds(264, 29, 50, 45);
+		ImageIcon iconTim = new ImageIcon("src\\images\\App\\iconSearch.png");
 		Image imgTim = iconTim.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 		btnTimKiem.setIcon(new ImageIcon(imgTim));
 		btnTimKiem.setFocusPainted(false);
 		pGoiMon.add(btnTimKiem);
 		
+		
+        dateChooser.setDateFormatString("dd/MM/yyyy");
+        dateChooser.setBounds(573, 35, 127, 33);
+        dateChooser.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        dateChooser.setMinSelectableDate(today);
+        pGoiMon.add(dateChooser);
+        dateChooser.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+            	Date selectedDate = dateChooser.getDate();
+            	if (selectedDate!= null) {
+            		loadComboBan(dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            	}
+            	
+            }
+        });
+        
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(24, 94, 676, 574);
 		pGoiMon.add(tabbedPane);
@@ -350,13 +410,27 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		pMonAn.setLayout(null);
 		pMonAn.setPreferredSize(new Dimension(600, 3000));
 		scrollPane_Mon.setViewportView(pMonAn);
-		capNhatHienThiMonAn();
-//		int columns = 3; // Số cột trên mỗi hàng
-//		int spacingX = 212; // Khoảng cách ngang
-//		int spacingY = 180; // Khoảng cách dọc
-//		int i=0;
-		JScrollPane scrollPane_DoUong = new JScrollPane();
+		capNhatHienThi(scrollPane_Mon, dsMonHienThi);
+		
+		// 1. Tạo scrollPane cho đồ uống
+		scrollPane_DoUong = new JScrollPane();
+		scrollPane_DoUong.setName("ScrollPane Đồ Uống"); // Đặt tên để debug
+		scrollPane_DoUong.getVerticalScrollBar().setUnitIncrement(20);
+		scrollPane_DoUong.getVerticalScrollBar().setBlockIncrement(64);
+
+		// 2. Tạo panel chứa đồ uống
+		JPanel pDoUong = new JPanel();
+		pDoUong.setName("Panel Đồ Uống"); // Đặt tên để debug
+		pDoUong.setBackground(Color.WHITE);
+		pDoUong.setLayout(null);
+		pDoUong.setPreferredSize(new Dimension(600, calculatePanelHeight(dsDoUong.size())));
+		scrollPane_DoUong.setViewportView(pDoUong);
+
+		// 3. Thêm vào tabbedPane SAU KHI đã thiết lập xong
 		tabbedPane.addTab("Đồ uống", null, scrollPane_DoUong, null);
+
+		// 4. Cập nhật hiển thị ngay lập tức
+		capNhatHienThi(scrollPane_DoUong, dsDoUong);
 		
 		JScrollPane scrollPane_HayDung = new JScrollPane();
 		tabbedPane.addTab("Hay dùng", null, scrollPane_HayDung, null);
@@ -408,7 +482,7 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		pGoiMon.add(pTongTien);
 		pTongTien.setLayout(null);
 		
-		JLabel lblMaBan = new JLabel("Mã bàn:");
+		lblMaBan = new JLabel("Mã bàn:");
 		lblMaBan.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		lblMaBan.setBounds(45, 18, 344, 28);
 		pTongTien.add(lblMaBan);
@@ -455,13 +529,29 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 		comboLoaiMon.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        timKiemMon();
+		        timKiemMonTheoLoaiMon();
 		    }
 		});
 		updateTongTien();
 //         Set renderer & editor cho cột hủy dùng nút
         tableDGM.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
         tableDGM.getColumnModel().getColumn(3).setCellEditor(new ButtonEditor(new JCheckBox(), tableDGM));
+        
+	     tableDGM.getTableHeader().setReorderingAllowed(false);
+	     tableDGM.getTableHeader().setResizingAllowed(false);
+     // Điều chỉnh kích thước cột
+        tableDGM.getColumnModel().getColumn(0).setPreferredWidth(250); // Cột Tên món ăn
+        tableDGM.getColumnModel().getColumn(1).setPreferredWidth(50);  // Cột SL
+        tableDGM.getColumnModel().getColumn(2).setPreferredWidth(150); // Cột Thành tiền
+        tableDGM.getColumnModel().getColumn(3).setPreferredWidth(50);  // Cột Hủy
+
+        // Tăng kích thước chữ cho toàn bộ bảng
+        tableDGM.setFont(new Font("Arial", Font.PLAIN, 18));
+        tableDGM.setRowHeight(30);
+
+        // Tăng kích thước chữ cho header
+        JTableHeader header = tableDGM.getTableHeader();
+        header.setFont(new Font("Arial", Font.BOLD, 18));
 		
 //		
 	}
@@ -496,95 +586,158 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
         }
         lblTongTien.setText("Tổng tiền: " + String.format("%,d VND", total));
     }
-	private void timKiemMon() {
+	private void timKiemMonTheoTen() {
 	    String tuKhoa = txtTimKiem.getText().trim().toLowerCase();
-	    String loaiMonChon = comboLoaiMon.getSelectedItem().toString();
 	    
-	    // Nếu ô tìm kiếm trống hoặc là placeholder và chọn "Tất cả" thì hiển thị tất cả
-	    if ((tuKhoa.isEmpty() || tuKhoa.equals("nhập tên món")) && loaiMonChon.equals("Tất cả")) {
+	    if (tuKhoa.isEmpty() || tuKhoa.equals("nhập tên món")) {
 	        dsMonHienThi = new ArrayList<>(dsMon);
 	    } else {
-	        // Lọc danh sách món theo từ khóa và loại món
 	        dsMonHienThi = new ArrayList<>();
 	        for (Mon mon : dsMon) {
-	            boolean khopTen = mon.getTenMon().toLowerCase().contains(tuKhoa);
-	            boolean khopLoai = loaiMonChon.equals("Tất cả") || mon.getLoaiMon().equals(loaiMonChon);
-	            if (khopTen && khopLoai) {
+	            if (mon.getTenMon().toLowerCase().contains(tuKhoa)) {
 	                dsMonHienThi.add(mon);
-	            } else if ((tuKhoa.isEmpty() || tuKhoa.equals("nhập tên món")) && khopLoai) {
-	            	dsMonHienThi.add(mon);
 	            }
 	        }
 	    }
     
-	    capNhatHienThiMonAn();
+	    capNhatHienThi(scrollPane_Mon, dsMonHienThi);
 	}
-
-	private void capNhatHienThiMonAn() {
-	    // Xóa các component cũ
-	    JPanel pMonAn = (JPanel) scrollPane_Mon.getViewport().getView();
-	    pMonAn.removeAll();
-	    pMonAn.revalidate();
-	    pMonAn.repaint();
-	    
-	    // Thêm các món mới theo danh sách đã lọc
+	private void timKiemMonTheoLoaiMon() {
+		String loaiMonChon = comboLoaiMon.getSelectedItem().toString();
+		 if (loaiMonChon.equals("Tất cả")) {
+			 dsMonHienThi = new ArrayList<>(dsMon);
+		 } else {
+			 dsMonHienThi = new ArrayList<>();
+			 for (Mon mon : dsMon) {
+				 if (mon.getLoaiMon().equals(loaiMonChon)) {
+					 dsMonHienThi.add(mon);
+				 }
+			 }
+		 }
+		 capNhatHienThi(scrollPane_Mon, dsMonHienThi);
+	}
+	private int calculatePanelHeight(int itemCount) {
 	    int columns = 3;
-	    int spacingX = 212;
 	    int spacingY = 180;
-	    int i = 0;
+	    int rows = (int) Math.ceil((double) itemCount / columns);
+	    return 22 + rows * spacingY;
+	}
+	private void capNhatHienThi(JScrollPane scrollPane, ArrayList<Mon> danhSachMon) {
+	    // Kiểm tra dữ liệu đầu vào
+	    if (scrollPane == null || danhSachMon == null) {
+	        System.err.println("Lỗi: ScrollPane hoặc danh sách món null");
+	        return;
+	    }
+
+	    // Lấy panel chứa từ scrollPane
+	    JPanel panel = (JPanel) scrollPane.getViewport().getView();
+	    if (panel == null) {
+	        panel = new JPanel();
+	        panel.setBackground(Color.WHITE);
+	        panel.setLayout(null);
+	        scrollPane.setViewportView(panel);
+	    }
+
+	    // Xóa nội dung cũ
+	    panel.removeAll();
 	    
-	    for (Mon mon : dsMonHienThi) {
-	        int row = i / columns;
-	        int col = i % columns;
-	        
+	    // Thiết lập các thông số hiển thị (giữ nguyên như code cũ)
+	    final int COLUMNS = 3;
+	    final int ITEM_WIDTH = 180;
+	    final int ITEM_HEIGHT = 151;
+	    final int HORIZONTAL_SPACING = 212;
+	    final int VERTICAL_SPACING = 180;
+	    final int START_X = 25;
+	    final int START_Y = 22;
+	    
+	    int x = START_X;
+	    int y = START_Y;
+	    int itemCount = 0;
+
+	    // Hiển thị từng món (giữ nguyên giao diện pMon như code cũ)
+	    for (Mon mon : danhSachMon) {
+	        // Tạo panel cho mỗi món (giống với pMon cũ)
 	        JPanel pMon = new JPanel();
 	        pMon.setLayout(null);
 	        pMon.setBackground(Color.WHITE);
-	        pMon.setBounds(25 + col * spacingX, 22 + row * spacingY, 180, 151);
-	        pMonAn.add(pMon);
+	        pMon.setBounds(x, y, ITEM_WIDTH, ITEM_HEIGHT);
+	        panel.add(pMon);
 
+	        // Hiển thị hình ảnh (giống code cũ)
 	        JLabel lblImgMon = new JLabel("");
 	        lblImgMon.setBounds(38, 0, 100, 88);
-	        lblImgMon.setIcon(new ImageIcon("src/images/imageMon/"+mon.getHinhAnh()));
+	        try {
+	            ImageIcon originalIcon = new ImageIcon("src/images/imageMon/" + mon.getHinhAnh());
+	            Image scaledImage = originalIcon.getImage().getScaledInstance(100, 88, Image.SCALE_SMOOTH);
+	            lblImgMon.setIcon(new ImageIcon(scaledImage));
+	        } catch (Exception e) {
+	            // Fallback nếu không load được ảnh
+	            lblImgMon.setIcon(new ImageIcon("src/images/imageMon/default.png"));
+	        }
 	        pMon.add(lblImgMon);
-
+	        
+	        // Panel thông tin món (giống code cũ)
 	        JPanel pThongTinMon = new JPanel();
 	        pThongTinMon.setLayout(null);
-	        pThongTinMon.setBounds(0, 72, 180, 78);
+	        pThongTinMon.setBounds(0, 72, ITEM_WIDTH, 78);
 	        pMon.add(pThongTinMon);
 	        
-	        JLabel lblGiaMon = new JLabel(mon.getDonGia()+ " VND");
+	        // Hiển thị giá (giống code cũ)
+	        DecimalFormat df = new DecimalFormat("#,##0");
+	        JLabel lblGiaMon = new JLabel(df.format(mon.getDonGia()) + " VND");
 	        lblGiaMon.setHorizontalAlignment(SwingConstants.CENTER);
 	        lblGiaMon.setFont(new Font("Tahoma", Font.PLAIN, 14));
-	        lblGiaMon.setBounds(10, 22, 160, 18);
+	        lblGiaMon.setBounds(10, 22, ITEM_WIDTH - 20, 18);
 	        pThongTinMon.add(lblGiaMon);
 
+	        // Hiển thị tên món (giống code cũ)
 	        JLabel lblTenMon = new JLabel("<html><div style='text-align: center;'>" + mon.getTenMon() + "</div></html>");
 	        lblTenMon.setHorizontalAlignment(SwingConstants.CENTER);
 	        lblTenMon.setFont(new Font("Arial", Font.BOLD, 14));
-	        lblTenMon.setBounds(10, 31, 160, 48);
+	        lblTenMon.setBounds(10, 31, ITEM_WIDTH - 20, 48);
 	        pThongTinMon.add(lblTenMon);
 	     
-	        JButton btnThemMon = new JButton("+");
-	        btnThemMon.setFont(new Font("Tahoma", Font.PLAIN, 10));
-	        btnThemMon.setBackground(new Color(169, 169, 169));
+	        ImageIcon originalIcon = new ImageIcon("src/images/App/iconAdd.png");
+
+	     // Resize icon nhỏ hơn so với button (ví dụ: 24x24 pixel)
+	        Image scaledImage = originalIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
+	        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+	        JButton btnThemMon = new JButton();
+	        btnThemMon.setIcon(scaledIcon); // Gán icon đã resize
+	        btnThemMon.setText(""); // Xóa text nếu chỉ muốn hiển thị icon
+	        btnThemMon.setToolTipText("Thêm món"); // Tooltip nếu cần
+	        btnThemMon.setBackground(Color.WHITE);
+	        btnThemMon.setOpaque(true);
+	        btnThemMon.setBorderPainted(false); // Ẩn viền nút
 	        btnThemMon.setBounds(140, 0, 40, 40);
+
+	        btnThemMon.addActionListener(e -> themMonVaoBang(mon));
 	        pMon.add(btnThemMon);
+
+	        itemCount++;
 	        
-	        btnThemMon.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                themMonVaoBang(mon);
-	            }
-	        });
-	        
-	        i++;
-	        
+	        // Tính toán vị trí món tiếp theo
+	        if (itemCount % COLUMNS == 0) {
+	            x = START_X;
+	            y += VERTICAL_SPACING;
+	        } else {
+	            x += HORIZONTAL_SPACING;
+	        }
 	    }
-	    
-	    // Cập nhật lại kích thước panel chứa món
-	    int rows = (int) Math.ceil((double) dsMonHienThi.size() / columns);
-	    pMonAn.setPreferredSize(new Dimension(600, 22 + rows * spacingY));
+
+	    // Tính toán kích thước panel chứa
+	    int rows = (int) Math.ceil((double) danhSachMon.size() / COLUMNS);
+	    int panelHeight = START_Y + (rows * VERTICAL_SPACING);
+	    panel.setPreferredSize(new Dimension(600, panelHeight));
+
+	    // Cập nhật giao diện
+	    panel.revalidate();
+	    panel.repaint();
+	    scrollPane.revalidate();
+	    scrollPane.repaint();
+
+	    System.out.println("Đã cập nhật hiển thị: " + danhSachMon.size() + " món");
 	}
 	private void loadComboLoaiMon() {
 	    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
@@ -601,7 +754,24 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 	    
 	    comboLoaiMon.setModel(model);
 	}
+	private void loadComboBan(LocalDate ngayChon) {
+		dsBan = Ban_DAO.getAllBan(ngayChon);
+	    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+	    model.addElement("Chọn bàn");
+	    ArrayList<String> dsBanPhucVu = new ArrayList<>();
+	    for (Ban ban: dsBan) {
+	        if (ban.getTinhTrang() == 2 || ban.getTinhTrang() == 3) {
+	        	dsBanPhucVu.add(ban.getMaBan());
+	        	model.addElement(ban.getMaBan());
+	        }
+	    }
+	    
+	    comboBan.setModel(model);
+	}
 	private void huyBoTatCaMon() {
+		LocalDate ngayChon = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	    String maBan = comboBan.getSelectedItem().toString();
+	    String maDGM = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon, maBan);
 	    // Hiển thị hộp thoại xác nhận
 	    int confirm = JOptionPane.showConfirmDialog(
 	        this, 
@@ -615,11 +785,12 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 	        tableModelDGM.setRowCount(0);
 	        // Cập nhật lại tổng tiền
 	        updateTongTien();
+	        capNhatChiTietGoiMon(maDGM);
 	    }
 	}
 	private void hienThiHopThoaiGhiChu() {
 	    // Tạo JTextArea để nhập ghi chú
-	    JTextArea txtGhiChu = new JTextArea(8, 25);
+	    txtGhiChu = new JTextArea(8, 25);
 	    txtGhiChu.setText(ghiChu); // Hiển thị ghi chú cũ nếu có
 	    txtGhiChu.setLineWrap(true);
 	    txtGhiChu.setWrapStyleWord(true);
@@ -643,61 +814,162 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 	    }
 	}
 	private void xacNhanDonGoiMon() {
-	    // Kiểm tra nếu không có món nào được chọn
-	    if (tableModelDGM.getRowCount() == 0) {
-	        JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất một món!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+	    if (comboBan.getSelectedItem().toString().equalsIgnoreCase("Chọn bàn")) {
+	        JOptionPane.showMessageDialog(this, "Bàn chưa được chọn!", "Thông báo", JOptionPane.WARNING_MESSAGE);
 	        return;
 	    }
-
-	    LocalDate today = LocalDate.now();
-	    String ngayThangNam = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-	    // Đếm số đơn đã có trong ngày
-	    int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(today) + 1; // tăng thêm 1 cho đơn mới
-	    
-	    // Tạo mã đơn gọi món dạng GMxxxxxxxx-yyyyy
-	    String maDGM = String.format("GM%s-%05d", ngayThangNam, soThuTu);
-	    System.out.println(maDGM);
-	    // Lấy thông tin từ giao diện
+	    LocalDate ngayChon = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	    String maBan = comboBan.getSelectedItem().toString();
-	    LocalDateTime thoiGian = LocalDateTime.now();
-	    
-	    // Tạo đơn gọi món
-	    DonGoiMon donGoiMon = new DonGoiMon(maDGM, thoiGian, ghiChu);
-	    
-	    try {
-	        // Lưu đơn gọi món vào CSDL
-	        DonGoiMon_DAO.themDonGoiMon(donGoiMon);
-	        
-	        // Tạo các chi tiết đơn
-	        for (int i = 0; i < tableModelDGM.getRowCount(); i++) {
-	            String tenMon = tableModelDGM.getValueAt(i, 0).toString();
-	            int soLuong = (int) tableModelDGM.getValueAt(i, 1);
-	            
-	            // Lấy mã món từ tên món (giả sử có phương thức này)
-	            Mon mon = Mon_DAO.getMonTheoTen(tenMon);
-	            String maMon = mon.getMaMon();
-	            
-	            // Tạo chi tiết đơn
-	            ChiTietDonGoiMon chiTiet = new ChiTietDonGoiMon(maMon, maDGM, soLuong, 0);
-	            System.out.println(maDGM);
-	            ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
+	    String maDGM = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon, maBan);
+	    System.out.println(maDGM);
+	    if (maDGM == null) {
+	        if (tableModelDGM.getRowCount() == 0) {
+	            JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất một món!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+	            return;
 	        }
 	        
-	        // Thông báo thành công
-	        JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!\nMã đơn: " + maDGM, "Thành công", JOptionPane.INFORMATION_MESSAGE);
+	        String ngayThangNam = ngayChon.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+	        int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(ngayChon) + 1;
+	        String maDGMMoi = String.format("GM%s-%05d", ngayThangNam, soThuTu);
+	        LocalDateTime thoiGian = LocalDateTime.now();
 	        
-	        // Reset giao diện sau khi tạo đơn
+	        // 1. First create the DonGoiMon
+	        DonGoiMon donGoiMon = new DonGoiMon(maDGMMoi, thoiGian, ghiChu);
+	        try {
+	            DonGoiMon_DAO.themDonGoiMon(donGoiMon);
+	            
+	            // 2. Then update ChiTietDonDatBan with the new maDGM
+	            ChiTietDonDatBan_DAO.capNhatMaDGMTheoNgayVaBan(ngayChon, maBan, maDGMMoi);
+	            
+	            // 3. Now add the order details
+	            for (int i = 0; i < tableModelDGM.getRowCount(); i++) {
+	                String tenMon = tableModelDGM.getValueAt(i, 0).toString();
+	                int soLuong = (int) tableModelDGM.getValueAt(i, 1);
+	                
+	                Mon mon = Mon_DAO.getMonTheoTen(tenMon);
+	                String maMon = mon.getMaMon();
+	                
+	                ChiTietDonGoiMon chiTiet = new ChiTietDonGoiMon(maMon, maDGMMoi, soLuong, 0);
+	                ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
+	            }
+	            
+	            JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!\nMã đơn: " + maDGMMoi, 
+	                "Thành công", JOptionPane.INFORMATION_MESSAGE);
+	            
+	            tableModelDGM.setRowCount(0);
+	            updateTongTien();
+	            ghiChu = txtGhiChu.getText().trim();;
+	            
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(this, "Lỗi khi tạo đơn: " + ex.getMessage(), 
+	                "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            ex.printStackTrace();
+	        }
+	    } else {
+	        try {	            
+	            capNhatChiTietGoiMon(maDGM);
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật đơn: " + ex.getMessage(), 
+	                "Lỗi", JOptionPane.ERROR_MESSAGE);
+	            ex.printStackTrace();
+	        }
+	    }
+
+	    comboBan.setEnabled(true);
+	    comboBan.setSelectedItem("Chọn bàn");
+	}
+	private void capNhatChiTietGoiMon(String maDGM) {
+		ChiTietDonGoiMon_DAO.xoaChiTietTheoMaDGM(maDGM);
+        // 3. Thêm lại các chi tiết mới từ tableModelDGM
+        for (int i = 0; i < tableModelDGM.getRowCount(); i++) {
+            String tenMon = tableModelDGM.getValueAt(i, 0).toString();
+            int soLuong = (int) tableModelDGM.getValueAt(i, 1);
+
+            Mon mon = Mon_DAO.getMonTheoTen(tenMon);
+            String maMon = mon.getMaMon();
+
+            ChiTietDonGoiMon chiTiet = new ChiTietDonGoiMon(maMon, maDGM, soLuong, 0);
+            ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
+        }
+
+        JOptionPane.showMessageDialog(this, "Cập nhật đơn gọi món thành công!", 
+            "Thành công", JOptionPane.INFORMATION_MESSAGE);
+
+        tableModelDGM.setRowCount(0);
+        updateTongTien();
+        ghiChu = txtGhiChu.getText().trim();
+	}
+ 	private void updateMaBan() {
+		String maBan = comboBan.getSelectedItem().toString();
+		String txtMBan = "Mã bàn:";
+		if (!maBan.equalsIgnoreCase("Chọn bàn")) {
+			txtMBan = "Mã bàn: " + maBan;
+		}
+		lblMaBan.setText(txtMBan);
+	}
+	public void setSelectedBan(String maBan) {    
+	    comboBan.setSelectedItem(maBan);;
+	    comboBan.setEnabled(false);
+	    comboBan.setBackground(new Color(240, 240, 240));
+	    
+	    // Cập nhật label hiển thị
+	    lblMaBan.setText("Mã bàn: " + maBan);
+	}
+	private void loadDonGoiMonTheoBan(String maBan) {
+		LocalDate ngayChon = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		String maDGM = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon, maBan);
+		if (maDGM == null) {
+			System.out.println("DGM = null");
+			return;
+		}
+	    try {
+	        // Xóa dữ liệu cũ trong bảng
 	        tableModelDGM.setRowCount(0);
-	        updateTongTien();
-	        ghiChu = "";
 	        
-	    } catch (Exception ex) {
-	        JOptionPane.showMessageDialog(this, "Lỗi khi tạo đơn: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-	        ex.printStackTrace();
+	        // Lấy danh sách đơn gọi món của bàn này
+	        ArrayList<DonGoiMon> dsDonGoiMon = DonGoiMon_DAO.getDonGoiMonTheoBan(maBan);
+	        
+	        if (dsDonGoiMon.isEmpty()) {
+	            return;
+	        }
+	        
+	        // Duyệt qua các đơn gọi món và thêm vào bảng
+	        for (DonGoiMon don : dsDonGoiMon) {
+	            // Lấy chi tiết đơn gọi món
+	            ArrayList<ChiTietDonGoiMon> dsChiTiet = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
+	            
+	            for (ChiTietDonGoiMon ct : dsChiTiet) {
+	                // Lấy thông tin món
+	                Mon mon = Mon_DAO.getMonTheoMa(ct.getMaMon());
+	                
+	                if (mon != null) {
+	                    // Thêm vào bảng
+	                    Object[] row = {
+	                        mon.getTenMon(),
+	                        ct.getSoLuong(),
+	                        mon.getDonGia() * ct.getSoLuong(),
+	                        "Hủy"
+	                    };
+	                    tableModelDGM.addRow(row);
+	                }
+	            }
+	            
+	            // Cập nhật ghi chú nếu có
+	            if (don.getGhiChu() != null && !don.getGhiChu().isEmpty()) {
+	                ghiChu = don.getGhiChu();
+	            }
+	        }
+	        
+	        // Cập nhật tổng tiền
+	        updateTongTien();
+	        
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Lỗi khi tải đơn gọi món: " + e.getMessage(), 
+	            "Lỗi", JOptionPane.ERROR_MESSAGE);
 	    }
 	}
-	class SpinnerEditor extends AbstractCellEditor implements TableCellEditor {
+ 	class SpinnerEditor extends AbstractCellEditor implements TableCellEditor {
 	    private final JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
 	    private int editingRow;
 	    private double donGia; // Thêm biến lưu đơn giá
@@ -759,9 +1031,16 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 
     // Renderer cho nút trong bảng
     static class ButtonRenderer extends JButton implements TableCellRenderer {
+    	private final ImageIcon scaledIcon;
         public ButtonRenderer() {
-            setText("Xóa");
-            setForeground(Color.RED);
+        	ImageIcon originalIcon = new ImageIcon("src/images/App/iconDelete.png");
+            Image scaledImage = originalIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+            scaledIcon = new ImageIcon(scaledImage);
+
+            setIcon(scaledIcon);
+            setBackground(Color.WHITE);
+            setOpaque(true);
+            setBorderPainted(false);
         }
 
         @Override
@@ -774,14 +1053,23 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
 
     // Editor cho nút trong bảng (xử lý hành động xóa)
     static class ButtonEditor extends DefaultCellEditor {
-        private final JButton button = new JButton("Xóa");
+        private final JButton button = new JButton();
         private JTable table;
         private int rowToDelete = -1;
         public ButtonEditor(JCheckBox checkBox, JTable table) {
             super(checkBox);
             this.table = table;
-            button.setForeground(Color.RED);
             button.addActionListener(e -> fireEditingStopped());
+            ImageIcon originalIcon = new ImageIcon("src/images/App/iconDelete.png");
+
+         // Resize icon nhỏ hơn so với button (ví dụ: 24x24 pixel)
+            Image scaledImage = originalIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+            button.setIcon(scaledIcon); // Gán icon đã resize
+	        button.setBackground(Color.WHITE);
+	        button.setOpaque(true);
+	        button.setBorderPainted(false); // Ẩn viền nút
         }
 
         @Override
@@ -793,7 +1081,6 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
         
         @Override
         public Object getCellEditorValue() {
-            // Trì hoãn xóa dòng đến khi cell editor hoàn tất
             SwingUtilities.invokeLater(() -> {
                 if (rowToDelete >= 0 && rowToDelete < table.getRowCount()) {
                     ((DefaultTableModel) table.getModel()).removeRow(rowToDelete);
@@ -804,16 +1091,4 @@ public class GoiMon_GUI extends JFrame implements ActionListener, TableModelList
             return null;
         }
     }
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void tableChanged(TableModelEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }

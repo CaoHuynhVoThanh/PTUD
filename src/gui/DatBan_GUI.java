@@ -30,6 +30,7 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTree;
@@ -99,7 +100,6 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 					con.connect();
 					DatBan_GUI frame = new DatBan_GUI();
 					frame.setVisible(true);
-					con.disconnect();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -130,12 +130,12 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\logo.png"));
+		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\App\\avt.png");
+		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -492,6 +492,16 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		btn_themmon.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btn_themmon.setBackground(new Color(255, 153, 0));
 		btn_themmon.setBounds(27, 410, 145, 38);
+		btn_themmon.addActionListener(e -> {
+			String maBan = lb_ma.getText();
+		    // Tạo và hiển thị form GoiMon_GUI
+		    GoiMon_GUI goiMonGUI = new GoiMon_GUI();
+		    
+		    // Hoặc thiết lập tất cả các bàn nếu GoiMon_GUI hỗ trợ
+		    goiMonGUI.setSelectedBan(maBan);
+		    goiMonGUI.setVisible(true);
+		    this.dispose();
+		});
 		panel_3.add(btn_themmon);
 		
 		JLabel lblNewLabel_2 = new JLabel("Mã bàn:");
@@ -646,7 +656,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			String kv = x.getMaBan()+" "+ x.getTenKV();
 			JButton BanMoi = new JButton(kv);
 			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
+			BanMoi.setIcon(new ImageIcon("src\\images\\Ban\\"+x.getHinh()+".png"));
 			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
 			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
 			BanMoi.setOpaque(false);
@@ -683,7 +693,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 //				}
 				JButton BanMoi = new JButton(kv);
 				BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
+				BanMoi.setIcon(new ImageIcon("src\\images\\Ban\\"+x.getHinh()+".png"));
 				BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
 				BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
 				BanMoi.setOpaque(false);
