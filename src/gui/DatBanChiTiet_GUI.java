@@ -30,7 +30,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import connectDB.ConnectDB;
 import dao.DonDatBan_DAO;
+import dao.DonGoiMon_DAO;
 import dao.KhachHang_DAO;
 import entities.Ban;
 import entities.NhanVien;
@@ -51,12 +53,15 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	public static JButton okButton;
 	JLabel lb_coc;
 	ArrayList<Ban> dsbd;
+	ConnectDB con;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
+			ConnectDB con = new ConnectDB();
+			con.connect();
 			DatBanChiTiet_GUI dialog = new DatBanChiTiet_GUI();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
@@ -69,6 +74,8 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	 * Create the dialog.
 	 */
 	public DatBanChiTiet_GUI() {
+		con = new ConnectDB();
+		con.getInstance().connect();
 		setBounds(400, 100, 800, 600);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.DARK_GRAY);
@@ -154,13 +161,12 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		lblTngSGh.setBounds(510, 312, 116, 27);
 		contentPanel.add(lblTngSGh);
 		
-		JButton btnNewButton = new JButton("Gọi món trước");
-		btnNewButton.setBackground(new Color(0, 0, 0));
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
-		btnNewButton.setBounds(510, 353, 229, 37);
-		contentPanel.add(btnNewButton);
-		
+		JButton btnDatMon = new JButton("Đặt món");
+		btnDatMon.setBackground(new Color(0, 0, 0));
+		btnDatMon.setForeground(new Color(255, 255, 255));
+		btnDatMon.setFont(new Font("Tahoma", Font.BOLD, 16));
+		btnDatMon.setBounds(510, 353, 229, 37);
+		contentPanel.add(btnDatMon);
 		JLabel lblSMnGi = new JLabel("Số món gọi trước:");
 		lblSMnGi.setForeground(Color.WHITE);
 		lblSMnGi.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -338,5 +344,4 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 			this.dispose();
 		}
 	}
-
 }

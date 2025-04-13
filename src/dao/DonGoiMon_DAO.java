@@ -1,11 +1,12 @@
 package dao;
-import java.sql.CallableStatement;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entities.DonGoiMon;
@@ -53,6 +54,29 @@ public class DonGoiMon_DAO {
 	    }
 	    return count;
 	}
-
-
+	public static ArrayList<DonGoiMon> getDonGoiMonTheoBan(String maBan) {
+	    ArrayList<DonGoiMon> dsDon = new ArrayList<>();
+	    ConnectDB.getInstance();
+	    Connection conN = ConnectDB.getInstance().getConnection();
+	    try {
+	        String sql = "SELECT d.* FROM DonGoiMon d " +
+	                     "JOIN ChiTietDonDatBan c ON d.maDGM = c.maDGM " +
+	                     "WHERE c.maBan = ?";
+	        PreparedStatement stmt = conN.prepareStatement(sql);
+	        stmt.setString(1, maBan);
+	        ResultSet rs = stmt.executeQuery();
+	        
+	        while (rs.next()) {
+	            DonGoiMon don = new DonGoiMon(
+	                rs.getString("maDGM"),
+	                rs.getTimestamp("thoiGianGM").toLocalDateTime(),
+	                rs.getString("ghiChu")
+	            );
+	            dsDon.add(don);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return dsDon;
+	}
 }

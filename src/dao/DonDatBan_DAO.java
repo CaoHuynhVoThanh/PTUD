@@ -6,9 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import connectDB.ConnectDB;
+import entities.DonDatBan;
+import entities.HoaDon;
 
 public class DonDatBan_DAO {
 	public static int getSLDDBHomNay() {
@@ -55,21 +59,79 @@ public class DonDatBan_DAO {
 		}
 	}
 	 public static boolean insertChiTietDonDatBan(String maDDB, String maBan, String maDGM) {
-	        String sql = "INSERT INTO ChiTietDonDatBan (maDDB, maBan, maDGM) VALUES (?, ?, ?)";
-	        ConnectDB.getInstance().connect();;
-			Connection conN = ConnectDB.getInstance().getConnection();
-	        try{
-	             PreparedStatement pst = conN.prepareStatement(sql);
-	            pst.setString(1, maDDB);
-	            pst.setString(2, maBan);
-	            pst.setString(3, maDGM);
+        String sql = "INSERT INTO ChiTietDonDatBan (maDDB, maBan, maDGM) VALUES (?, ?, ?)";
+        ConnectDB.getInstance().connect();;
+		Connection conN = ConnectDB.getInstance().getConnection();
+        try{
+             PreparedStatement pst = conN.prepareStatement(sql);
+            pst.setString(1, maDDB);
+            pst.setString(2, maBan);
+            pst.setString(3, maDGM);
 
-	            int rowsInserted = pst.executeUpdate();
-	            return rowsInserted > 0;
+            int rowsInserted = pst.executeUpdate();
+            return rowsInserted > 0;
 
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            return false;
-	        }
-	    }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+	 public static int demSoKhachTrongNgayHienTai() {
+		    int soKhach = 0;
+		    String query = """
+		            SELECT COUNT(*)
+		            FROM DonDatBan
+		            WHERE CAST(thoiGianNhan AS DATE) = CAST(GETDATE() AS DATE)
+		            """;
+
+		    ConnectDB.getInstance().connect();
+		    Connection conN = ConnectDB.getInstance().getConnection();
+
+		    try {
+		        PreparedStatement stmt = conN.prepareStatement(query);
+		        ResultSet rs = stmt.executeQuery();
+
+		        if (rs.next()) {
+		            soKhach = rs.getInt(1);
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+
+		    return soKhach;
+		}
+	 public static ArrayList<DonDatBan> getDonDatBanTheoNgay(LocalDate ngay) {
+		    ArrayList<DonDatBan> list = new ArrayList<>();
+		    String sql = "SELECT * FROM DonDatBan WHERE CAST(thoiGianNhan AS DATE) = ?";
+		    
+		    ConnectDB.getInstance().connect();
+		    Connection con = ConnectDB.getInstance().getConnection();
+		    
+		    try {
+		        PreparedStatement pst = con.prepareStatement(sql);
+		        pst.setDate(1, java.sql.Date.valueOf(ngay)); // Convert từ LocalDate sang java.sql.Date
+
+		        ResultSet rs = pst.executeQuery();
+		        while (rs.next()) {
+		            String maDDB = rs.getString("maDDB");
+		            String maHD = rs.getString("maHD");
+		            String maNV = rs.getString("maNV");
+		            String maKH = rs.getString("maKH");
+		            Timestamp thoiGianDat = rs.getTimestamp("thoiGianDat");
+		            Timestamp thoiGianNhan = rs.getTimestamp("thoiGianNhan");
+		            int soKhach = rs.getInt("soKhach");
+		            double tienCoc = rs.getDouble("tienCoc");
+		            int trangThai = rs.getInt("trangThai");
+		            // Thêm các cột khác nếu cần
+		            DonDatBan ddb = new DonDatBan(maDDB, maHD, maNV, maKH, thoiGianDat.toLocalDateTime(), thoiGianNhan.toLocalDateTime(), soKhach, tienCoc, trangThai); // constructor mẫu
+		            list.add(ddb);
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    
+		    return list;
+		}
+
 }
