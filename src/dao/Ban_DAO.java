@@ -125,6 +125,7 @@ public class Ban_DAO {
 	return true;
     }
     
+
     public static ArrayList<Ban> getBanInfoByMaDDB(String maDDB) {
         String sql = """
                 SELECT b.maBan, b.loaiBan, b.viTri, b.soBan, b.tinhTrang,
@@ -172,3 +173,4 @@ public class Ban_DAO {
     }
 
 }
+
