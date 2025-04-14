@@ -652,7 +652,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			);
 		System.out.println(ds.size());
 		dskv = KhuVuc_DAO.getAllKhuVuc();
-		for (Ban x: dsb) {
+		for (Ban x: ds) {
 			String kv = x.getMaBan()+" "+ x.getTenKV();
 			JButton BanMoi = new JButton(kv);
 			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
