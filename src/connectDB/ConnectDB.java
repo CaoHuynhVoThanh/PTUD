@@ -15,7 +15,7 @@ public class ConnectDB {
 		return instance;
 	}
 	public void connect() {
-		String url = "jdbc:sqlserver://localhost:1433;databaseName=QLBH;trustServerCertificate=true;encrypt=true";
+		String url = "jdbc:sqlserver://localhost:1433;databaseName=QLNH;trustServerCertificate=true;encrypt=true";
 		String user = "sa";
 		String password = "sapassword";
 		try {
@@ -26,14 +26,32 @@ public class ConnectDB {
 		}
 	}
 	public void disconnect() {
-		if (con != null)
-			try {
-				con.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-	}
-	public Connection getConnection() {
-		return con;
-	}
+        if (con != null) {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Connection getConnection() {
+        try {
+            if (con == null || con.isClosed()) {
+                connect(); // Mở lại kết nối nếu cần
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return con;
+    }
+
+    private boolean isClosed() {
+        try {
+            return con == null || con.isClosed();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
+        }
+    }
 }
