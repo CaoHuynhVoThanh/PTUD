@@ -125,8 +125,52 @@ public class Ban_DAO {
 	return true;
     }
     
-//    public static boolean chuyenBan(String ma) {
-//    	
-//    }
-	
+
+    public static ArrayList<Ban> getBanInfoByMaDDB(String maDDB) {
+        String sql = """
+                SELECT b.maBan, b.loaiBan, b.viTri, b.soBan, b.tinhTrang,
+                       kv.tenKV, kv.phuThu,
+                       c.phiCoc
+                FROM ChiTietDonDatBan ct
+                JOIN Ban b ON ct.maBan = b.maBan
+                JOIN KhuVuc kv ON b.maKV = kv.maKV
+                JOIN Coc c ON b.loaiBan = c.maCoc
+                WHERE ct.maDDB = ?
+            """;
+        
+        ArrayList<Ban> danhSachBan = new ArrayList<>();
+        ConnectDB.getInstance().connect();
+        Connection conN = ConnectDB.getInstance().getConnection();
+
+        try (PreparedStatement stmt = conN.prepareStatement(sql)) {
+            stmt.setString(1, maDDB);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String maBan = rs.getString("maBan");
+                    int loaiBan = rs.getInt("loaiBan");
+                    int viTri = rs.getInt("viTri");
+                    String soBan = rs.getString("soBan");
+                    int tinhTrang = rs.getInt("tinhTrang");
+                    String tenKV = rs.getString("tenKV");
+                    double phuPhi = rs.getDouble("phuThu");
+                    double phiCoc = rs.getDouble("phiCoc");
+
+                    Ban ban = new Ban(maBan, loaiBan, viTri, soBan, tinhTrang, tenKV, phuPhi, phiCoc);
+                    danhSachBan.add(ban);
+                }
+
+                if (danhSachBan.isEmpty()) {
+                    System.out.println("Không tìm thấy bàn nào với maDDB = " + maDDB);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return danhSachBan;
+    }
+
 }
+

@@ -21,6 +21,7 @@ public class Ban {
 		this.phuPhi = phuPhi;
 		this.phiCoc = phiCoc;
 	}
+
 	public Ban(String maBan, int loaiBan, int viTri, String soBan, int tinhTrang, String tenKV, double phuPhi) {
         super();
         this.maBan = maBan;
@@ -32,6 +33,7 @@ public class Ban {
         this.phuPhi = phuPhi;
         this.phiCoc = 0.0; 
     }
+
 	public String getMaBan() {
 		return maBan;
 	}
