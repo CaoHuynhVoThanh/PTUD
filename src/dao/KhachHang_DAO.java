@@ -9,12 +9,84 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entities.Ban;
+import entities.DonDatBan;
 import entities.KhachHang;
 
 public class KhachHang_DAO {
+	public static KhachHang getKhachHangTheoMa(String maKHInput) {
+	    KhachHang khachHang = null;
+	    ConnectDB.getInstance().connect();
+	    Connection conN = ConnectDB.getInstance().getConnection();
+
+	    String sql = """
+	        SELECT kh.maKH, kh.tenKH, kh.soDienThoai, kh.ngayTao
+	        FROM DonDatBan d
+	        JOIN KhachHang kh ON d.maKH = kh.maKH
+	        WHERE CAST(d.thoiGianNhan AS DATE) = CAST(GETDATE() AS DATE)
+	          AND d.trangThai = 0
+	          AND d.maKH = ?
+	    """;
+
+	    try (PreparedStatement stmt = conN.prepareStatement(sql)) {
+	        stmt.setString(1, maKHInput);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                String maKH = rs.getString("maKH");
+	                String tenKH = rs.getString("tenKH");
+	                String sdt = rs.getString("soDienThoai");
+	                LocalDate ngayTao = rs.getDate("ngayTao").toLocalDate();
+
+	                khachHang = new KhachHang(maKH, tenKH, sdt, ngayTao);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return khachHang;
+	}
+
+
+	public ArrayList<DonDatBan> getDonDatBanHomNay(){
+		ArrayList<DonDatBan> danhSach = new ArrayList<>();
+	    String sql = """
+	        SELECT maDDB, maHD, maNV, maKH, thoiGianDat, thoiGianNhan, soKhach, tienCoc, trangThai
+	        FROM DonDatBan
+	        WHERE CAST(thoiGianNhan AS DATE) = CAST(GETDATE() AS DATE)
+	    """;
+	    ConnectDB.getInstance().connect();
+		Connection conN = ConnectDB.getInstance().getConnection();
+	    try (PreparedStatement stmt = conN.prepareStatement(sql);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        while (rs.next()) {
+	            String maDDB = rs.getString("maDDB");
+	            String maHD = rs.getString("maHD");
+	            String maNV = rs.getString("maNV");
+	            String maKH = rs.getString("maKH");
+	            LocalDateTime thoiGianDat = rs.getTimestamp("thoiGianDat").toLocalDateTime();
+	            LocalDateTime thoiGianNhan = rs.getTimestamp("thoiGianNhan").toLocalDateTime();
+	            int soKhach = rs.getInt("soKhach");
+	            double tienCoc = rs.getDouble("tienCoc");
+	            int trangThai = rs.getInt("trangThai");
+
+	            DonDatBan ddb = new DonDatBan(maDDB, maHD, maNV, maKH, thoiGianDat, thoiGianNhan, soKhach, tienCoc, trangThai);
+	            danhSach.add(ddb);
+	        }
+	    } catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    return danhSach;
+	}
+
+
+
 	public String getLatestMaDDBForMaBan(String maBan) {
 		ConnectDB.getInstance().connect();;
 		Connection conN = ConnectDB.getInstance().getConnection();

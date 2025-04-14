@@ -9,16 +9,40 @@ public class HoaDon {
 	private String maCTKM;
 	private double tongTien;
 	private String phuongThucThanhToan;
+	private String maTV;
+	private double diemTL;
 	
 	public HoaDon(String maHD, String maNV, LocalDateTime thoiGianThanhToan, String maCTKM, double tongTien,
-			String phuongThucThanhToan) {
+			String phuongThucThanhToan, String maTV, double diemTL) {
 		this.maHD = maHD;
 		this.maNV = maNV;
 		this.thoiGianThanhToan = thoiGianThanhToan;
 		this.maCTKM = maCTKM;
 		this.tongTien = tongTien;
 		this.phuongThucThanhToan = phuongThucThanhToan;
+		this.maTV = maTV;
+		this.diemTL = diemTL;
 	}
+	
+	
+	public double getDiemTL() {
+		return diemTL;
+	}
+
+
+	public void setDiemTL(double diemTL) {
+		this.diemTL = diemTL;
+	}
+
+
+	public String getMaTV() {
+		return maTV;
+	}
+
+	public void setMaTV(String maTV) {
+		this.maTV = maTV;
+	}
+
 	public String getMaHD() {
 		return maHD;
 	}
