@@ -355,6 +355,8 @@ public class GoiMon_GUI extends JFrame{
 		        if (!maBan.equals("Chọn bàn")) {
 		            updateMaBan();
 		            loadDonGoiMonTheoBan(maBan);
+		        } else {
+		        	tableModelDGM.setRowCount(0);
 		        }
 		    }
 		});
@@ -917,6 +919,7 @@ public class GoiMon_GUI extends JFrame{
 	    lblMaBan.setText("Mã bàn: " + maBan);
 	}
 	private void loadDonGoiMonTheoBan(String maBan) {
+		tableModelDGM.setRowCount(0);
 		LocalDate ngayChon = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		String maDGM = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon, maBan);
 		if (maDGM == null) {

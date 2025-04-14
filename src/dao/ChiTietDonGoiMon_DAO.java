@@ -90,7 +90,7 @@ public class ChiTietDonGoiMon_DAO {
 	    ResultSet rs = null;
 
 	    try {
-	        String sql = "SELECT SUM(soLuong + soLuongDaThanhToan) AS tongSoLuong FROM ChiTietDonGoiMon";
+	        String sql = "SELECT SUM(soLuong) AS tongSoLuong FROM ChiTietDonGoiMon";
 	        stmt = conN.prepareStatement(sql);
 	        rs = stmt.executeQuery();
 
