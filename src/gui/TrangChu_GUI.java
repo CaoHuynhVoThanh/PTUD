@@ -533,8 +533,6 @@ public class TrangChu_GUI extends JFrame {
 	public void updateTableMon(Map<Mon, Integer> mapMon) {
 	    // Tạo danh sách từ map để sắp xếp
 	    List<Map.Entry<Mon, Integer>> danhSach = new ArrayList<>(mapMon.entrySet());
-
-	    // Sắp xếp theo lượt dùng giảm dần
 	    danhSach.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
 
 	    // Xóa dữ liệu cũ

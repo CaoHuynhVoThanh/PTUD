@@ -408,9 +408,16 @@ public class QuanLyNhanSu_GUI extends JFrame {
 		String[] colnamesNV = {
 				"Mã nhân viên", "Họ và tên", "Ngày sinh", "Số điện thoại", "Chức vụ", "Trạng thái", "Email", "Địa chỉ"
 		};
-		tableModelNV = new DefaultTableModel(colnamesNV, 0);
+		tableModelNV = new DefaultTableModel(colnamesNV, 0) {
+			@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Không cho chỉnh sửa ô nào cả
+            }
+		};
 		tableNV = new JTable(tableModelNV);
 		scrollPane.setViewportView(tableNV);
+		tableNV.getTableHeader().setReorderingAllowed(false);
+		tableNV.getTableHeader().setResizingAllowed(false);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 153, 51));
@@ -667,6 +674,12 @@ public class QuanLyNhanSu_GUI extends JFrame {
 	                JOptionPane.INFORMATION_MESSAGE
 	            );
 	            loadDataNhanVien(); 
+	            for (int i = 0; i < tableModelNV.getRowCount(); i++) {
+	                if (tableModelNV.getValueAt(i, 0).toString().equals(maNV)) {
+	                    tableNV.setRowSelectionInterval(i, i); // chọn lại dòng
+	                    break;
+	                }
+	            }
 	        } else {
 	            JOptionPane.showMessageDialog(
 	                this, 
