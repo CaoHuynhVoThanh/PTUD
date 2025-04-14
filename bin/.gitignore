@@ -1,0 +1,9 @@
+.metadata/
+bin/
+.classpath
+/entities/
+/gui/
+/dao/
+/test/
+/images/
+/test/
