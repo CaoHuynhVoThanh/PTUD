@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
@@ -39,13 +40,14 @@ public class HoaDon_DAO {
 	public static ArrayList<HoaDon> layTatCaHoaDon() {
 	    ArrayList<HoaDon> dsHoaDon = new ArrayList<HoaDon>();
 	    Connection con = ConnectDB.getInstance().getConnection();
-	    String sql = "SELECT maHD, maNV, thoiGianThanhToan, maCTKM, tongTien, phuongThucThanhToan FROM HoaDon";
+	    
+	    String sql = "SELECT maHD, maNV, thoiGianThanhToan, maCTKM, tongTien, phuongThucThanhToan, maTV, diemTL FROM HoaDon";
 	    PreparedStatement stmt = null;
-	
+
 	    try {
 	        stmt = con.prepareStatement(sql);
 	        ResultSet rs = stmt.executeQuery();
-	
+
 	        while (rs.next()) {
 	            String maHD = rs.getString("maHD");
 	            String maNV = rs.getString("maNV");
@@ -53,17 +55,21 @@ public class HoaDon_DAO {
 	            String maCTKM = rs.getString("maCTKM");
 	            double tongTien = rs.getDouble("tongTien");
 	            String phuongThuc = rs.getString("phuongThucThanhToan");
-	
-	            HoaDon hd = new HoaDon(maHD, maNV, thoiGianTT.toLocalDateTime(), maCTKM, tongTien, phuongThuc);
+	            String maTV = rs.getString("maTV");
+	            double diemTL = rs.getDouble("diemTL");
+
+	            HoaDon hd = new HoaDon(maHD, maNV, thoiGianTT.toLocalDateTime(), maCTKM, tongTien, phuongThuc, maTV, diemTL);
 	            dsHoaDon.add(hd);
 	        }
-	
+
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
-	
+
 	    return dsHoaDon;
 	}
+
+
 	public static double tinhTongDoanhThuTheoNgay(LocalDate ngay) {
 	    double tongDoanhThu = 0;
 	    String query = """
@@ -117,7 +123,34 @@ public class HoaDon_DAO {
 
 	    return tongDoanhThu;
 	}
+	
+	public static boolean insertHoaDon(String maHD, String maNV, LocalDateTime thoiGianThanhToan,
+	        String maCTKM, double tongTien, String phuongThucThanhToan, String maTV, double diemTL) {
 
+	    String sql = """
+	        INSERT INTO HoaDon (maHD, maNV, thoiGianThanhToan, maCTKM, tongTien, phuongThucThanhToan, maTV, diemTL)
+	        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	        """;
+
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    try (PreparedStatement stmt = con.prepareStatement(sql)) {
+	        stmt.setString(1, maHD);
+	        stmt.setString(2, maNV);
+	        stmt.setTimestamp(3, Timestamp.valueOf(thoiGianThanhToan));
+	        stmt.setString(4, maCTKM);
+	        stmt.setDouble(5, tongTien);
+	        stmt.setString(6, phuongThucThanhToan);
+	        stmt.setString(7, maTV);
+	        stmt.setDouble(8, diemTL); 
+
+	        int rows = stmt.executeUpdate();
+	        return rows > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return false;
+	}
 
 
 }

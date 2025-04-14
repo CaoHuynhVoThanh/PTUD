@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
@@ -79,4 +80,71 @@ public class DonGoiMon_DAO {
 	    }
 	    return dsDon;
 	}
+	
+	public static DonGoiMon getDonGoiMonTheoMaDDBVaMaBan(String maDDB, String maBan) {
+	    DonGoiMon donGoiMon = null;
+	    ConnectDB.getInstance();
+	    Connection conN = ConnectDB.getInstance().getConnection();
+
+	    try {
+	        String sql = "SELECT dgm.maDGM, dgm.thoiGianGM, dgm.ghiChu " +
+	                     "FROM DonGoiMon dgm " +
+	                     "JOIN ChiTietDonDatBan ct ON dgm.maDGM = ct.maDGM " +
+	                     "WHERE ct.maDDB = ? AND ct.maBan = ?";
+	        PreparedStatement stmt = conN.prepareStatement(sql);
+	        stmt.setString(1, maDDB);
+	        stmt.setString(2, maBan);
+
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            String maDGM = rs.getString("maDGM");
+	            Timestamp timestamp = rs.getTimestamp("thoiGianGM");
+	            LocalDateTime thoiGianGM = timestamp != null ? timestamp.toLocalDateTime() : null;
+	            String ghiChu = rs.getString("ghiChu");
+
+	            donGoiMon = new DonGoiMon(maDGM, thoiGianGM, ghiChu);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return donGoiMon;
+	}
+    public static DonGoiMon getDonGoiMonMoiNhatTrongNgay(String maBan) {
+    	String sql = """
+    		    SELECT dgm.*
+    		    FROM DonGoiMon dgm
+    		    JOIN ChiTietDonDatBan ctd ON dgm.maDGM = ctd.maDGM
+    		    JOIN DonDatBan ddb ON ddb.maDDB = ctd.maDDB
+    		    WHERE ctd.maBan = ?
+    		      AND CAST(ddb.thoiGianNhan AS DATE) = CAST(GETDATE() AS DATE)
+    		      AND ddb.thoiGianNhan = (
+    		          SELECT MAX(ddb2.thoiGianNhan)
+    		          FROM DonDatBan ddb2
+    		          JOIN ChiTietDonDatBan ctd2 ON ddb2.maDDB = ctd2.maDDB
+    		          WHERE ctd2.maBan = ? AND CAST(ddb2.thoiGianNhan AS DATE) = CAST(GETDATE() AS DATE)
+    		      )
+    		""";
+
+        ConnectDB.getInstance();
+	    Connection conN = ConnectDB.getInstance().getConnection();
+        try (
+       
+            PreparedStatement stmt = conN.prepareStatement(sql)
+        ) {
+            stmt.setString(1, maBan);
+            stmt.setString(2, maBan);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+            	String maDGM = rs.getString("maDGM");
+                LocalDateTime thoiGianGM = rs.getTimestamp("thoiGianGM").toLocalDateTime();
+                String ghiChu = rs.getString("ghiChu");
+                return new DonGoiMon(maDGM, thoiGianGM, ghiChu);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

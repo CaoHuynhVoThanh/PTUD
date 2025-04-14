@@ -1,10 +1,10 @@
 package dao;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
@@ -74,5 +74,30 @@ public class Mon_DAO {
             }
         }
         return null;
+    }
+	public static ArrayList<Mon> getAllMon() {
+        ArrayList<Mon> danhSach = new ArrayList<>();
+        String sql = "SELECT * FROM Mon";
+        ConnectDB.getInstance().connect();
+	    Connection con = ConnectDB.getInstance().getConnection();
+        try (
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)
+        ) {
+            while (rs.next()) {
+                String maMon = rs.getString("maMon");
+                String tenMon = rs.getString("tenMon");
+                String loaiMon = rs.getString("loaiMon");
+                double donGia = rs.getDouble("donGia");
+                String hinhAnh = rs.getString("hinhAnh");
+
+                Mon mon = new Mon(maMon, tenMon, loaiMon, donGia, hinhAnh);
+                danhSach.add(mon);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return danhSach;
     }
 }
