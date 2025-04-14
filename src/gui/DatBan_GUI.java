@@ -485,7 +485,6 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		    goiMonGUI.setVisible(true);
 		    this.dispose();
 		});
-
 		panel_3.add(btn_themmon);
 		
 		JLabel lblNewLabel_2 = new JLabel("Mã bàn:");
@@ -653,27 +652,22 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			);
 		System.out.println(ds.size());
 		dskv = KhuVuc_DAO.getAllKhuVuc();
-		
-//		String condtang = (String) comb_tang.getSelectedItem();
-//		String condkv = (String) comb_kv.getSelectedItem();
-//		String condloai = (String) comb_loaiban.getSelectedItem();
-//		int condtt = comb_tinhtrang.getSelectedIndex();
-		for (Ban x: ds) {
-				String kv = x.getMaBan()+" "+ x.getTenKV();
-				JButton BanMoi = new JButton(kv);
-				BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
-				BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
-				BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
-				BanMoi.setOpaque(false);
-				BanMoi.setContentAreaFilled(false);
-				BanMoi.setBorderPainted(false);
-				BanMoi.setPreferredSize(new Dimension(180, 180));
-				BanMoi.addActionListener(this);
-				panel_dsBan.add(BanMoi);
-			}
-//		}
-		int y_size = (int) Math.ceil(ds.size()/4);
+		for (Ban x: dsb) {
+			String kv = x.getMaBan()+" "+ x.getTenKV();
+			JButton BanMoi = new JButton(kv);
+			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			BanMoi.setIcon(new ImageIcon("src\\images\\Ban\\"+x.getHinh()+".png"));
+			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
+			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
+			BanMoi.setOpaque(false);
+			BanMoi.setContentAreaFilled(false);
+			BanMoi.setBorderPainted(false);
+			BanMoi.setPreferredSize(new Dimension(180, 180));
+			BanMoi.addActionListener(this);
+			panel_dsBan.add(BanMoi);
+		}
+		int y_size = (int) Math.ceil(dsb.size()/4);
+
 		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
 	}
 	public void displayBanWithCb(ArrayList<Ban> ds) {

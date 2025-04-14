@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,12 +40,15 @@ import javax.swing.table.DefaultTableModel;
 import connectDB.ConnectDB;
 import dao.Ban_DAO;
 import dao.ChiTietDonDatBan_DAO;
+import dao.ChiTietDonGoiMon_DAO;
 import dao.DonDatBan_DAO;
 import dao.HoaDon_DAO;
+import dao.Mon_DAO;
 import entities.Ban;
 import entities.ChiTietDonDatBan;
 import entities.DonDatBan;
 import entities.HoaDon;
+import entities.Mon;
 
 import java.awt.SystemColor;
 import javax.swing.JScrollBar;
@@ -60,6 +65,16 @@ public class TrangChu_GUI extends JFrame {
 	private ArrayList<DonDatBan> dsDDB;
 	private JLabel lblTongDoanhThu;
 	private JLabel lblDonDaThucHien;
+	private JLabel lblTongTienKet;
+	private JLabel lblTongLuotKhach;
+	private JLabel lblTongMonAnBanRa;
+	private JLabel lblTrong;
+	private JLabel lblDangPhucVu;
+	private JLabel lblDangGiu;
+	private JLabel lblLuotDungBan;
+	private JLabel lblDaNhan;
+	private JLabel lblDaHuy;
+	private JLabel lblChoNhan;
 	/**
 	 * Launch the application.
 	 */
@@ -301,7 +316,7 @@ public class TrangChu_GUI extends JFrame {
 		pThongTinTrongNgay.add(pLuotDungBan);
 		pLuotDungBan.setLayout(null);
 		
-		JLabel lblLuotDungBan = new JLabel("154");
+		lblLuotDungBan = new JLabel("154");
 		lblLuotDungBan.setHorizontalAlignment(SwingConstants.CENTER);
 		lblLuotDungBan.setForeground(Color.WHITE);
 		lblLuotDungBan.setFont(new Font("Tahoma", Font.BOLD, 24));
@@ -341,17 +356,17 @@ public class TrangChu_GUI extends JFrame {
 		lblNewLabel_1.setBounds(10, 10, 233, 28);
 		pThongTinTrongNgay.add(lblNewLabel_1);
 		
-		JLabel lblTongTienKet = new JLabel("Tổng tiền trong két:");
+		lblTongTienKet = new JLabel("Tổng tiền trong két:");
 		lblTongTienKet.setFont(new Font("Arial", Font.BOLD, 14));
 		lblTongTienKet.setBounds(77, 196, 288, 28);
 		pThongTinTrongNgay.add(lblTongTienKet);
 		
-		JLabel lblTongLuotKhach = new JLabel("Tổng lượt khách:");
+		lblTongLuotKhach = new JLabel("Tổng lượt khách:");
 		lblTongLuotKhach.setFont(new Font("Arial", Font.BOLD, 14));
 		lblTongLuotKhach.setBounds(460, 196, 288, 28);
 		pThongTinTrongNgay.add(lblTongLuotKhach);
 		
-		JLabel lblTongMonAnBanRa = new JLabel("Tổng món ăn bán ra:");
+		lblTongMonAnBanRa = new JLabel("Tổng món ăn bán ra:");
 		lblTongMonAnBanRa.setFont(new Font("Arial", Font.BOLD, 14));
 		lblTongMonAnBanRa.setBounds(841, 196, 288, 28);
 		pThongTinTrongNgay.add(lblTongMonAnBanRa);
@@ -376,19 +391,19 @@ public class TrangChu_GUI extends JFrame {
 		lblNewLabel_2.setBounds(42, 10, 134, 24);
 		panel_6.add(lblNewLabel_2);
 		
-		JLabel lblChoNhan = new JLabel("Chờ nhận:");
+		lblChoNhan = new JLabel("Chờ nhận:");
 		lblChoNhan.setFont(new Font("Arial", Font.BOLD, 14));
-		lblChoNhan.setBounds(22, 65, 79, 24);
+		lblChoNhan.setBounds(22, 65, 164, 24);
 		panel_6.add(lblChoNhan);
 		
-		JLabel lblDaNhan = new JLabel("Đã nhận:");
+		lblDaNhan = new JLabel("Đã nhận:");
 		lblDaNhan.setFont(new Font("Arial", Font.BOLD, 14));
-		lblDaNhan.setBounds(22, 99, 79, 24);
+		lblDaNhan.setBounds(22, 99, 154, 24);
 		panel_6.add(lblDaNhan);
 		
-		JLabel lblDaHuy = new JLabel("Đã hủy:");
+		lblDaHuy = new JLabel("Đã hủy:");
 		lblDaHuy.setFont(new Font("Arial", Font.BOLD, 14));
-		lblDaHuy.setBounds(22, 133, 79, 24);
+		lblDaHuy.setBounds(22, 133, 154, 24);
 		panel_6.add(lblDaHuy);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("Trạng thái đơn và bàn");
@@ -409,17 +424,17 @@ public class TrangChu_GUI extends JFrame {
 		lblNewLabel_2_1.setBounds(42, 10, 134, 24);
 		panel_6_1.add(lblNewLabel_2_1);
 		
-		JLabel lblTrong = new JLabel("Trống:");
+		lblTrong = new JLabel("Trống:");
 		lblTrong.setFont(new Font("Arial", Font.BOLD, 14));
-		lblTrong.setBounds(22, 65, 79, 24);
+		lblTrong.setBounds(22, 65, 163, 24);
 		panel_6_1.add(lblTrong);
 		
-		JLabel lblDangGiu = new JLabel("Đang giữ:");
+		lblDangGiu = new JLabel("Đang giữ:");
 		lblDangGiu.setFont(new Font("Arial", Font.BOLD, 14));
-		lblDangGiu.setBounds(22, 99, 79, 24);
+		lblDangGiu.setBounds(22, 99, 121, 24);
 		panel_6_1.add(lblDangGiu);
 		
-		JLabel lblDangPhucVu = new JLabel("Đang phục vụ:");
+		lblDangPhucVu = new JLabel("Đang phục vụ:");
 		lblDangPhucVu.setFont(new Font("Arial", Font.BOLD, 14));
 		lblDangPhucVu.setBounds(22, 133, 121, 24);
 		panel_6_1.add(lblDangPhucVu);
@@ -441,7 +456,7 @@ public class TrangChu_GUI extends JFrame {
 		panel_4.add(scrollPane);
 		
 		String[] colnamesDGM = {
-				"Tên món", "Loại món", "Đơn giá", "Thành tiền"
+				"Tên món", "Loại món", "Đơn giá", "Lượt dùng"
 		};
 		tableModel = new DefaultTableModel(colnamesDGM, 0);
 		table = new JTable(tableModel);
@@ -449,10 +464,17 @@ public class TrangChu_GUI extends JFrame {
 		table.setRowSelectionAllowed(false);
 		scrollPane.setViewportView(table);
 		LocalDate ngayHienTai = LocalDate.now();
-		updateTongDoanhThu(ngayHienTai);
-		updateDonDaThucHien();
+		updateLblTongDoanhThu(ngayHienTai);
+		updateLblDonDaThucHien();
+		updateLblTongTienTrongKet();
+		updateLblTongLuotKhach();
+		updateLblTongMonBanRa();
+		updateLblBan();
+		updateLblLuotDatBan();
+		updateLblDoDatBan();
+		updateTableMon(Mon_DAO.layDanhSachMonVaLuotDung(ngayHienTai));
 	}
-	private void updateTongDoanhThu(LocalDate ngayHienTai) {
+	private void updateLblTongDoanhThu(LocalDate ngayHienTai) {
 	    
 	    double tongDoanhThu = HoaDon_DAO.tinhTongDoanhThuTheoNgay(ngayHienTai);
 	    
@@ -461,8 +483,74 @@ public class TrangChu_GUI extends JFrame {
 	    String tongDoanhThuFormatted = df.format(tongDoanhThu);
 	    lblTongDoanhThu.setText(tongDoanhThuFormatted);
 	}
-	private void updateDonDaThucHien() {
+	private void updateLblDonDaThucHien() {
 	    int count = ChiTietDonDatBan_DAO.demChiTietDonDatBanTrongNgay();
 	    lblDonDaThucHien.setText(count+"");
 	}
+	private void updateLblTongTienTrongKet() {
+	    double total = HoaDon_DAO.tinhTongDoanhThuTienMatTrongNgay();
+	    DecimalFormat df = new DecimalFormat("#,###");
+	    lblTongTienKet.setText("Tổng tiền trong két: "+ df.format(total));
+	}
+	private void updateLblTongLuotKhach() {
+	    int count = DonDatBan_DAO.demSoKhachTrongNgayHienTai();
+	    lblTongLuotKhach.setText("Tổng lượt khách: " + count);
+	}
+	private void updateLblTongMonBanRa() {
+	    int count = ChiTietDonGoiMon_DAO.layTongSoLuongMonBanRa();
+	    lblTongMonAnBanRa.setText("Tổng món ăn bán ra: " + count);
+	}
+	private void updateLblLuotDatBan() {
+	    int count = DonDatBan_DAO.getSLDDBHomNay();
+	    lblLuotDungBan.setText(count+"");
+	}
+	private void updateLblBan() {
+		int countBanTrong = 0;
+		int countBanDangPhucVu = 0;
+		int countBanDangCho = 0;
+		for (Ban ban: dsBan) {
+			if (ban.getTinhTrang() == 1) countBanTrong++;
+			else if (ban.getTinhTrang() == 2) countBanDangPhucVu++;
+			else if (ban.getTinhTrang() == 3) countBanDangCho++;
+		}
+		lblTrong.setText("Trống: "+countBanTrong);
+		lblDangGiu.setText("Đang giữ: "+countBanDangCho);
+		lblDangPhucVu.setText("Đang phục vụ: "+ countBanDangPhucVu);
+	}
+	private void updateLblDoDatBan() {
+		int countChoNhan = 0;
+		int countDaNhan = 0;
+		int countDaHuy = 0;
+		for (DonDatBan ddb: dsDDB) {
+			if (ddb.getTrangThai() == 1) countChoNhan++;
+			else if (ddb.getTrangThai() == 0) countDaNhan++;
+			else if (ddb.getTrangThai() == 2) countDaHuy++;
+		}
+		lblChoNhan.setText("Chờ nhận: "+countChoNhan);
+		lblDaNhan.setText("Đã nhân: "+countDaNhan);
+		lblDaHuy.setText("Đã hủy: "+ countDaHuy);
+	}
+	public void updateTableMon(Map<Mon, Integer> mapMon) {
+	    // Tạo danh sách từ map để sắp xếp
+	    List<Map.Entry<Mon, Integer>> danhSach = new ArrayList<>(mapMon.entrySet());
+
+	    // Sắp xếp theo lượt dùng giảm dần
+	    danhSach.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
+
+	    // Xóa dữ liệu cũ
+	    tableModel.setRowCount(0);
+
+	    // Thêm dữ liệu mới
+	    for (Map.Entry<Mon, Integer> entry : danhSach) {
+	        Mon mon = entry.getKey();
+	        int luotDung = entry.getValue();
+	        tableModel.addRow(new Object[]{
+	            mon.getTenMon(),
+	            mon.getLoaiMon(),
+	            mon.getDonGia(),
+	            luotDung
+	        });
+	    }
+	}
+
 }

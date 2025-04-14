@@ -65,7 +65,7 @@ public class ChiTietDonGoiMon_DAO {
 	    ConnectDB.getInstance();
 	    Connection conN = ConnectDB.getInstance().getConnection();
 	    PreparedStatement pstm = null;
-	    String sql = "DELETE FROM ChiTietDonGoiMon WHERE maDGM = ?";
+	    String sql = "DELETE FROM ChiTietDonGoiMon WHERE LTRIM(RTRIM(maDGM)) = ?";
 	    try {
 	        pstm = conN.prepareStatement(sql);
 	        pstm.setString(1, maDGM);
@@ -82,7 +82,7 @@ public class ChiTietDonGoiMon_DAO {
 	    }
 	    return n > 0;
 	}
-	public int layTongSoLuongMonBanRa() {
+	public static int layTongSoLuongMonBanRa() {
 	    int tongSoLuong = 0;
 	    ConnectDB.getInstance();
 	    Connection conN = ConnectDB.getInstance().getConnection();

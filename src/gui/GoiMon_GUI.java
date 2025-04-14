@@ -94,7 +94,6 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_Mon;
 	private ArrayList<Mon> dsMon;
 	private ArrayList<Mon> dsMonHienThi;
-
 	private ArrayList<Ban> dsBan;
 	private JComboBox comboLoaiMon;
 	private String ghiChu = "";
@@ -104,7 +103,6 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_DoUong;
 	private JDateChooser dateChooser = new JDateChooser();
 	private JTextArea txtGhiChu = new JTextArea();
-
 	/**
 	 * Launch the application.
 	 */
@@ -832,7 +830,7 @@ public class GoiMon_GUI extends JFrame{
 	        
 	        String ngayThangNam = ngayChon.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 	        int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(ngayChon) + 1;
-	        String maDGMMoi = String.format("GM%s-%05d", ngayThangNam, soThuTu);
+	        String maDGMMoi = String.format("GM%s%05d", ngayThangNam, soThuTu);
 	        LocalDateTime thoiGian = LocalDateTime.now();
 	        
 	        // 1. First create the DonGoiMon
@@ -881,6 +879,7 @@ public class GoiMon_GUI extends JFrame{
 	    comboBan.setSelectedItem("Chọn bàn");
 	}
 	private void capNhatChiTietGoiMon(String maDGM) {
+		System.out.println("Có cập nhật đơn gọi món" + maDGM);
 		ChiTietDonGoiMon_DAO.xoaChiTietTheoMaDGM(maDGM);
         // 3. Thêm lại các chi tiết mới từ tableModelDGM
         for (int i = 0; i < tableModelDGM.getRowCount(); i++) {

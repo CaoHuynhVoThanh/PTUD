@@ -12,6 +12,7 @@ public class DonDatBan {
 	private int soKhach;
 	private double tienCoc;
 	private int trangThai;
+	
 	public DonDatBan(String maDDB, String maHD, String maNV, String maKH, LocalDateTime thoiGianDat,
 			LocalDateTime thoiGianNhan, int soKhach, double tienCoc, int trangThai) {
 		this.maDDB = maDDB;
