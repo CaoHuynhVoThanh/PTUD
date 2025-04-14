@@ -64,7 +64,7 @@ public class TrangChu_GUI extends JFrame {
 	private ArrayList<Ban> dsBan;
 	private ArrayList<DonDatBan> dsDDB;
 	private JLabel lblTongDoanhThu;
-	private JLabel lblDonDaThucHien;
+	private JLabel lblHoaDonDaThucHien;
 	private JLabel lblTongTienKet;
 	private JLabel lblTongLuotKhach;
 	private JLabel lblTongMonAnBanRa;
@@ -337,14 +337,14 @@ public class TrangChu_GUI extends JFrame {
 		pThongTinTrongNgay.add(pDonDaThucHien);
 		pDonDaThucHien.setLayout(null);
 		
-		lblDonDaThucHien = new JLabel("99");
-		lblDonDaThucHien.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDonDaThucHien.setForeground(Color.WHITE);
-		lblDonDaThucHien.setFont(new Font("Tahoma", Font.BOLD, 24));
-		lblDonDaThucHien.setBounds(0, 10, 288, 56);
-		pDonDaThucHien.add(lblDonDaThucHien);
+		lblHoaDonDaThucHien = new JLabel("99");
+		lblHoaDonDaThucHien.setHorizontalAlignment(SwingConstants.CENTER);
+		lblHoaDonDaThucHien.setForeground(Color.WHITE);
+		lblHoaDonDaThucHien.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblHoaDonDaThucHien.setBounds(0, 10, 288, 56);
+		pDonDaThucHien.add(lblHoaDonDaThucHien);
 		
-		JLabel lblNewLabel_5_1 = new JLabel("Đơn đã thực hiện");
+		JLabel lblNewLabel_5_1 = new JLabel("Hóa đơn đã thực hiện");
 		lblNewLabel_5_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_5_1.setForeground(Color.WHITE);
 		lblNewLabel_5_1.setFont(new Font("Arial", Font.BOLD, 16));
@@ -465,10 +465,10 @@ public class TrangChu_GUI extends JFrame {
 		scrollPane.setViewportView(table);
 		LocalDate ngayHienTai = LocalDate.now();
 		updateLblTongDoanhThu(ngayHienTai);
-		updateLblDonDaThucHien();
+		updateLblHoaDonDaThucHien();
 		updateLblTongTienTrongKet();
 		updateLblTongLuotKhach();
-		updateLblTongMonBanRa();
+		updateLblTongMonBanRa(ngayHienTai);
 		updateLblBan();
 		updateLblLuotDatBan();
 		updateLblDoDatBan();
@@ -483,9 +483,9 @@ public class TrangChu_GUI extends JFrame {
 	    String tongDoanhThuFormatted = df.format(tongDoanhThu);
 	    lblTongDoanhThu.setText(tongDoanhThuFormatted);
 	}
-	private void updateLblDonDaThucHien() {
-	    int count = ChiTietDonDatBan_DAO.demChiTietDonDatBanTrongNgay();
-	    lblDonDaThucHien.setText(count+"");
+	private void updateLblHoaDonDaThucHien() {
+	    int count = HoaDon_DAO.demHoaDonTrongNgay();
+	    lblHoaDonDaThucHien.setText(count+"");
 	}
 	private void updateLblTongTienTrongKet() {
 	    double total = HoaDon_DAO.tinhTongDoanhThuTienMatTrongNgay();
@@ -496,12 +496,12 @@ public class TrangChu_GUI extends JFrame {
 	    int count = DonDatBan_DAO.demSoKhachTrongNgayHienTai();
 	    lblTongLuotKhach.setText("Tổng lượt khách: " + count);
 	}
-	private void updateLblTongMonBanRa() {
-	    int count = ChiTietDonGoiMon_DAO.layTongSoLuongMonBanRa();
+	private void updateLblTongMonBanRa(LocalDate today) {
+	    int count = ChiTietDonGoiMon_DAO.layTongSoLuongMonBanRa(today);
 	    lblTongMonAnBanRa.setText("Tổng món ăn bán ra: " + count);
 	}
 	private void updateLblLuotDatBan() {
-	    int count = DonDatBan_DAO.getSLDDBHomNay();
+	    int count = ChiTietDonDatBan_DAO.demChiTietDonDatBanTrongNgay();
 	    lblLuotDungBan.setText(count+"");
 	}
 	private void updateLblBan() {

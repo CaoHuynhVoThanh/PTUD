@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
@@ -82,27 +83,35 @@ public class ChiTietDonGoiMon_DAO {
 	    }
 	    return n > 0;
 	}
-	public static int layTongSoLuongMonBanRa() {
+	public static int layTongSoLuongMonBanRa(LocalDate ngayThanhToan) {
 	    int tongSoLuong = 0;
 	    ConnectDB.getInstance();
 	    Connection conN = ConnectDB.getInstance().getConnection();
-	    PreparedStatement stmt = null;
-	    ResultSet rs = null;
-
-	    try {
-	        String sql = "SELECT SUM(soLuong) AS tongSoLuong FROM ChiTietDonGoiMon";
-	        stmt = conN.prepareStatement(sql);
-	        rs = stmt.executeQuery();
-
+	    String sql = "SELECT SUM(ctdgm.soLuong) AS tongSoLuongMon " +
+	                 "FROM ChiTietDonGoiMon ctdgm " +
+	                 "JOIN DonGoiMon dgm ON ctdgm.maDGM = dgm.maDGM " +
+	                 "JOIN ChiTietDonDatBan ctdd ON dgm.maDGM = ctdd.maDGM " +
+	                 "JOIN DonDatBan ddb ON ctdd.maDDB = ddb.maDDB " +
+	                 "JOIN HoaDon hd ON ddb.maHD = hd.maHD " +
+	                 "WHERE CONVERT(DATE, hd.thoiGianThanhToan) = ?";
+	    
+	    try (
+	         PreparedStatement stmt = conN.prepareStatement(sql)) {
+	         
+	    	stmt.setDate(1, java.sql.Date.valueOf(ngayThanhToan));
+	        ResultSet rs = stmt.executeQuery();
+	        
 	        if (rs.next()) {
-	            tongSoLuong = rs.getInt("tongSoLuong");
+	            tongSoLuong = rs.getInt("tongSoLuongMon");
 	        }
+	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
-
+	    
 	    return tongSoLuong;
 	}
+
 
 
 }
