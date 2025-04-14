@@ -81,27 +81,34 @@ public class Mon_DAO {
 	public static Map<Mon, Integer> layDanhSachMonVaLuotDung(LocalDate ngay) {
 	    Map<Mon, Integer> danhSach = new HashMap<>();
 	    Connection con = ConnectDB.getInstance().getConnection();
-	    String sql = """
-	            SELECT m.*, SUM(ct.soLuong + ct.soLuongDaThanhToan) AS luotDung
-	            FROM Mon m
-	            JOIN ChiTietDonGoiMon ct ON m.maMon = ct.maMon
-	            JOIN DonGoiMon dgm ON ct.maDGM = dgm.maDGM
-	            WHERE CAST(dgm.thoiGianGM AS DATE) = ?
-	            GROUP BY m.maMon, m.tenMon, m.loaiMon, m.donGia, m.hinhAnh
-	        """;
 
-	    try (
-	         PreparedStatement stmt = con.prepareStatement(sql)) {
-	        stmt.setDate(1, java.sql.Date.valueOf(ngay));
+	    String sql = """
+	        SELECT m.*, SUM(ct.soLuong + ct.soLuongDaThanhToan) AS luotDung
+	        FROM Mon m
+	        JOIN ChiTietDonGoiMon ct ON m.maMon = ct.maMon
+	        JOIN DonGoiMon dgm ON ct.maDGM = dgm.maDGM
+	        WHERE MONTH(dgm.thoiGianGM) = ? AND YEAR(dgm.thoiGianGM) = ?
+	        GROUP BY m.maMon, m.tenMon, m.loaiMon, m.donGia, m.hinhAnh
+	    """;
+
+	    try (PreparedStatement stmt = con.prepareStatement(sql)) {
+	        stmt.setInt(1, ngay.getMonthValue()); // tháng
+	        stmt.setInt(2, ngay.getYear());       // năm
+
 	        try (ResultSet rs = stmt.executeQuery()) {
 	            while (rs.next()) {
-	                Mon mon = new Mon(rs.getString("maMon"), rs.getString("tenMon"), rs.getString("loaiMon"), rs.getDouble("donGia"), rs.getString("hinhAnh"));
+	                Mon mon = new Mon(
+	                    rs.getString("maMon"),
+	                    rs.getString("tenMon"),
+	                    rs.getString("loaiMon"),
+	                    rs.getDouble("donGia"),
+	                    rs.getString("hinhAnh")
+	                );
 
 	                int luotDung = rs.getInt("luotDung");
 	                danhSach.put(mon, luotDung);
 	            }
 	        }
-
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }

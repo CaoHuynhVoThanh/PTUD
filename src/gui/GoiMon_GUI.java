@@ -879,6 +879,7 @@ public class GoiMon_GUI extends JFrame{
 	    comboBan.setSelectedItem("Chọn bàn");
 	}
 	private void capNhatChiTietGoiMon(String maDGM) {
+		System.out.println("Có cập nhật đơn gọi món" + maDGM);
 		ChiTietDonGoiMon_DAO.xoaChiTietTheoMaDGM(maDGM);
         // 3. Thêm lại các chi tiết mới từ tableModelDGM
         for (int i = 0; i < tableModelDGM.getRowCount(); i++) {

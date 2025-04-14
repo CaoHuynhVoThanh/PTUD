@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entities.DonDatBan;
-import entities.HoaDon;
 
 public class DonDatBan_DAO {
 	public static int getSLDDBHomNay() {
@@ -124,7 +123,7 @@ public class DonDatBan_DAO {
 		            double tienCoc = rs.getDouble("tienCoc");
 		            int trangThai = rs.getInt("trangThai");
 		            // Thêm các cột khác nếu cần
-		            DonDatBan ddb = new DonDatBan(maDDB, maHD, maNV, maKH, thoiGianDat.toLocalDateTime(), thoiGianNhan.toLocalDateTime(), soKhach, tienCoc, trangThai); // constructor mẫu
+		            DonDatBan ddb = new DonDatBan(maDDB, maHD, maNV, maKH, thoiGianDat.toLocalDateTime(), thoiGianNhan.toLocalDateTime(), soKhach, tienCoc, trangThai);
 		            list.add(ddb);
 		        }
 		    } catch (SQLException e) {
