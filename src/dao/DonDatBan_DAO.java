@@ -181,6 +181,24 @@ public class DonDatBan_DAO {
 
 		    return list;
 		}
+	 public static boolean capNhatTrangThaiDonDatBan(String maDDB, int trangThaiMoi) {
+		 	System.out.println(trangThaiMoi);
+		 	System.out.println(maDDB);
+		    String sql = "UPDATE DonDatBan SET trangThai = ? WHERE maDDB = ?";
+		    ConnectDB.getInstance().connect();
+		    Connection con = ConnectDB.getInstance().getConnection(); // Giả sử bạn đã có class ConnectDB
+		    try (PreparedStatement stmt = con.prepareStatement(sql)) {
+		        stmt.setInt(1, trangThaiMoi);
+		        stmt.setString(2, maDDB);
+
+		        int rows = stmt.executeUpdate(); // Số dòng bị ảnh hưởng
+		        return rows > 0; // Nếu có ít nhất 1 dòng bị ảnh hưởng thì trả về true
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return false;
+		}
+
 
 	 public static boolean capNhatMaHDChoDonDatBan(String maDDB, String maHD) {
 		    String sql = "UPDATE DonDatBan SET maHD = ? WHERE maDDB = ?";

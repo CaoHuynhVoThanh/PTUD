@@ -268,27 +268,60 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 			this.dispose();
 		}
 		if (cmd.equals("Tiền mặt")) {
-			String tienString = JOptionPane.showInputDialog("Nhập số tiền khách đưa");
-			if (("".equals(tienString))) {
-				if (JOptionPane.showConfirmDialog(null, "Bạn có muốn thanh toán?")==JOptionPane.YES_OPTION) {
-					LocalDate now = LocalDate.now(); 
-			        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-			        String formattedDate = now.format(formatter);
-					String ma = formattedDate+currenUser.getMaNV()+HoaDon_DAO.demHoaDonTrongNgay()+"";
-					String makm = "";
-					if (tf_km.getText().equals("")) makm=null;
-					String matv = "";
-					if (tf_tv.getText().equals("")) matv=null;
-					double tongtien = Double.parseDouble(lb_tongtt.getText());
-					HoaDon_DAO.insertHoaDon(ma, currenUser.getMaNV(), LocalDateTime.now(), makm, tongtien, "Tiền mặt", matv, tongtien/10000);
-					for (String s: dsddb) {
-						DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
-					}
-					JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
-					ThanhToan_GUI.hiddenButtonThanhToan.doClick();
-					this.dispose();
+//			
+			double tongTien = Double.parseDouble(lb_tongtt.getText());
+			double tien = 0.0;
+			String tienString = null;
+			do {
+			    tienString = JOptionPane.showInputDialog(null, "Nhập số tiền khách đưa:");
+
+			    // Người dùng bấm Cancel
+			    if (tienString == null) {
+			        return; // Thoát phương thức
+			    }
+
+			    tienString = tienString.trim();
+
+			    if (tienString.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập số tiền!");
+			        continue;
+			    }
+
+			    try {
+			        tien = Double.parseDouble(tienString);
+
+			        if (tien <= tongTien) {
+			            JOptionPane.showMessageDialog(null, "Số tiền phải lớn hơn " + tongTien + "!");
+			        } else {
+			            break; // Nhập hợp lệ, thoát khỏi vòng lặp
+			        }
+			    } catch (NumberFormatException err) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập một số hợp lệ!");
+			    }
+
+			} while (true);
+
+			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn thanh toán?")==JOptionPane.YES_OPTION) {
+				LocalDate now = LocalDate.now(); 
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+		        String formattedDate = now.format(formatter);
+				String ma = formattedDate+currenUser.getMaNV()+HoaDon_DAO.demHoaDonTrongNgay()+"";
+				String makm = "";
+				if (tf_km.getText().equals("")) makm=null;
+				String matv = "";
+				if (tf_tv.getText().equals("")) matv=null;
+				double tongtien = Double.parseDouble(lb_tongtt.getText());
+				HoaDon_DAO.insertHoaDon(ma, currenUser.getMaNV(), LocalDateTime.now(), makm, tongtien, "Tiền mặt", matv, tongtien/10000);
+				for (String s: dsddb) {
+					DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
+					DonDatBan_DAO.capNhatTrangThaiDonDatBan(s, 2);
 				}
+				Double tientra = tien-tongTien;
+				JOptionPane.showMessageDialog(null, "Thanh toán thành công! Số tiền trả khách: "+tientra);
+				ThanhToan_GUI.hiddenButtonThanhToan.doClick();
+				this.dispose();
 			}
+			
 		}
 		if (cmd.equals("Chuyển khoản")) {
 			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn thanh toán?")==JOptionPane.YES_OPTION) {
@@ -304,6 +337,7 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				HoaDon_DAO.insertHoaDon(ma, currenUser.getMaNV(), LocalDateTime.now(), makm, tongtien, "Chuyển khoản", matv, tongtien/10000);
 				for (String s: dsddb) {
 					DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
+					DonDatBan_DAO.capNhatTrangThaiDonDatBan(ma, 2);
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
 				ThanhToan_GUI.hiddenButtonThanhToan.doClick();
@@ -324,6 +358,7 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				HoaDon_DAO.insertHoaDon(ma, currenUser.getMaNV(), LocalDateTime.now(), makm, tongtien, "Thẻ", matv, tongtien/10000);
 				for (String s: dsddb) {
 					DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
+					DonDatBan_DAO.capNhatTrangThaiDonDatBan(ma, 2);
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
 				ThanhToan_GUI.hiddenButtonThanhToan.doClick();
