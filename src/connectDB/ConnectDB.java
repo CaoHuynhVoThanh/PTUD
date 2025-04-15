@@ -15,7 +15,7 @@ public class ConnectDB {
 		return instance;
 	}
 	public void connect() {
-		String url = "jdbc:sqlserver://localhost:1433;databaseName=QLBH;trustServerCertificate=true;encrypt=true";
+		String url = "jdbc:sqlserver://localhost:1433;databaseName=QLNH;trustServerCertificate=true;encrypt=true";
 		String user = "sa";
 		String password = "sapassword";
 		try {
