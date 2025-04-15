@@ -73,10 +73,10 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JTextField tf_tenkh;
+	private JTextField tf_soban;
+	private JTextField tf_sdt;
+	private JTextField tf_vt;
 	private JTable scrollBan;
 	private JTable tbmon;
 	JScrollPane tb_ban;
@@ -92,6 +92,8 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 	ArrayList<Mon> mon = new ArrayList<>();
 	private UniqueArrayList listcb = new UniqueArrayList();
 	private JScrollPane scrollPane;
+	private JLabel lb_tongdatban_1;
+	private JLabel lb_tonggoimon_1;
 	public static JButton hiddenButtonThanhToan = new JButton();
 
 	/**
@@ -302,30 +304,30 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		panel_trangchu.add(panel_2);
 		panel_2.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(38, 39, 204, 27);
-		panel_2.add(textField);
-		textField.setColumns(10);
+		tf_tenkh = new JTextField();
+		tf_tenkh.setBounds(38, 39, 204, 27);
+		panel_2.add(tf_tenkh);
+		tf_tenkh.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Tên khách hàng");
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
 		lblNewLabel_1.setBounds(38, 20, 131, 13);
 		panel_2.add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_1_1 = new JLabel("Số bàn có trong đơn");
+		JLabel lblNewLabel_1_1 = new JLabel("Mã số của bàn:");
 		lblNewLabel_1_1.setFont(new Font("Arial", Font.BOLD, 14));
 		lblNewLabel_1_1.setBounds(38, 76, 177, 13);
 		panel_2.add(lblNewLabel_1_1);
 		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(38, 95, 204, 27);
-		panel_2.add(textField_1);
+		tf_soban = new JTextField();
+		tf_soban.setColumns(10);
+		tf_soban.setBounds(38, 95, 204, 27);
+		panel_2.add(tf_soban);
 		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(287, 39, 204, 27);
-		panel_2.add(textField_2);
+		tf_sdt = new JTextField();
+		tf_sdt.setColumns(10);
+		tf_sdt.setBounds(287, 39, 204, 27);
+		panel_2.add(tf_sdt);
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Số điện thoại");
 		lblNewLabel_1_2.setFont(new Font("Arial", Font.BOLD, 14));
@@ -337,10 +339,10 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		lblNewLabel_1_1_1.setBounds(287, 76, 131, 13);
 		panel_2.add(lblNewLabel_1_1_1);
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(287, 95, 204, 27);
-		panel_2.add(textField_3);
+		tf_vt = new JTextField();
+		tf_vt.setColumns(10);
+		tf_vt.setBounds(287, 95, 204, 27);
+		panel_2.add(tf_vt);
 		
 		JButton btnNewButton_1 = new JButton("Tìm");
 		btnNewButton_1.setBackground(new Color(255, 153, 0));
@@ -369,7 +371,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		
 		panel_dsban = new JPanel();
 		scrollPane.setViewportView(panel_dsban);
-		panel_dsban.setPreferredSize(new Dimension(620, 999));
+		panel_dsban.setPreferredSize(new Dimension(620, 0));
 		panel_dsban.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 //		
@@ -523,14 +525,13 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		panel_4.add(tb_ban);
 		
 		scrollBan = new JTable();
-		scrollBan.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null, null, null},
-			},
-			new String[] {
-				"M\u00E3 b\u00E0n", "Lo\u1EA1i", "V\u1ECB tr\u00ED", "\u0110\u00E3 c\u1ECDc", "Ph\u1EE5 thu", "Trang tr\u00ED", ""
-			}
-		));
+		DefaultTableModel tableModel0 = new DefaultTableModel();
+        tableModel0.addColumn("Mã bàn");
+        tableModel0.addColumn("Loại bàn");
+        tableModel0.addColumn("Vị trí");
+        tableModel0.addColumn("Phụ thu");
+        tableModel0.addColumn("");
+		scrollBan.setModel(tableModel0);
 		tb_ban.setViewportView(scrollBan);
 		
 		JLabel lblNewLabel_5 = new JLabel("Thông tin đặt bàn");
@@ -556,16 +557,14 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		panel_4.add(scrollmon);
 		
 		tbmon = new JTable();
-		tbmon.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"T\u00EAn m\u00F3n", "Lo\u1EA1i", "\u0110\u01A1n gi\u00E1", "S\u1ED1 l\u01B0\u1EE3ng", "Th\u00E0nh ti\u1EC1n"
-			}
-		));
+		DefaultTableModel tableModel = new DefaultTableModel();
+		tableModel.addColumn("Tên món");
+        tableModel.addColumn("Loại");
+        tableModel.addColumn("Đơn giá");
+        tableModel.addColumn("Số lượng");
+        tableModel.addColumn("Trả trước");
+        tableModel.addColumn("Thành tiền");
+		tbmon.setModel(tableModel);
 		scrollmon.setViewportView(tbmon);
 		
 		JLabel lblNewLabel_5_1_1_1 = new JLabel("Tổng gọi món:");
@@ -605,13 +604,13 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		lb_tongdatban = new JLabel("0.0");
 		lb_tongdatban.setHorizontalAlignment(SwingConstants.RIGHT);
 		lb_tongdatban.setFont(new Font("Arial", Font.BOLD, 12));
-		lb_tongdatban.setBounds(156, 211, 115, 26);
+		lb_tongdatban.setBounds(119, 211, 115, 26);
 		panel_4.add(lb_tongdatban);
 		
 		lb_tonggoimon = new JLabel("0.0");
 		lb_tonggoimon.setHorizontalAlignment(SwingConstants.RIGHT);
 		lb_tonggoimon.setFont(new Font("Arial", Font.BOLD, 12));
-		lb_tonggoimon.setBounds(167, 508, 115, 26);
+		lb_tonggoimon.setBounds(119, 508, 115, 26);
 		panel_4.add(lb_tonggoimon);
 		
 		lb_tamTinh = new JLabel("0.0");
@@ -620,6 +619,30 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		lb_tamTinh.setFont(new Font("Arial", Font.BOLD, 16));
 		lb_tamTinh.setBounds(156, 544, 78, 26);
 		panel_4.add(lb_tamTinh);
+		
+		JLabel lblNewLabel_5_1_1_2 = new JLabel("Cọc trước bàn:");
+		lblNewLabel_5_1_1_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_1_1_2.setFont(new Font("Arial", Font.BOLD, 12));
+		lblNewLabel_5_1_1_2.setBounds(301, 211, 115, 26);
+		panel_4.add(lblNewLabel_5_1_1_2);
+		
+		lb_tongdatban_1 = new JLabel("0.0");
+		lb_tongdatban_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tongdatban_1.setFont(new Font("Arial", Font.BOLD, 12));
+		lb_tongdatban_1.setBounds(389, 211, 115, 26);
+		panel_4.add(lb_tongdatban_1);
+		
+		lb_tonggoimon_1 = new JLabel("0.0");
+		lb_tonggoimon_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tonggoimon_1.setFont(new Font("Arial", Font.BOLD, 12));
+		lb_tonggoimon_1.setBounds(389, 508, 115, 26);
+		panel_4.add(lb_tonggoimon_1);
+		
+		JLabel lblNewLabel_5_1_1_1_1 = new JLabel("Cọc trước món:");
+		lblNewLabel_5_1_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_5_1_1_1_1.setFont(new Font("Arial", Font.BOLD, 12));
+		lblNewLabel_5_1_1_1_1.setBounds(291, 508, 115, 26);
+		panel_4.add(lblNewLabel_5_1_1_1_1);
 		
 		JPanel panel_3_1 = new JPanel();
 		panel_3_1.setLayout(null);
@@ -640,6 +663,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		panel_dsban.removeAll();
 		scrollPane.revalidate();
 		scrollPane.repaint();
+		int cnt=0;
 		for (DonDatBan x: ds) {
 			KhachHang kh = KhachHang_DAO.getKhachHangTheoMa(x.getMaKH());
 			System.out.println(x.getMaKH());
@@ -681,7 +705,10 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 			hiddenButtonThanhToan.setVisible(false);
 			hiddenButtonThanhToan.addActionListener(this);
 			hiddenButtonThanhToan.setActionCommand("Update DDB");
+			cnt+=1;
 		}
+		int y_size=100*cnt;
+		panel_dsban.setPreferredSize(new Dimension(620, y_size));
 	}
 	public void updateBan(UniqueArrayList list) {
 		DefaultTableModel tableModel = new DefaultTableModel() {
@@ -701,7 +728,6 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
         tableModel.addColumn("Mã bàn");
         tableModel.addColumn("Loại bàn");
         tableModel.addColumn("Vị trí");
-//        tableModel.addColumn("Đã cọc");
         tableModel.addColumn("Phụ thu");
         tableModel.addColumn("");
 
@@ -719,6 +745,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		}
 		scrollBan.setModel(tableModel);
 		double tongPhuThu = 0.0;
+		double tongCoc = 0.0;
 		int rowCount = tableModel.getRowCount();
 		System.out.println("dong:"+rowCount);
 		for (int i = 0; i < rowCount; i++) {
@@ -755,7 +782,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
         tableModel.addColumn("Loại");
         tableModel.addColumn("Đơn giá");
         tableModel.addColumn("Số lượng");
-        tableModel.addColumn("Đã thanh toán");
+        tableModel.addColumn("Trả trước");
         tableModel.addColumn("Thành tiền");
 		if (ds.size()==0) {
 			tbmon.setModel(tableModel);
@@ -795,6 +822,24 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		Double tamtinh = Double.parseDouble(lb_tongdatban.getText())+Double.parseDouble(lb_tonggoimon.getText());
 		lb_tamTinh.setText(tamtinh+"");
 	}
+	
+	public void clearAll() {
+		DefaultTableModel emptyModel = new DefaultTableModel();
+		scrollBan.setModel(emptyModel);
+		tb_ban.revalidate();
+		tb_ban.repaint();
+		
+//		scrollmon.removeAll();
+		tbmon.setModel(emptyModel);
+		scrollmon.revalidate();
+		scrollmon.repaint();
+		lb_tongdatban.setText("0.0");
+		lb_tongdatban_1.setText("0.0");
+		lb_tonggoimon.setText("0.0");
+		lb_tonggoimon_1.setText("0.0");
+		ta_ghichu.removeAll();
+		lb_tamTinh.setText("0.0");
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -805,6 +850,11 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		if (isDDB.equals("cb")) {
 			listcb.addOrRemove(cmd.substring(2));
 			listcb.printList();
+			Double tongCoc=0.0;
+			for (DonDatBan x: dsddb) {
+				if (x.getMaDDB().equals(cmd.substring(2))) tongCoc+=x.getTienCoc();
+			}
+			lb_tongdatban_1.setText(""+tongCoc);
 			updateBan(listcb);
 		}
 		if (cmd.equals("THANH TOÁN") && listcb.getList().size()!=0) {
@@ -825,6 +875,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 			dialog.setVisible(true);
 		}
 		if (cmd.equals("Update DDB")) {
+			clearAll();
 			dsddb = DonDatBan_DAO.getDonDatBanTheoNgayChuaTT(LocalDate.now());
 			loadDsDDB(dsddb);
 		}

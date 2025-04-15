@@ -39,17 +39,29 @@ public class Ban_DAO {
 	            Double phuPhi = rs.getDouble("phuThuKhuVuc");
 	            Double phiCoc = rs.getDouble("phiCoc");
 	            
-	            String sql2 = "SELECT ddb.trangThai " +
-	                    "FROM DonDatBan ddb " +
-	                    "JOIN ChiTietDonDatBan ctddb ON ddb.maDDB = ctddb.maDDB " +
-	                    "WHERE ctddb.maBan = ? AND CONVERT(DATE, ddb.thoiGianDat) = ?";
+	            String sql2 = """
+	            		SELECT ddb.trangThai
+	            		FROM DonDatBan ddb
+	            		JOIN ChiTietDonDatBan ctddb ON ddb.maDDB = ctddb.maDDB
+	            		WHERE ctddb.maBan = ?
+	            		  AND CONVERT(DATE, ddb.thoiGianDat) = ?
+	            		  AND ddb.thoiGianDat = (
+	            		      SELECT MAX(ddb2.thoiGianDat)
+	            		      FROM DonDatBan ddb2
+	            		      JOIN ChiTietDonDatBan ctddb2 ON ddb2.maDDB = ctddb2.maDDB
+	            		      WHERE ctddb2.maBan = ctddb.maBan
+	            		        AND CONVERT(DATE, ddb2.thoiGianDat) = CONVERT(DATE, ddb.thoiGianDat)
+	            		  )
+	            		""";
+
 	            PreparedStatement pstmt = conN.prepareStatement(sql2);
 	            pstmt.setString(1, ma);
 	            pstmt.setDate(2, Date.valueOf(thoiGianNhan));
 		        ResultSet rs2 = pstmt.executeQuery();
 		        if (rs2.next()) {
 		        	if (rs2.getInt(1)==0) tt=2;
-		        	else tt=3;
+		        	else if (rs2.getInt(1)==1) tt=3;
+		        	else tt=1;
 		        }
 	            Ban ban = new Ban(ma, loai, vt, so, tt, tenkv, phuPhi, phiCoc);
 	            dsBan.add(ban);
