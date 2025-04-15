@@ -1,6 +1,8 @@
 .metadata/
 bin/
 .classpath
+/connectDB/
+/dao/
 /entities/
 /gui/
 /dao/
