@@ -79,7 +79,7 @@ public class LichSu_DAO {
         Vector<Vector<Object>> data = new Vector<>();
         String query = "SELECT hd.maHD AS MaHD, hd.thoiGianThanhToan AS ThoiGian, nv.tenNV AS NguoiTao, " +
                       "ISNULL(kh.tenKH, N'Khách vãng lai') + CASE WHEN kh.soDienThoai IS NOT NULL THEN N' (' + kh.soDienThoai + N')' ELSE N'' END AS ThongTinKH, " +
-                      "hd.phuongThucTT AS PhuongThuc, hd.tongTien AS TongTien " +
+                      "hd.phuongThucThanhToan AS PhuongThuc, hd.tongTien AS TongTien " +
                       "FROM HoaDon hd " +
                       "INNER JOIN NhanVien nv ON hd.maNV = nv.maNV " +
                       "LEFT JOIN DonDatBan ddb ON hd.maHD = ddb.maHD " +

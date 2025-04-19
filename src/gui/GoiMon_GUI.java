@@ -103,6 +103,7 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_DoUong;
 	private JDateChooser dateChooser = new JDateChooser();
 	private JTextArea txtGhiChu = new JTextArea();
+	private JPanel pGoiMon;
 	/**
 	 * Launch the application.
 	 */
@@ -307,7 +308,7 @@ public class GoiMon_GUI extends JFrame{
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 
-		JPanel pGoiMon = new JPanel();
+		pGoiMon = new JPanel();
 		pGoiMon.setBounds(286, 138, 1237, 689);
 		contentPane.add(pGoiMon);
 		pGoiMon.setLayout(null);
@@ -914,7 +915,6 @@ public class GoiMon_GUI extends JFrame{
 	    comboBan.setSelectedItem(maBan);;
 	    comboBan.setEnabled(false);
 	    comboBan.setBackground(new Color(240, 240, 240));
-	    
 	    // Cập nhật label hiển thị
 	    lblMaBan.setText("Mã bàn: " + maBan);
 	}
@@ -1094,5 +1094,8 @@ public class GoiMon_GUI extends JFrame{
             });
             return null;
         }
+    }
+    public JPanel getPanel() {
+    	return this.pGoiMon;
     }
 }

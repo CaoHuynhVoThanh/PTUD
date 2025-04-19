@@ -75,6 +75,7 @@ public class TrangChu_GUI extends JFrame {
 	private JLabel lblDaNhan;
 	private JLabel lblDaHuy;
 	private JLabel lblChoNhan;
+	private JPanel panel_trangchu;
 	/**
 	 * Launch the application.
 	 */
@@ -275,7 +276,7 @@ public class TrangChu_GUI extends JFrame {
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 		
-		JPanel panel_trangchu = new JPanel();
+		panel_trangchu = new JPanel();
 		panel_trangchu.setBackground(new Color(255, 255, 255));
 		panel_trangchu.setBounds(285, 133, 1254, 704);
 		contentPane.add(panel_trangchu);
@@ -550,5 +551,8 @@ public class TrangChu_GUI extends JFrame {
 	        });
 	    }
 	}
+    public JPanel getPanel() {
+    	return this.panel_trangchu;
+    }
 
 }

@@ -1,11 +1,4 @@
-.metadata/
-bin/
-.classpath
-/connectDB/
+/gui/
+/test/
 /dao/
 /entities/
-/gui/
-/dao/
-/test/
-/images/
-/test/

@@ -70,7 +70,7 @@ public class NhanDon_GUITEST extends JFrame {
 
 		
 		txtSoDienThoai = new JTextField();
-		txtSoDienThoai.setBounds(0, 0, 200, 30);
+		txtSoDienThoai.setBounds(10, 0, 200, 30);
 		panel_TimKiem.add(txtSoDienThoai);
 		
 		txtNgayNhan = new JTextField();
@@ -96,7 +96,7 @@ public class NhanDon_GUITEST extends JFrame {
 
        
         JScrollPane scrollPane = new JScrollPane(panelDanhSach);
-        scrollPane.setBounds(0, 90, 600, 500);
+        scrollPane.setBounds(10, 90, 600, 500);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panel_DSDon.add(scrollPane);

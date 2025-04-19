@@ -61,6 +61,7 @@ public class NhanDon_GUI extends JFrame {
 	private JLabel lblTitle;
 	private JTextField txtSoDienThoai;
 	private JTextField txtNgayNhan;
+	private JPanel panel_DSDon;
 
 	/**
 	 * Launch the application.
@@ -260,7 +261,7 @@ public class NhanDon_GUI extends JFrame {
 		panel.add(mi_ThongKe_1);
 //		aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 		
-		JPanel panel_DSDon = new JPanel();
+		panel_DSDon = new JPanel();
 		panel_DSDon.setLayout(null);
 		panel_DSDon.setBounds(320, 160, 1100, 600); 
 //		panel_DSDon.setBounds(0, 0, 1100, 600); 
@@ -531,6 +532,9 @@ public class NhanDon_GUI extends JFrame {
         
 
         return panelDon;
+    }
+    public JPanel getPanel() {
+    	return this.panel_DSDon;
     }
 
 }

@@ -64,6 +64,7 @@ public class QuanLyMon_GUI extends JFrame {
 	private JPanel contentPane;
 	JDateChooser JDC_ngaychon = new JDateChooser();
 	private JTextField textField_nhapTenMon;
+	private JPanel pQuanLyMon;
 
 	/**
 	 * Launch the application.
@@ -265,7 +266,7 @@ public class QuanLyMon_GUI extends JFrame {
 		
 		
 		JPanel panel_dropdown = new JPanel();
-		panel_dropdown.setBounds(320, 160, 900, 40);
+		panel_dropdown.setBounds(0, 10, 900, 40);
 		contentPane.add(panel_dropdown);
 		panel_dropdown.setLayout(null);
 		
@@ -324,9 +325,16 @@ public class QuanLyMon_GUI extends JFrame {
 		});
 		
 		JPanel panel_table = new JPanel();
-		panel_table.setBounds(293, 250, 1000, 450); // vị trí & size tùy chỉnh
+		panel_table.setBounds(0, 60, 1000, 450); // vị trí & size tùy chỉnh
 		panel_table.setLayout(new BorderLayout()); // dùng layout này để bảng tự mở rộng
 		contentPane.add(panel_table);
+		
+		pQuanLyMon = new JPanel();
+		pQuanLyMon.setBounds(286, 138, 1237, 689);
+		contentPane.add(pQuanLyMon);
+		pQuanLyMon.add(panel_dropdown);
+		pQuanLyMon.add(panel_table);
+		pQuanLyMon.setLayout(null);
 		
 		String[] columnNames = {"Mã món", "Tên món ăn", "Loại","Đơn giá", "Hình ảnh", "Xóa", "Chỉnh sửa"};
 		DefaultTableModel model = new DefaultTableModel(columnNames, 0);
@@ -846,6 +854,8 @@ public class QuanLyMon_GUI extends JFrame {
         
         frameChinhMon.setVisible(true);
     }
-
+    public JPanel getPanel() {
+        return pQuanLyMon;
+    }
 
 }

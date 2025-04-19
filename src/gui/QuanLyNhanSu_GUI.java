@@ -62,6 +62,7 @@ public class QuanLyNhanSu_GUI extends JFrame {
 	private JDateChooser dateChooser = new JDateChooser();
 	ConnectDB con;
 	private JButton btnTim;
+	private JPanel pQuanLyNhanSu;
 	
 	/**
 	 * Launch the application.
@@ -250,7 +251,7 @@ public class QuanLyNhanSu_GUI extends JFrame {
 		mi_QuanLy.setBackground(new Color(255, 153, 0));
 		mi_QuanLy.setBounds(20, 439, 291, 61);
 		panel.add(mi_QuanLy);
-		JPanel pQuanLyNhanSu = new JPanel();
+		pQuanLyNhanSu = new JPanel();
 		pQuanLyNhanSu.setBounds(286, 138, 1237, 689);
 		contentPane.add(pQuanLyNhanSu);
 		pQuanLyNhanSu.setLayout(null);
@@ -741,4 +742,7 @@ public class QuanLyNhanSu_GUI extends JFrame {
 	    comboTrangThai.setSelectedIndex(0);
 	    rdbtnNVPhucVu.setSelected(true);
 	}
+	public JPanel getPanel() {
+        return pQuanLyNhanSu;
+    }
 }

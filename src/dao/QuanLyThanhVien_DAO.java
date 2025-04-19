@@ -15,15 +15,13 @@ public class QuanLyThanhVien_DAO {
 
     public List<ThanhVien> getAllThanhVien() throws SQLException {
         List<ThanhVien> list = new ArrayList<>();
-        String sql = "SELECT tv.maTV, tv.maKH, kh.tenKH, tv.email, tv.ngaySinh, tv.HangThe, tv.DiemTichLuy, tv.NgayCap " +
-                     "FROM ThanhVien tv JOIN KhachHang kh ON tv.maKH = kh.maKH";
+        String sql = "SELECT * from ThanhVien";
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
             ThanhVien tv = new ThanhVien(
                 rs.getString("maTV"),
-                rs.getString("maKH"),
-                rs.getString("tenKH"),
+                rs.getString("tenTV"),
                 rs.getString("email"),
                 rs.getDate("ngaySinh"),
                 rs.getString("HangThe"),
@@ -36,11 +34,11 @@ public class QuanLyThanhVien_DAO {
     }
 
     public void addThanhVien(ThanhVien tv) throws SQLException {
-        String sql = "INSERT INTO ThanhVien (maTV, maKH, email, ngaySinh, HangThe, DiemTichLuy, NgayCap) " +
+        String sql = "INSERT INTO ThanhVien (maTV, tenTV, email, ngaySinh, HangThe, DiemTichLuy, NgayCap) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, tv.getMaTV());
-        pstmt.setString(2, tv.getMaKH());
+        pstmt.setString(2, tv.getTenTV());
         pstmt.setString(3, tv.getEmail());
         pstmt.setDate(4, new java.sql.Date(tv.getNgaySinh().getTime()));
         pstmt.setString(5, tv.getHangThe());
@@ -50,11 +48,12 @@ public class QuanLyThanhVien_DAO {
     }
 
     public void updateThanhVien(ThanhVien tv) throws SQLException {
-        String sql = "UPDATE ThanhVien SET email = ?, ngaySinh = ? WHERE maTV = ?";
+        String sql = "UPDATE ThanhVien SET tenTV=?, email = ?, ngaySinh = ? WHERE maTV = ?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, tv.getEmail());
-        pstmt.setDate(2, new java.sql.Date(tv.getNgaySinh().getTime()));
-        pstmt.setString(3, tv.getMaTV());
+        pstmt.setString(1, tv.getTenTV());
+        pstmt.setString(2, tv.getEmail());
+        pstmt.setDate(3, new java.sql.Date(tv.getNgaySinh().getTime()));
+        pstmt.setString(4, tv.getMaTV());
         pstmt.executeUpdate();
     }
 
