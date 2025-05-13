@@ -153,7 +153,7 @@ public class Application extends JFrame implements ActionListener{
                 lb_ngay.setText("Ngày: " + currentDate.format(dateFormatter));
                 lb_thoiGian.setText("Thời gian: " + currentTime.format(timeFormatter));
             }
-        }, 0, 1000); // Cập nhật mỗi giây (1000ms)
+        }, 0, 500); // Cập nhật mỗi giây (500ms)
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 153, 0));
@@ -320,7 +320,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    TrangChu_GUI gui = new TrangChu_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equals("ĐĂNG XUẤT")){
 			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất không?")==JOptionPane.YES_OPTION) {
@@ -345,7 +345,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    DatBan_GUI gui = new DatBan_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("nhận bàn")) {
 			int count = contentPane.getComponentCount();
@@ -362,7 +362,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    NhanDon_GUI gui = new NhanDon_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("gọi món")) {
 			int count = contentPane.getComponentCount();
@@ -379,7 +379,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    GoiMon_GUI gui = new GoiMon_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("thanh toán")) {
 			int count = contentPane.getComponentCount();
@@ -396,7 +396,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    ThanhToan_GUI gui = new ThanhToan_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("lịch sử")) {
 			int count = contentPane.getComponentCount();
@@ -413,7 +413,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    LichSu_GUI gui = new LichSu_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("thống kê")) {
 			int count = contentPane.getComponentCount();
@@ -430,7 +430,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    ThongKe_GUI gui = new ThongKe_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("quản lý")) {
 			int count = contentPane.getComponentCount();
@@ -447,7 +447,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    QuanLy_GUI gui = new QuanLy_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 	}
 

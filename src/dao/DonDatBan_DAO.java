@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import connectDB.ConnectDB;
 import entities.DonDatBan;
@@ -218,5 +220,236 @@ public class DonDatBan_DAO {
 
 		    return false; // Trường hợp thất bại
 		}
+	 public static int getSoDonDatBanTheoNgay(LocalDate today) {
+		    String sql = """
+		        SELECT COUNT(*) 
+		        FROM DonDatBan 
+		        WHERE CAST(thoiGianNhan AS DATE) = ? AND trangThai = 1
+		    """;
+
+		    int count = 0;
+		    ConnectDB.getInstance().connect();
+		    Connection con = ConnectDB.getInstance().getConnection();
+
+		    try (PreparedStatement pst = con.prepareStatement(sql)) {
+		        pst.setDate(1, java.sql.Date.valueOf(today));
+		        ResultSet rs = pst.executeQuery();
+		        if (rs.next()) {
+		            count = rs.getInt(1);
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return count;
+		}
+
+		public static int getSoDonDatBanTheoThang(LocalDate today) {
+		    String sql = """
+		        SELECT COUNT(*) 
+		        FROM DonDatBan 
+		        WHERE MONTH(thoiGianNhan) = ? AND YEAR(thoiGianNhan) = ? AND trangThai = 1
+		    """;
+
+		    int count = 0;
+		    ConnectDB.getInstance().connect();
+		    Connection con = ConnectDB.getInstance().getConnection();
+
+		    try (PreparedStatement pst = con.prepareStatement(sql)) {
+		        pst.setInt(1, today.getMonthValue());
+		        pst.setInt(2, today.getYear());
+		        ResultSet rs = pst.executeQuery();
+		        if (rs.next()) {
+		            count = rs.getInt(1);
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return count;
+		}
+
+		public static int getSoDonDatBanTheoNam(LocalDate today) {
+		    String sql = """
+		        SELECT COUNT(*) 
+		        FROM DonDatBan 
+		        WHERE YEAR(thoiGianNhan) = ? AND trangThai = 1
+		    """;
+
+		    int count = 0;
+		    ConnectDB.getInstance().connect();
+		    Connection con = ConnectDB.getInstance().getConnection();
+
+		    try (PreparedStatement pst = con.prepareStatement(sql)) {
+		        pst.setInt(1, today.getYear());
+		        ResultSet rs = pst.executeQuery();
+		        if (rs.next()) {
+		            count = rs.getInt(1);
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return count;
+		}
+		public static double tinhTongTienCocTheoNgay(LocalDate ngayDat) {
+	        double tongTienCoc = 0;
+	        ConnectDB.getInstance().connect();
+		    Connection con = ConnectDB.getInstance().getConnection();
+	        // Tính khoảng thời gian bắt đầu và kết thúc trong ngày
+	        LocalDateTime startOfDay = ngayDat.atStartOfDay();
+	        LocalDateTime endOfDay = ngayDat.plusDays(1).atStartOfDay(); // không bao gồm 00:00 ngày hôm sau
+
+	        String query = """
+	            SELECT ddb.maDDB, kv.phuThu, c.phiCoc, m.donGia, ct.soluongDaThanhToan
+	            FROM DonDatBan ddb
+	            JOIN ChiTietDonDatBan ctdd ON ddb.maDDB = ctdd.maDDB
+	            JOIN Ban b ON ctdd.maBan = b.maBan
+	            JOIN KhuVuc kv ON b.maKV = kv.maKV
+	            JOIN Coc c ON b.loaiBan = c.maCoc
+	            JOIN DonGoiMon dgm ON ctdd.maDGM = dgm.maDGM
+	            JOIN ChiTietDonGoiMon ct ON dgm.maDGM = ct.maDGM
+	            JOIN Mon m ON ct.maMon = m.maMon
+	            WHERE ddb.thoiGianDat >= ? AND ddb.thoiGianDat < ?
+	        """;
+
+	        try (
+	             PreparedStatement stmt = con.prepareStatement(query)) {
+
+	            stmt.setTimestamp(1, Timestamp.valueOf(startOfDay));
+	            stmt.setTimestamp(2, Timestamp.valueOf(endOfDay));
+
+	            ResultSet rs = stmt.executeQuery();
+
+	            // Để tránh cộng trùng phuThu và phiCoc với mỗi món, ta lưu theo từng đơn đặt bàn
+	            Map<String, Boolean> daCongDDB = new HashMap<>();
+
+	            while (rs.next()) {
+	                String maDDB = rs.getString("maDDB");
+	                double phuThu = rs.getDouble("phuThu");
+	                double phiCoc = rs.getDouble("phiCoc");
+	                double donGia = rs.getDouble("donGia");
+	                int soLuong = rs.getInt("soLuongDaThanhToan");
+
+	                if (soLuong > 0) {
+	                    double tien = donGia * soLuong;
+
+	                    // Nếu chưa cộng phụ thu và phí cọc cho đơn này, cộng thêm
+	                    if (!daCongDDB.containsKey(maDDB)) {
+	                        tien += phuThu + phiCoc;
+	                        daCongDDB.put(maDDB, true);
+	                    }
+
+	                    tongTienCoc += tien;
+	                }
+	            }
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+
+	        return tongTienCoc;
+	    }
+		public static double tinhTongTienCocTheoThang(LocalDate ngayTrongThang) {
+		    double tongTienCoc = 0;
+		    ConnectDB.getInstance().connect();
+		    Connection conn = ConnectDB.getInstance().getConnection();
+		    LocalDate startDate = ngayTrongThang.withDayOfMonth(1);
+		    LocalDate startOfNextMonth = startDate.plusMonths(1);
+
+		    String query = """
+		        SELECT ddb.maDDB, kv.phuThu, c.phiCoc, m.donGia, ct.soluongDaThanhToan
+		        FROM DonDatBan ddb
+		        JOIN ChiTietDonDatBan ctdd ON ddb.maDDB = ctdd.maDDB
+		        JOIN Ban b ON ctdd.maBan = b.maBan
+		        JOIN KhuVuc kv ON b.maKV = kv.maKV
+		        JOIN Coc c ON b.loaiBan = c.maCoc
+		        JOIN DonGoiMon dgm ON ctdd.maDGM = dgm.maDGM
+		        JOIN ChiTietDonGoiMon ct ON dgm.maDGM = ct.maDGM
+		        JOIN Mon m ON ct.maMon = m.maMon
+		        WHERE ddb.thoiGianDat >= ? AND ddb.thoiGianDat < ?
+		    """;
+
+		    try (
+		         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+		        stmt.setTimestamp(1, Timestamp.valueOf(startDate.atStartOfDay()));
+		        stmt.setTimestamp(2, Timestamp.valueOf(startOfNextMonth.atStartOfDay()));
+
+		        ResultSet rs = stmt.executeQuery();
+		        Map<String, Boolean> daCongDDB = new HashMap<>();
+
+		        while (rs.next()) {
+		            String maDDB = rs.getString("maDDB");
+		            double phuThu = rs.getDouble("phuThu");
+		            double phiCoc = rs.getDouble("phiCoc");
+		            double donGia = rs.getDouble("donGia");
+		            int soLuong = rs.getInt("soLuongDaThanhToan");
+
+		            if (soLuong > 0) {
+		                double tien = donGia * soLuong;
+		                if (!daCongDDB.containsKey(maDDB)) {
+		                    tien += phuThu + phiCoc;
+		                    daCongDDB.put(maDDB, true);
+		                }
+		                tongTienCoc += tien;
+		            }
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return tongTienCoc;
+		}
+		public static double tinhTongTienCocTheoNam(LocalDate ngayTrongNam) {
+		    double tongTienCoc = 0;
+		    ConnectDB.getInstance().connect();
+		    Connection conn = ConnectDB.getInstance().getConnection();
+		    LocalDate startDate = LocalDate.of(ngayTrongNam.getYear(), 1, 1);
+		    LocalDate startOfNextYear = startDate.plusYears(1);
+
+		    String query = """
+		        SELECT ddb.maDDB, kv.phuThu, c.phiCoc, m.donGia, ct.soluongDaThanhToan
+		        FROM DonDatBan ddb
+		        JOIN ChiTietDonDatBan ctdd ON ddb.maDDB = ctdd.maDDB
+		        JOIN Ban b ON ctdd.maBan = b.maBan
+		        JOIN KhuVuc kv ON b.maKV = kv.maKV
+		        JOIN Coc c ON b.loaiBan = c.maCoc
+		        JOIN DonGoiMon dgm ON ctdd.maDGM = dgm.maDGM
+		        JOIN ChiTietDonGoiMon ct ON dgm.maDGM = ct.maDGM
+		        JOIN Mon m ON ct.maMon = m.maMon
+		        WHERE ddb.thoiGianDat >= ? AND ddb.thoiGianDat < ?
+		    """;
+
+		    try (
+		         PreparedStatement stmt = conn.prepareStatement(query)) {
+
+		        stmt.setTimestamp(1, Timestamp.valueOf(startDate.atStartOfDay()));
+		        stmt.setTimestamp(2, Timestamp.valueOf(startOfNextYear.atStartOfDay()));
+
+		        ResultSet rs = stmt.executeQuery();
+		        Map<String, Boolean> daCongDDB = new HashMap<>();
+
+		        while (rs.next()) {
+		            String maDDB = rs.getString("maDDB");
+		            double phuThu = rs.getDouble("phuThu");
+		            double phiCoc = rs.getDouble("phiCoc");
+		            double donGia = rs.getDouble("donGia");
+		            int soLuong = rs.getInt("soLuongDaThanhToan");
+
+		            if (soLuong > 0) {
+		                double tien = donGia * soLuong;
+		                if (!daCongDDB.containsKey(maDDB)) {
+		                    tien += phuThu + phiCoc;
+		                    daCongDDB.put(maDDB, true);
+		                }
+		                tongTienCoc += tien;
+		            }
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+
+		    return tongTienCoc;
+		}
+
 
 }
