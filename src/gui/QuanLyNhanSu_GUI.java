@@ -258,7 +258,7 @@ public class QuanLyNhanSu_GUI extends JFrame {
 		
 		JPanel pTimNV = new JPanel();
 		pTimNV.setBackground(new Color(255, 153, 51));
-		pTimNV.setBounds(44, 27, 781, 90);
+		pTimNV.setBounds(28, 27, 796, 90);
 		pQuanLyNhanSu.add(pTimNV);
 		pTimNV.setLayout(null);
 		
@@ -307,7 +307,7 @@ public class QuanLyNhanSu_GUI extends JFrame {
 		
 		JPanel pThongTinNV = new JPanel();
 		pThongTinNV.setBackground(new Color(255, 255, 255));
-		pThongTinNV.setBounds(44, 154, 1175, 514);
+		pThongTinNV.setBounds(28, 154, 1190, 514);
 		pQuanLyNhanSu.add(pThongTinNV);
 		pThongTinNV.setLayout(null);
 		
@@ -403,7 +403,7 @@ public class QuanLyNhanSu_GUI extends JFrame {
 		pThongTinNV.add(lblThongTinNV);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 179, 1175, 335);
+		scrollPane.setBounds(0, 179, 1190, 335);
 		pThongTinNV.add(scrollPane);
 		
 		String[] colnamesNV = {
@@ -417,8 +417,29 @@ public class QuanLyNhanSu_GUI extends JFrame {
 		};
 		tableNV = new JTable(tableModelNV);
 		scrollPane.setViewportView(tableNV);
+		
+		JButton btnXoa = new JButton("Xóa");
+		btnXoa.setBackground(Color.LIGHT_GRAY);
+		btnXoa.setBounds(1129, 0, 61, 21);
+		pThongTinNV.add(btnXoa);
 		tableNV.getTableHeader().setReorderingAllowed(false);
 		tableNV.getTableHeader().setResizingAllowed(false);
+		
+		btnXoa.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        // Clear all text fields
+		        txtHoTen.setText("");
+		        txtEmail.setText("");
+		        txtDiaChi.setText("");
+		        txtSDT.setText("");
+		        txtTim.setText("Nhập mã hoặc tên nhân viên");
+		        txtTim.setForeground(Color.GRAY); // Reset placeholder style
+		        comboTrangThai.setSelectedIndex(0);
+		        rdbtnNVPhucVu.setSelected(true);
+		        dateChooser.setDate(new Date());
+		    }
+		});
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(255, 153, 51));
@@ -541,6 +562,9 @@ public class QuanLyNhanSu_GUI extends JFrame {
 	    }
 	}
 	private void themNhanVien() {
+		if (!validateInput()) {
+	        return;
+	    }
 	    try {
 	        String tenNV = txtHoTen.getText().trim();
 	        String email = txtEmail.getText().trim();
@@ -604,6 +628,9 @@ public class QuanLyNhanSu_GUI extends JFrame {
 	}
 
 	private void capNhatNhanVien() {
+		if (!validateInput()) {
+	        return; // Stop if validation fails
+	    }
 	    try {
 	        // Kiểm tra có hàng nào được chọn trong bảng không
 	        int selectedRow = tableNV.getSelectedRow();
@@ -742,6 +769,44 @@ public class QuanLyNhanSu_GUI extends JFrame {
 	    comboTrangThai.setSelectedIndex(0);
 	    rdbtnNVPhucVu.setSelected(true);
 	}
+	private boolean validateInput() {
+	    // Validate Họ tên (txtHoTen) - Chỉ cho phép chữ cái tiếng Việt và khoảng trắng
+	    String hoTen = txtHoTen.getText().trim();
+	    if (!hoTen.matches("^^(?:[A-ZÀ-Ỹ][a-zà-ỹ']+)(?: [A-ZÀ-Ỹ][a-zà-ỹ']+)*$")) {
+	        JOptionPane.showMessageDialog(this, "Họ tên phải bắt đầu bằng chữ hoa theo sau chữ thường!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    // Validate Email (txtEmail) - Định dạng email
+	    String email = txtEmail.getText().trim();
+	    if (!email.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+	        JOptionPane.showMessageDialog(this, "Email không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    // Validate Ngày sinh (dateChooser) - Phải đủ 18 tuổi
+	    Date selectedDate = dateChooser.getDate();
+	    if (selectedDate == null) {
+	        JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+	    LocalDate ngaySinh = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	    LocalDate now = LocalDate.now();
+	    if (now.minusYears(18).isBefore(ngaySinh)) {
+	        JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    // Validate Số điện thoại (txtSDT) - Chỉ chứa 10 ký tự số
+	    String sdt = txtSDT.getText().trim();
+	    if (!sdt.matches("^\\d{10}$")) {
+	        JOptionPane.showMessageDialog(this, "Số điện thoại phải gồm 10 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    return true;
+	}
+
 	public JPanel getPanel() {
         return pQuanLyNhanSu;
     }

@@ -395,7 +395,6 @@ public class GoiMon_GUI extends JFrame{
             	if (selectedDate!= null) {
             		loadComboBan(dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             	}
-            	
             }
         });
         
@@ -833,7 +832,7 @@ public class GoiMon_GUI extends JFrame{
 	        
 	        String ngayThangNam = ngayChon.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 	        int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(ngayChon) + 1;
-	        String maDGMMoi = String.format("GM%s%05d", ngayThangNam, soThuTu);
+	        String maDGMMoi = String.format("GM%s%04d", ngayThangNam, soThuTu);
 	        LocalDateTime thoiGian = LocalDateTime.now();
 	        
 	        // 1. First create the DonGoiMon
@@ -886,6 +885,7 @@ public class GoiMon_GUI extends JFrame{
 		ChiTietDonGoiMon_DAO.xoaChiTietTheoMaDGM(maDGM);
         // 3. Thêm lại các chi tiết mới từ tableModelDGM
         for (int i = 0; i < tableModelDGM.getRowCount(); i++) {
+        	System.out.println(i);
             String tenMon = tableModelDGM.getValueAt(i, 0).toString();
             int soLuong = (int) tableModelDGM.getValueAt(i, 1);
 
@@ -912,7 +912,7 @@ public class GoiMon_GUI extends JFrame{
 		lblMaBan.setText(txtMBan);
 	}
 	public void setSelectedBan(String maBan) {    
-	    comboBan.setSelectedItem(maBan);;
+	    comboBan.setSelectedItem(maBan);
 	    comboBan.setEnabled(false);
 	    comboBan.setBackground(new Color(240, 240, 240));
 	    // Cập nhật label hiển thị
@@ -931,13 +931,12 @@ public class GoiMon_GUI extends JFrame{
 	        tableModelDGM.setRowCount(0);
 	        
 	        // Lấy danh sách đơn gọi món của bàn này
-	        ArrayList<DonGoiMon> dsDonGoiMon = DonGoiMon_DAO.getDonGoiMonTheoBan(maBan);
+	        ArrayList<DonGoiMon> dsDonGoiMon = DonGoiMon_DAO.getDonGoiMonTheoBan(maBan, ngayChon);
 	        
 	        if (dsDonGoiMon.isEmpty()) {
 	            return;
 	        }
 	        
-	        // Duyệt qua các đơn gọi món và thêm vào bảng
 	        for (DonGoiMon don : dsDonGoiMon) {
 	            // Lấy chi tiết đơn gọi món
 	            ArrayList<ChiTietDonGoiMon> dsChiTiet = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());

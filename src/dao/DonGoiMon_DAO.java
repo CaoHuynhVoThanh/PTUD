@@ -55,16 +55,20 @@ public class DonGoiMon_DAO {
 	    }
 	    return count;
 	}
-	public static ArrayList<DonGoiMon> getDonGoiMonTheoBan(String maBan) {
+	public static ArrayList<DonGoiMon> getDonGoiMonTheoBan(String maBan, LocalDate date) {
 	    ArrayList<DonGoiMon> dsDon = new ArrayList<>();
 	    ConnectDB.getInstance();
 	    Connection conN = ConnectDB.getInstance().getConnection();
 	    try {
-	        String sql = "SELECT d.* FROM DonGoiMon d " +
-	                     "JOIN ChiTietDonDatBan c ON d.maDGM = c.maDGM " +
-	                     "WHERE c.maBan = ?";
+	        String sql = """
+	            SELECT d.* 
+	            FROM DonGoiMon d 
+	            JOIN ChiTietDonDatBan c ON d.maDGM = c.maDGM 
+	            WHERE c.maBan = ? AND CAST(d.thoiGianGM AS DATE) = ?
+	        """;
 	        PreparedStatement stmt = conN.prepareStatement(sql);
 	        stmt.setString(1, maBan);
+	        stmt.setDate(2, java.sql.Date.valueOf(date)); // Filter by the provided date
 	        ResultSet rs = stmt.executeQuery();
 	        
 	        while (rs.next()) {
@@ -80,6 +84,7 @@ public class DonGoiMon_DAO {
 	    }
 	    return dsDon;
 	}
+
 	
 	public static DonGoiMon getDonGoiMonTheoMaDDBVaMaBan(String maDDB, String maBan) {
 	    DonGoiMon donGoiMon = null;
