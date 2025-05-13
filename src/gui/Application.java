@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
@@ -24,6 +25,7 @@ import javax.swing.JButton;
 
 
 import connectDB.ConnectDB;
+import entities.NhanVien;
 import test.LoadingPanel;
 
 import java.awt.event.ActionListener;
@@ -41,7 +43,9 @@ public class Application extends JFrame implements ActionListener{
 	public static JMenuItem mi_ThongKe;
 	public static JMenuItem mi_QuanLy;
 	public static JMenuItem mi_TroGiup;
-	
+	public static NhanVien nhanvien = null;
+	public static Application frame = new Application();
+	public static DangNhap_GUI g = new DangNhap_GUI();
 	/**
 	 * Launch the application.
 	 */
@@ -51,14 +55,20 @@ public class Application extends JFrame implements ActionListener{
 				try {
 					ConnectDB con = new ConnectDB();
 					con.connect();
-					Application frame = new Application();
-					frame.setVisible(true);
+					if (nhanvien==null) {
+						g = new DangNhap_GUI();
+						g.setVisible(true);
+					}
+					frame.setVisible(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
+
+
+	private JButton btn_dangxuat;
 
 	/**
 	 * Create the frame.
@@ -161,12 +171,13 @@ public class Application extends JFrame implements ActionListener{
 		mi_TrangChu.setBounds(20, 48, 291, 61);
 		panel.add(mi_TrangChu);
 		
-		JButton btnNewButton = new JButton("ĐĂNG XUẤT");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setBackground(new Color(0, 0, 0));
-		btnNewButton.setBounds(89, 641, 164, 42);
-		panel.add(btnNewButton);
+		btn_dangxuat = new JButton("ĐĂNG XUẤT");
+		btn_dangxuat.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btn_dangxuat.setForeground(new Color(255, 255, 255));
+		btn_dangxuat.setBackground(new Color(0, 0, 0));
+		btn_dangxuat.setBounds(89, 641, 164, 42);
+		btn_dangxuat.addActionListener(this);
+		panel.add(btn_dangxuat);
 		
 		mi_DatBan = new JMenuItem("              ĐẶT BÀN");
 		mi_DatBan.addActionListener(this);
@@ -310,6 +321,14 @@ public class Application extends JFrame implements ActionListener{
 			    TrangChu_GUI gui = new TrangChu_GUI();
 			    return gui.getPanel();
 			}, 1000);
+		}
+		if (cmd.equals("ĐĂNG XUẤT")){
+			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất không?")==JOptionPane.YES_OPTION) {
+				frame.setVisible(false);
+				g.clearAll();
+				g.setVisible(true);
+				nhanvien=null;
+			}
 		}
 		if (cmd.equalsIgnoreCase("đặt bàn")) {
 			int count = contentPane.getComponentCount();
