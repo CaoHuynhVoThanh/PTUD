@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entities.DonDatBan;
-import entities.HoaDon;
 
 public class DonDatBan_DAO {
 	public static int getSLDDBHomNay() {

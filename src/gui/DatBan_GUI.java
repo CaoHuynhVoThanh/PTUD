@@ -76,6 +76,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 	ArrayList<KhuVuc> dskv = KhuVuc_DAO.getAllKhuVuc();
 	public static JButton hiddenButton = new JButton("Thành công");
 	private ArrayList<JCheckBox> lcb = new ArrayList<>();
+	private JPanel panel_gui;
 	
 	/**
 	 * Launch the application.
@@ -276,17 +277,17 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 		
-		JPanel panel_trangchu = new JPanel();
-		panel_trangchu.setBackground(new Color(255, 255, 255));
-		panel_trangchu.setBounds(285, 133, 1254, 704);
-		contentPane.add(panel_trangchu);
-		panel_trangchu.setLayout(null);
+		panel_gui = new JPanel();
+		panel_gui.setBackground(new Color(255, 255, 255));
+		panel_gui.setBounds(285, 133, 1254, 704);
+		contentPane.add(panel_gui);
+		panel_gui.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
 		scrollPane.setBounds(23, 189, 796, 484);
-		panel_trangchu.add(scrollPane);
+		panel_gui.add(scrollPane);
 		
 		panel_dsBan = new JPanel();
 		panel_dsBan.setPreferredSize(new Dimension(620, 999));
@@ -296,7 +297,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(23, 24, 1188, 144);
-		panel_trangchu.add(panel_2);
+		panel_gui.add(panel_2);
 		panel_2.setLayout(null);
 		
 		tf_tenkh = new JTextField();
@@ -453,7 +454,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(843, 189, 368, 484);
-		panel_trangchu.add(panel_3);
+		panel_gui.add(panel_3);
 		panel_3.setLayout(null);
 		
 		btn_dattruoc = new JButton("ĐẶT TRƯỚC");
@@ -475,17 +476,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		btn_themmon.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btn_themmon.setBackground(new Color(255, 153, 0));
 		btn_themmon.setBounds(197, 363, 145, 38);
-		btn_themmon.addActionListener(e -> {
-			String maBan = lb_ma.getText();
-		    // Tạo và hiển thị form GoiMon_GUI
-		    GoiMon_GUI goiMonGUI = new GoiMon_GUI();
-		    
-		    // Hoặc thiết lập tất cả các bàn nếu GoiMon_GUI hỗ trợ
-		    goiMonGUI.setSelectedBan(maBan);
-		    goiMonGUI.setVisible(true);
-		    this.dispose();
-		});
-
+		btn_themmon.addActionListener(e -> chonbangoimon());
 		panel_3.add(btn_themmon);
 		
 		JLabel lblNewLabel_2 = new JLabel("Mã bàn:");
@@ -653,27 +644,22 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			);
 		System.out.println(ds.size());
 		dskv = KhuVuc_DAO.getAllKhuVuc();
-		
-//		String condtang = (String) comb_tang.getSelectedItem();
-//		String condkv = (String) comb_kv.getSelectedItem();
-//		String condloai = (String) comb_loaiban.getSelectedItem();
-//		int condtt = comb_tinhtrang.getSelectedIndex();
 		for (Ban x: ds) {
-				String kv = x.getMaBan()+" "+ x.getTenKV();
-				JButton BanMoi = new JButton(kv);
-				BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				BanMoi.setIcon(new ImageIcon("D:\\demoGit\\PTUD\\src\\images\\Ban\\"+x.getHinh()+".png"));
-				BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
-				BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
-				BanMoi.setOpaque(false);
-				BanMoi.setContentAreaFilled(false);
-				BanMoi.setBorderPainted(false);
-				BanMoi.setPreferredSize(new Dimension(180, 180));
-				BanMoi.addActionListener(this);
-				panel_dsBan.add(BanMoi);
-			}
-//		}
-		int y_size = (int) Math.ceil(ds.size()/4);
+			String kv = x.getMaBan()+" "+ x.getTenKV();
+			JButton BanMoi = new JButton(kv);
+			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			BanMoi.setIcon(new ImageIcon("src\\images\\Ban\\"+x.getHinh()+".png"));
+			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
+			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
+			BanMoi.setOpaque(false);
+			BanMoi.setContentAreaFilled(false);
+			BanMoi.setBorderPainted(false);
+			BanMoi.setPreferredSize(new Dimension(180, 180));
+			BanMoi.addActionListener(this);
+			panel_dsBan.add(BanMoi);
+		}
+		int y_size = (int) Math.ceil(dsb.size()/4);
+
 		panel_dsBan.setPreferredSize(new Dimension(620, 180*y_size));
 	}
 	public void displayBanWithCb(ArrayList<Ban> ds) {
@@ -1011,5 +997,26 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			if (x.getMaBan().equals(ma)) return x;
 		}
 		return null;
+	}
+	
+	public void chonbangoimon() {
+		String maBan = lb_ma.getText();
+	    // Tạo và hiển thị form GoiMon_GUI
+	    GoiMon_GUI goiMonGUI = new GoiMon_GUI();
+	    
+	    goiMonGUI.setSelectedBan(lb_ma.getText());
+	    Application.mi_GoiMon.doClick();
+	    int count = Application.contentPane.getComponentCount();
+	    Application.contentPane.remove(count - 1);
+	    Application.contentPane.add(goiMonGUI.getPanel());
+	    // Hoặc thiết lập tất cả các bàn nếu GoiMon_GUI hỗ trợ
+	    goiMonGUI.setSelectedBan(maBan);
+//		goiMonGUI.setVisible(true);
+	    this.dispose();
+		
+	}
+	
+	public JPanel getPanel() {
+		return this.panel_gui;
 	}
 }

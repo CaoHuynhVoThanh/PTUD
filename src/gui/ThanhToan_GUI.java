@@ -94,6 +94,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 	private JScrollPane scrollPane;
 	private JLabel lb_tongdatban_1;
 	private JLabel lb_tonggoimon_1;
+	private JPanel panel_trangchu;
 	public static JButton hiddenButtonThanhToan = new JButton();
 
 	/**
@@ -291,7 +292,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 		
-		JPanel panel_trangchu = new JPanel();
+		panel_trangchu = new JPanel();
 		panel_trangchu.setBackground(new Color(255, 255, 255));
 		panel_trangchu.setBounds(285, 133, 1254, 704);
 		contentPane.add(panel_trangchu);
@@ -880,4 +881,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 			loadDsDDB(dsddb);
 		}
 	}
+    public JPanel getPanel() {
+    	return this.panel_trangchu;
+    }
 }

@@ -30,6 +30,7 @@ public class ThongKe_GUI extends JFrame {
 	private JTable tableTKMon;
 	private DefaultTableModel tableModelMon;
 	private JScrollPane scrollPane;
+	private JPanel pThongKe;
 
 	/**
 	 * Launch the application.
@@ -216,7 +217,7 @@ public class ThongKe_GUI extends JFrame {
 		mi_QuanLy.setBackground(new Color(255, 153, 0));
 		mi_QuanLy.setBounds(20, 439, 291, 61);
 		panel.add(mi_QuanLy);
-		JPanel pThongKe = new JPanel();
+		pThongKe = new JPanel();
 		pThongKe.setBounds(286, 138, 1237, 689);
 		contentPane.add(pThongKe);
 		pThongKe.setLayout(null);
@@ -380,4 +381,7 @@ public class ThongKe_GUI extends JFrame {
 		pTKMon.add(lblTKMon);
 		
 	}
+    public JPanel getPanel() {
+    	return this.pThongKe;
+    }
 }

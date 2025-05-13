@@ -94,7 +94,6 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_Mon;
 	private ArrayList<Mon> dsMon;
 	private ArrayList<Mon> dsMonHienThi;
-
 	private ArrayList<Ban> dsBan;
 	private JComboBox comboLoaiMon;
 	private String ghiChu = "";
@@ -104,7 +103,7 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_DoUong;
 	private JDateChooser dateChooser = new JDateChooser();
 	private JTextArea txtGhiChu = new JTextArea();
-
+	private JPanel pGoiMon;
 	/**
 	 * Launch the application.
 	 */
@@ -309,7 +308,7 @@ public class GoiMon_GUI extends JFrame{
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 
-		JPanel pGoiMon = new JPanel();
+		pGoiMon = new JPanel();
 		pGoiMon.setBounds(286, 138, 1237, 689);
 		contentPane.add(pGoiMon);
 		pGoiMon.setLayout(null);
@@ -357,6 +356,8 @@ public class GoiMon_GUI extends JFrame{
 		        if (!maBan.equals("Chọn bàn")) {
 		            updateMaBan();
 		            loadDonGoiMonTheoBan(maBan);
+		        } else {
+		        	tableModelDGM.setRowCount(0);
 		        }
 		    }
 		});
@@ -832,7 +833,7 @@ public class GoiMon_GUI extends JFrame{
 	        
 	        String ngayThangNam = ngayChon.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 	        int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(ngayChon) + 1;
-	        String maDGMMoi = String.format("GM%s-%05d", ngayThangNam, soThuTu);
+	        String maDGMMoi = String.format("GM%s%05d", ngayThangNam, soThuTu);
 	        LocalDateTime thoiGian = LocalDateTime.now();
 	        
 	        // 1. First create the DonGoiMon
@@ -881,6 +882,7 @@ public class GoiMon_GUI extends JFrame{
 	    comboBan.setSelectedItem("Chọn bàn");
 	}
 	private void capNhatChiTietGoiMon(String maDGM) {
+		System.out.println("Có cập nhật đơn gọi món" + maDGM);
 		ChiTietDonGoiMon_DAO.xoaChiTietTheoMaDGM(maDGM);
         // 3. Thêm lại các chi tiết mới từ tableModelDGM
         for (int i = 0; i < tableModelDGM.getRowCount(); i++) {
@@ -913,11 +915,11 @@ public class GoiMon_GUI extends JFrame{
 	    comboBan.setSelectedItem(maBan);;
 	    comboBan.setEnabled(false);
 	    comboBan.setBackground(new Color(240, 240, 240));
-	    
 	    // Cập nhật label hiển thị
 	    lblMaBan.setText("Mã bàn: " + maBan);
 	}
 	private void loadDonGoiMonTheoBan(String maBan) {
+		tableModelDGM.setRowCount(0);
 		LocalDate ngayChon = dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		String maDGM = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon, maBan);
 		if (maDGM == null) {
@@ -1092,5 +1094,8 @@ public class GoiMon_GUI extends JFrame{
             });
             return null;
         }
+    }
+    public JPanel getPanel() {
+    	return this.pGoiMon;
     }
 }
