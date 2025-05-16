@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import java.awt.Desktop;
+
 import javax.swing.UIManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,6 +18,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
@@ -27,6 +30,8 @@ import connectDB.ConnectDB;
 import test.LoadingPanel;
 
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 public class Application extends JFrame implements ActionListener{
 
@@ -309,7 +314,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    TrangChu_GUI gui = new TrangChu_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("đặt bàn")) {
 			int count = contentPane.getComponentCount();
@@ -429,6 +434,18 @@ public class Application extends JFrame implements ActionListener{
 			    QuanLy_GUI gui = new QuanLy_GUI();
 			    return gui.getPanel();
 			}, 1000);
+		}
+		if (cmd.equalsIgnoreCase("trợ giúp")) {
+		    try {
+		        File htmlFile = new File("src/gui/help.html");
+		        Desktop.getDesktop().browse(htmlFile.toURI());
+		    } catch (IOException ex) {
+		        System.err.println("Error opening help file: " + ex.getMessage());
+		        JOptionPane.showMessageDialog(this, 
+		            "Không thể mở trang trợ giúp", 
+		            "Lỗi", 
+		            JOptionPane.ERROR_MESSAGE);
+		    }
 		}
 	}
 
