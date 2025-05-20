@@ -23,7 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 
-public class DangNhap_GUI extends JFrame implements ActionListener{
+public class QuenMatKhau_GUI extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -38,7 +38,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DangNhap_GUI frame = new DangNhap_GUI();
+					QuenMatKhau_GUI frame = new QuenMatKhau_GUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -50,7 +50,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 	/**
 	 * Create the frame.
 	 */
-	public DangNhap_GUI() {
+	public QuenMatKhau_GUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(400, 200, 750, 450);
 		setResizable(false);
@@ -84,7 +84,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         contentPane.add(panel);
         panel.setLayout(null);
         
-        JLabel lblNewLabel = new JLabel("ĐĂNG NHẬP");
+        JLabel lblNewLabel = new JLabel("Lấy lại mật khẩu");
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
         lblNewLabel.setBounds(13, 15, 230, 28);
@@ -95,12 +95,12 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         panel.add(tf_manv);
         tf_manv.setColumns(10);
         
-        JLabel lblNewLabel_1 = new JLabel("Mã nhân viên:");
+        JLabel lblNewLabel_1 = new JLabel("Mã nhân viên của bạn:");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_1.setBounds(25, 65, 126, 13);
+        lblNewLabel_1.setBounds(25, 65, 174, 13);
         panel.add(lblNewLabel_1);
         
-        JLabel lblNewLabel_1_1 = new JLabel("Mật khẩu");
+        JLabel lblNewLabel_1_1 = new JLabel("OTP:");
         lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_1_1.setBounds(25, 124, 126, 13);
         panel.add(lblNewLabel_1_1);
@@ -117,15 +117,10 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         btn_dangnhap.addActionListener(this);
         panel.add(btn_dangnhap);
         
-        JButton btnNewButton_1 = new JButton("<html><u>Quên mật khẩu</u></html>");
-        btnNewButton_1.setFont(new Font("Tahoma", Font.ITALIC, 10));
-        btnNewButton_1.setHorizontalAlignment(SwingConstants.RIGHT);
-        btnNewButton_1.setBounds(128, 175, 115, 21);
-        panel.add(btnNewButton_1);
-        
-        btnNewButton_1.setOpaque(false);
-        btnNewButton_1.setContentAreaFilled(false);
-        btnNewButton_1.setBorderPainted(false);
+        JLabel lblNewLabel_1_2 = new JLabel("Mã nhân viên của bạn:");
+        lblNewLabel_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblNewLabel_1_2.setBounds(23, 198, 174, 13);
+        panel.add(lblNewLabel_1_2);
 	}
 
 	@Override

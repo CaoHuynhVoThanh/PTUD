@@ -32,6 +32,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class Application extends JFrame implements ActionListener{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	public static JPanel contentPane;
 	public static JMenuItem mi_TrangChu;
@@ -55,11 +58,22 @@ public class Application extends JFrame implements ActionListener{
 				try {
 					ConnectDB con = new ConnectDB();
 					con.connect();
-					if (nhanvien==null) {
-						g = new DangNhap_GUI();
-						g.setVisible(true);
-					}
-					frame.setVisible(false);
+					LoadingScreen loading = new LoadingScreen();
+					loading.toFront();
+					loading.setVisible(true);
+					Timer timer = new Timer();
+			        timer.schedule(new TimerTask() {
+			            @Override
+			            public void run() {
+			            	if (nhanvien==null) {
+								g = new DangNhap_GUI();
+								g.toBack();
+								g.setVisible(true);
+							}
+							frame.setVisible(false);
+			            }
+			        }, 3000); // 3 seconds delay
+			        
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

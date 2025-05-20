@@ -41,7 +41,7 @@ public class DonDatBan_DAO {
 				
 				try (Connection con = ConnectDB.getInstance().getConnection();
 				PreparedStatement pst = con.prepareStatement(sql)) {
-				
+				System.out.println(maNV);
 				pst.setString(1, maDDB);
 				pst.setString(2, maHD);
 				pst.setString(3, maNV);
