@@ -457,7 +457,7 @@ public class TrangChu_GUI extends JFrame {
 		panel_4.add(scrollPane);
 		
 		String[] colnamesDGM = {
-				"Tên món", "Loại món", "Đơn giá", "Lượt dùng"
+				"STT", "Tên món", "Loại món", "Đơn giá", "Lượt dùng"
 		};
 		tableModel = new DefaultTableModel(colnamesDGM, 0);
 		table = new JTable(tableModel);
@@ -541,15 +541,19 @@ public class TrangChu_GUI extends JFrame {
 	    tableModel.setRowCount(0);
 
 	    // Thêm dữ liệu mới
+	    int stt =0;
 	    for (Map.Entry<Mon, Integer> entry : danhSach) {
+	    	stt++;
 	        Mon mon = entry.getKey();
 	        int luotDung = entry.getValue();
 	        tableModel.addRow(new Object[]{
+	        	stt,
 	            mon.getTenMon(),
 	            mon.getLoaiMon(),
 	            mon.getDonGia(),
 	            luotDung
 	        });
+	        if (stt == 10) break; // Chỉ lấy 5 món phổ biến nhất
 	    }
 	}
     public JPanel getPanel() {

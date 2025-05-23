@@ -1059,6 +1059,7 @@ public class ThongKe_GUI extends JFrame {
 	            mon.getTenMon(), // Dish name
 	            luotDung         // Usage count
 	        });
+	        if (stt > 5) break; 
 	    }
 	}
 	private void capNhatLblHD() {
