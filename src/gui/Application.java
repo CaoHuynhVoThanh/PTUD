@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import java.awt.Desktop;
+
 import javax.swing.UIManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,6 +18,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
@@ -24,12 +28,18 @@ import javax.swing.JButton;
 
 
 import connectDB.ConnectDB;
+import entities.NhanVien;
 import test.LoadingPanel;
 
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 public class Application extends JFrame implements ActionListener{
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	public static JPanel contentPane;
 	public static JMenuItem mi_TrangChu;
@@ -41,7 +51,9 @@ public class Application extends JFrame implements ActionListener{
 	public static JMenuItem mi_ThongKe;
 	public static JMenuItem mi_QuanLy;
 	public static JMenuItem mi_TroGiup;
-	
+	public static NhanVien nhanvien = null;
+	public static Application frame = new Application();
+	public static DangNhap_GUI g = new DangNhap_GUI();
 	/**
 	 * Launch the application.
 	 */
@@ -51,14 +63,31 @@ public class Application extends JFrame implements ActionListener{
 				try {
 					ConnectDB con = new ConnectDB();
 					con.connect();
-					Application frame = new Application();
-					frame.setVisible(true);
+					LoadingScreen loading = new LoadingScreen();
+					loading.toFront();
+					loading.setVisible(true);
+					Timer timer = new Timer();
+			        timer.schedule(new TimerTask() {
+			            @Override
+			            public void run() {
+			            	if (nhanvien==null) {
+								g = new DangNhap_GUI();
+								g.toBack();
+								g.setVisible(true);
+							}
+							frame.setVisible(false);
+			            }
+			        }, 3000); // 3 seconds delay
+			        
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
+
+
+	private JButton btn_dangxuat;
 
 	/**
 	 * Create the frame.
@@ -143,7 +172,7 @@ public class Application extends JFrame implements ActionListener{
                 lb_ngay.setText("Ngày: " + currentDate.format(dateFormatter));
                 lb_thoiGian.setText("Thời gian: " + currentTime.format(timeFormatter));
             }
-        }, 0, 1000); // Cập nhật mỗi giây (1000ms)
+        }, 0, 500); // Cập nhật mỗi giây (500ms)
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 153, 0));
@@ -161,12 +190,13 @@ public class Application extends JFrame implements ActionListener{
 		mi_TrangChu.setBounds(20, 48, 291, 61);
 		panel.add(mi_TrangChu);
 		
-		JButton btnNewButton = new JButton("ĐĂNG XUẤT");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setBackground(new Color(0, 0, 0));
-		btnNewButton.setBounds(89, 641, 164, 42);
-		panel.add(btnNewButton);
+		btn_dangxuat = new JButton("ĐĂNG XUẤT");
+		btn_dangxuat.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btn_dangxuat.setForeground(new Color(255, 255, 255));
+		btn_dangxuat.setBackground(new Color(0, 0, 0));
+		btn_dangxuat.setBounds(89, 641, 164, 42);
+		btn_dangxuat.addActionListener(this);
+		panel.add(btn_dangxuat);
 		
 		mi_DatBan = new JMenuItem("              ĐẶT BÀN");
 		mi_DatBan.addActionListener(this);
@@ -309,7 +339,16 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    TrangChu_GUI gui = new TrangChu_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
+		}
+		if (cmd.equals("ĐĂNG XUẤT")){
+			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất không?")==JOptionPane.YES_OPTION) {
+				frame.setVisible(false);
+				g.clearAll();
+				g.setVisible(true);
+				nhanvien=null;
+			}
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("đặt bàn")) {
 			int count = contentPane.getComponentCount();
@@ -326,7 +365,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    DatBan_GUI gui = new DatBan_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("nhận bàn")) {
 			int count = contentPane.getComponentCount();
@@ -343,7 +382,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    NhanDon_GUI gui = new NhanDon_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("gọi món")) {
 			int count = contentPane.getComponentCount();
@@ -360,7 +399,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    GoiMon_GUI gui = new GoiMon_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("thanh toán")) {
 			int count = contentPane.getComponentCount();
@@ -377,7 +416,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    ThanhToan_GUI gui = new ThanhToan_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("lịch sử")) {
 			int count = contentPane.getComponentCount();
@@ -394,7 +433,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    LichSu_GUI gui = new LichSu_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("thống kê")) {
 			int count = contentPane.getComponentCount();
@@ -411,7 +450,7 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    ThongKe_GUI gui = new ThongKe_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("quản lý")) {
 			int count = contentPane.getComponentCount();
@@ -428,7 +467,19 @@ public class Application extends JFrame implements ActionListener{
 			loading.loadAsync(() -> {
 			    QuanLy_GUI gui = new QuanLy_GUI();
 			    return gui.getPanel();
-			}, 1000);
+			}, 500);
+		}
+		if (cmd.equalsIgnoreCase("trợ giúp")) {
+		    try {
+		        File htmlFile = new File("src/gui/help.html");
+		        Desktop.getDesktop().browse(htmlFile.toURI());
+		    } catch (IOException ex) {
+		        System.err.println("Error opening help file: " + ex.getMessage());
+		        JOptionPane.showMessageDialog(this, 
+		            "Không thể mở trang trợ giúp", 
+		            "Lỗi", 
+		            JOptionPane.ERROR_MESSAGE);
+		    }
 		}
 	}
 

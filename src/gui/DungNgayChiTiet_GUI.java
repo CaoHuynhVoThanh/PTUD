@@ -237,7 +237,7 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 		System.out.println(dateTime);
 		createKhachHang(makh, hoten, sdt);
 		
-		DonDatBan_DAO.insertDonDatBan(ma, null, currenUser.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, 0);
+		DonDatBan_DAO.insertDonDatBan(ma, null, Application.nhanvien.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, 0);
 		for (Ban x: dsbd) {
 			createChiTietDDB(ma, x.getMaBan(), null);
 		}

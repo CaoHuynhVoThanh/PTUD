@@ -10,9 +10,10 @@ public class LoadingScreen extends JFrame {
     public LoadingScreen() {
         // Set up the frame
         setTitle("Loading");
-        setSize(500, 400);
+        setBounds(400, 200, 750, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);
+        setResizable(false);
         setLocationRelativeTo(null);
 
         // Create logo
@@ -64,9 +65,10 @@ public class LoadingScreen extends JFrame {
 
     private void showMainApp() {
         // Create and display the main application window
-        Application mainApp = new Application();
-        mainApp.setVisible(true);
-        mainApp.toFront();
+//        DangNhap_GUI mainApp = new DangNhap_GUI();
+//        mainApp.setVisible(true);
+//        mainApp.toFront();
+        this.setVisible(false);
     }
 
     public static void main(String[] args) {
