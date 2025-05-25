@@ -616,6 +616,8 @@ public class QuanLyBan_GUI extends JFrame {
             viTriFilterComboBox.setSelectedIndex(0);
             soChoNgoiFilterComboBox.setSelectedIndex(0);
             tinhTrangFilterComboBox.setSelectedIndex(0);
+            maBanFilterField.setText("Nhập mã bàn..."); 
+            maBanFilterField.setForeground(Color.GRAY); 
             loadFilteredData();
         });
 

@@ -79,7 +79,7 @@ public class LichSu_DAO {
         Vector<Vector<Object>> data = new Vector<>();
         String query = "SELECT hd.maHD AS MaHD, hd.thoiGianThanhToan AS ThoiGian, nv.tenNV AS NguoiTao, " +
                       "ISNULL(kh.tenKH, N'Khách vãng lai') + CASE WHEN kh.soDienThoai IS NOT NULL THEN N' (' + kh.soDienThoai + N')' ELSE N'' END AS ThongTinKH, " +
-                      "hd.phuongThucTT AS PhuongThuc, hd.tongTien AS TongTien " +
+                      "hd.phuongThucThanhToan AS PhuongThuc " +
                       "FROM HoaDon hd " +
                       "INNER JOIN NhanVien nv ON hd.maNV = nv.maNV " +
                       "LEFT JOIN DonDatBan ddb ON hd.maHD = ddb.maHD " +
@@ -95,7 +95,7 @@ public class LichSu_DAO {
                 row.add(rs.getString("NguoiTao"));
                 row.add(rs.getString("ThongTinKH"));
                 row.add(rs.getString("PhuongThuc"));
-                row.add(rs.getDouble("TongTien"));
+                row.add(""); // Thêm cột "Tổng tiền" rỗng
                 data.add(row);
             }
         }
@@ -128,10 +128,14 @@ public class LichSu_DAO {
 
     public List<Object[]> getChiTietMonAnByMaHD(String maHD) throws SQLException {
         List<Object[]> result = new ArrayList<>();
-        String query = "SELECT ma.tenMon, cthd.soLuong, ma.donGia, (cthd.soLuong * ma.donGia) AS ThanhTien " +
-                      "FROM ChiTietHoaDon cthd " +
-                      "INNER JOIN Mon ma ON cthd.maMon = ma.maMon " +
-                      "WHERE cthd.maHD = ?";
+        String query = "SELECT m.tenMon, ctdgm.soLuong, m.donGia, (ctdgm.soLuong * m.donGia) AS ThanhTien " +
+                       "FROM HoaDon hd " +
+                       "INNER JOIN DonDatBan ddb ON hd.maHD = ddb.maHD " +
+                       "INNER JOIN ChiTietDonDatBan ctddb ON ddb.maDDB = ctddb.maDDB " +
+                       "INNER JOIN DonGoiMon dgm ON ctddb.maDGM = dgm.maDGM " +
+                       "INNER JOIN ChiTietDonGoiMon ctdgm ON dgm.maDGM = ctdgm.maDGM " +
+                       "INNER JOIN Mon m ON ctdgm.maMon = m.maMon " +
+                       "WHERE hd.maHD = ?";
         try (Connection conn = ConnectDB.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, maHD);
