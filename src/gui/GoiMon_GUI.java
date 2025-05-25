@@ -434,9 +434,6 @@ public class GoiMon_GUI extends JFrame{
 		// 4. Cập nhật hiển thị ngay lập tức
 		capNhatHienThi(scrollPane_DoUong, dsDoUong);
 		
-		JScrollPane scrollPane_HayDung = new JScrollPane();
-		tabbedPane.addTab("Hay dùng", null, scrollPane_HayDung, null);
-		
 		JScrollPane scrollPane_DGM = new JScrollPane();
 		scrollPane_DGM.setBounds(733, 29, 480, 430);
 		pGoiMon.add(scrollPane_DGM);
@@ -931,37 +928,37 @@ public class GoiMon_GUI extends JFrame{
 	        tableModelDGM.setRowCount(0);
 	        
 	        // Lấy danh sách đơn gọi món của bàn này
-	        ArrayList<DonGoiMon> dsDonGoiMon = DonGoiMon_DAO.getDonGoiMonTheoBan(maBan, ngayChon);
+	        String donGoiMon = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon,maBan);
 	        
-	        if (dsDonGoiMon.isEmpty()) {
+	        if (donGoiMon == null) {
 	            return;
 	        }
 	        
-	        for (DonGoiMon don : dsDonGoiMon) {
-	            // Lấy chi tiết đơn gọi món
-	            ArrayList<ChiTietDonGoiMon> dsChiTiet = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
-	            
-	            for (ChiTietDonGoiMon ct : dsChiTiet) {
-	                // Lấy thông tin món
-	                Mon mon = Mon_DAO.getMonTheoMa(ct.getMaMon());
-	                
-	                if (mon != null) {
-	                    // Thêm vào bảng
-	                    Object[] row = {
-	                        mon.getTenMon(),
-	                        ct.getSoLuong(),
-	                        mon.getDonGia() * ct.getSoLuong(),
-	                        "Hủy"
-	                    };
-	                    tableModelDGM.addRow(row);
-	                }
-	            }
-	            
-	            // Cập nhật ghi chú nếu có
-	            if (don.getGhiChu() != null && !don.getGhiChu().isEmpty()) {
-	                ghiChu = don.getGhiChu();
-	            }
-	        }
+	        DonGoiMon don = DonGoiMon_DAO.getDonGoiMonTheoMaDGM(donGoiMon);
+            // Lấy chi tiết đơn gọi món
+            ArrayList<ChiTietDonGoiMon> dsChiTiet = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
+            
+            for (ChiTietDonGoiMon ct : dsChiTiet) {
+                // Lấy thông tin món
+                Mon mon = Mon_DAO.getMonTheoMa(ct.getMaMon());
+                
+                if (mon != null) {
+                    // Thêm vào bảng
+                    Object[] row = {
+                        mon.getTenMon(),
+                        ct.getSoLuong(),
+                        mon.getDonGia() * ct.getSoLuong(),
+                        "Hủy"
+                    };
+                    tableModelDGM.addRow(row);
+                }
+            }
+            
+            // Cập nhật ghi chú nếu có
+            if (don.getGhiChu() != null && !don.getGhiChu().isEmpty()) {
+                ghiChu = don.getGhiChu();
+            }
+	        
 	        
 	        // Cập nhật tổng tiền
 	        updateTongTien();

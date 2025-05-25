@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Hướng dẫn sử dụng phần mềm quản lý nhà hàng</title>
+    <title>Hướng dẫn sử dụng phần mềm quản lý nhà hàng Takudo</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -15,11 +15,31 @@
         }
 
         .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
             background: linear-gradient(135deg, #ff9900, #ff7600);
             color: white;
             padding: 2rem;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header img {
+            height: 80px;
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header img {
+                height: 60px;
+            }
         }
 
         .header h1 {
@@ -121,9 +141,9 @@
 
 <body>
     <div class="header">
+        <img src="../images/App/logo.png" alt="Takudo Logo">
         <h1>Hướng dẫn sử dụng phần mềm quản lý nhà hàng</h1>
     </div>
-
     <div class="section">
         <h2>1. Trang chủ</h2>
         <div class="feature">
