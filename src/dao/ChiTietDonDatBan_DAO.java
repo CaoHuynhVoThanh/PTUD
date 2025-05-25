@@ -18,7 +18,8 @@ public class ChiTietDonDatBan_DAO {
 	                 "FROM ChiTietDonDatBan ctddb " +
 	                 "JOIN DonDatBan ddb ON ctddb.maDDB = ddb.maDDB " +
 	                 "WHERE CONVERT(DATE, ddb.thoiGianDat) = ? " +
-	                 "AND ctddb.maBan = ?";
+	                 "AND ctddb.maBan = ? " +
+	                 "AND ddb.maHD IS NULL";
 	    
 	    try {
 	        PreparedStatement pst = conN.prepareStatement(sql);
@@ -35,50 +36,52 @@ public class ChiTietDonDatBan_DAO {
 	    
 	    return maDGM;
 	}
+
 	public static boolean capNhatMaDGMTheoNgayVaBan(LocalDate ngayDat, String maBan, String maDGM) {
-	    ConnectDB.getInstance().connect();
-	    Connection conN = ConnectDB.getInstance().getConnection();
-	    boolean success = false;
-	    
-	    String sql = "UPDATE ChiTietDonDatBan " +
-	                 "SET maDGM = ? " +
-	                 "WHERE maBan = ? AND maDDB IN (" +
-	                 "   SELECT maDDB FROM DonDatBan " +
-	                 "   WHERE CONVERT(DATE, thoiGianDat) = ?" +
-	                 ")";
-	    
-	    try {
-	        conN.setAutoCommit(false); // Start transaction
-	        
-	        PreparedStatement pst = conN.prepareStatement(sql);
-	        pst.setString(1, maDGM);
-	        pst.setString(2, maBan);
-	        pst.setDate(3, java.sql.Date.valueOf(ngayDat));
-	        
-	        int rowsAffected = pst.executeUpdate();
-	        if (rowsAffected > 0) {
-	            conN.commit(); // Commit transaction if successful
-	            success = true;
-	        } else {
-	            conN.rollback(); // Rollback if no rows affected
-	        }
-	    } catch (SQLException e) {
-	        try {
-	            conN.rollback(); // Rollback on error
-	        } catch (SQLException ex) {
-	            ex.printStackTrace();
-	        }
-	        e.printStackTrace();
-	    } finally {
-	        try {
-	            conN.setAutoCommit(true); // Reset auto-commit
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    
-	    return success;
-	}
+    ConnectDB.getInstance().connect();
+    Connection conN = ConnectDB.getInstance().getConnection();
+    boolean success = false;
+    
+    String sql = "UPDATE ChiTietDonDatBan " +
+                 "SET maDGM = ? " +
+                 "WHERE maBan = ? AND maDDB IN (" +
+                 "   SELECT maDDB FROM DonDatBan " +
+                 "   WHERE CONVERT(DATE, thoiGianDat) = ? AND maHD IS NULL" +
+                 ")";
+    
+    try {
+        conN.setAutoCommit(false); // Start transaction
+        
+        PreparedStatement pst = conN.prepareStatement(sql);
+        pst.setString(1, maDGM);
+        pst.setString(2, maBan);
+        pst.setDate(3, java.sql.Date.valueOf(ngayDat));
+        
+        int rowsAffected = pst.executeUpdate();
+        if (rowsAffected > 0) {
+            conN.commit(); // Commit transaction if successful
+            success = true;
+        } else {
+            conN.rollback(); // Rollback if no rows affected
+        }
+    } catch (SQLException e) {
+        try {
+            conN.rollback(); // Rollback on error
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        e.printStackTrace();
+    } finally {
+        try {
+            conN.setAutoCommit(true); // Reset auto-commit
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    return success;
+}
+
 	public static int demChiTietDonDatBanTrongNgay() {
 	    int count = 0;
 	    String query = " SELECT COUNT(*)\r\n"

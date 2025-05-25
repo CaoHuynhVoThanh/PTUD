@@ -75,6 +75,7 @@ public class TrangChu_GUI extends JFrame {
 	private JLabel lblDaNhan;
 	private JLabel lblDaHuy;
 	private JLabel lblChoNhan;
+	private JPanel panel_trangchu;
 	/**
 	 * Launch the application.
 	 */
@@ -275,7 +276,7 @@ public class TrangChu_GUI extends JFrame {
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 		
-		JPanel panel_trangchu = new JPanel();
+		panel_trangchu = new JPanel();
 		panel_trangchu.setBackground(new Color(255, 255, 255));
 		panel_trangchu.setBounds(285, 133, 1254, 704);
 		contentPane.add(panel_trangchu);
@@ -456,7 +457,7 @@ public class TrangChu_GUI extends JFrame {
 		panel_4.add(scrollPane);
 		
 		String[] colnamesDGM = {
-				"Tên món", "Loại món", "Đơn giá", "Lượt dùng"
+				"STT", "Tên món", "Loại món", "Đơn giá", "Lượt dùng"
 		};
 		tableModel = new DefaultTableModel(colnamesDGM, 0);
 		table = new JTable(tableModel);
@@ -533,22 +534,30 @@ public class TrangChu_GUI extends JFrame {
 	public void updateTableMon(Map<Mon, Integer> mapMon) {
 	    // Tạo danh sách từ map để sắp xếp
 	    List<Map.Entry<Mon, Integer>> danhSach = new ArrayList<>(mapMon.entrySet());
+	    System.out.println(danhSach.size());
 	    danhSach.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
 
 	    // Xóa dữ liệu cũ
 	    tableModel.setRowCount(0);
 
 	    // Thêm dữ liệu mới
+	    int stt =0;
 	    for (Map.Entry<Mon, Integer> entry : danhSach) {
+	    	stt++;
 	        Mon mon = entry.getKey();
 	        int luotDung = entry.getValue();
 	        tableModel.addRow(new Object[]{
+	        	stt,
 	            mon.getTenMon(),
 	            mon.getLoaiMon(),
 	            mon.getDonGia(),
 	            luotDung
 	        });
+	        if (stt == 10) break; // Chỉ lấy 5 món phổ biến nhất
 	    }
 	}
+    public JPanel getPanel() {
+    	return this.panel_trangchu;
+    }
 
 }

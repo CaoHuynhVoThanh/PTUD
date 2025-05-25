@@ -181,6 +181,44 @@ public class NhanVien_DAO {
 
 	    return dsNV;
 	}
+	
+	public static NhanVien dangNhap(String ma, String mk) {
+		NhanVien nv = null;
+		Connection con = ConnectDB.getInstance().getConnection();
+		String sql = "SELECT * FROM TaiKhoan WHERE MaTK=? and MatKhau=?";
+	    try {
+	        PreparedStatement pstm = con.prepareStatement(sql);
+	        pstm.setString(1, ma);
+	        pstm.setString(2, mk);
+	        ResultSet rs = pstm.executeQuery();
+
+	        if (rs.next()) {
+	        	String sql2 = "select * from NhanVien where maNV=?";
+	        	try {
+	        		PreparedStatement pstm2 = con.prepareStatement(sql);
+	    	        pstm2.setString(1, ma);
+		    	    ResultSet rs2 = pstm.executeQuery();
+		    	    if (rs.next()) {
+		        		String manv = rs2.getString("maNV");
+			            String ten = rs2.getString("tenNV");
+			            String email = rs2.getString("email");
+			            String sdt = rs2.getString("soDienThoai");
+			            String diaChi = rs2.getString("diaChi");
+			            String chucVu = rs2.getString("chucVu");
+			            LocalDate ngaySinh = rs2.getDate("ngaySinh").toLocalDate();
+			            boolean trangThai = rs2.getBoolean("trangThai");
+	
+			            nv = new NhanVien(manv, ten, email, sdt, diaChi, chucVu, ngaySinh, trangThai);
+		    	    }
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	        }	
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return nv;
+	}
 
 
 }

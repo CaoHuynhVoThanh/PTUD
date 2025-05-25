@@ -103,6 +103,7 @@ public class GoiMon_GUI extends JFrame{
 	private JScrollPane scrollPane_DoUong;
 	private JDateChooser dateChooser = new JDateChooser();
 	private JTextArea txtGhiChu = new JTextArea();
+	private JPanel pGoiMon;
 	/**
 	 * Launch the application.
 	 */
@@ -307,7 +308,7 @@ public class GoiMon_GUI extends JFrame{
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 
-		JPanel pGoiMon = new JPanel();
+		pGoiMon = new JPanel();
 		pGoiMon.setBounds(286, 138, 1237, 689);
 		contentPane.add(pGoiMon);
 		pGoiMon.setLayout(null);
@@ -394,7 +395,6 @@ public class GoiMon_GUI extends JFrame{
             	if (selectedDate!= null) {
             		loadComboBan(dateChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
             	}
-            	
             }
         });
         
@@ -433,9 +433,6 @@ public class GoiMon_GUI extends JFrame{
 
 		// 4. Cập nhật hiển thị ngay lập tức
 		capNhatHienThi(scrollPane_DoUong, dsDoUong);
-		
-		JScrollPane scrollPane_HayDung = new JScrollPane();
-		tabbedPane.addTab("Hay dùng", null, scrollPane_HayDung, null);
 		
 		JScrollPane scrollPane_DGM = new JScrollPane();
 		scrollPane_DGM.setBounds(733, 29, 480, 430);
@@ -832,7 +829,7 @@ public class GoiMon_GUI extends JFrame{
 	        
 	        String ngayThangNam = ngayChon.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 	        int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(ngayChon) + 1;
-	        String maDGMMoi = String.format("GM%s%05d", ngayThangNam, soThuTu);
+	        String maDGMMoi = String.format("GM%s%04d", ngayThangNam, soThuTu);
 	        LocalDateTime thoiGian = LocalDateTime.now();
 	        
 	        // 1. First create the DonGoiMon
@@ -885,6 +882,7 @@ public class GoiMon_GUI extends JFrame{
 		ChiTietDonGoiMon_DAO.xoaChiTietTheoMaDGM(maDGM);
         // 3. Thêm lại các chi tiết mới từ tableModelDGM
         for (int i = 0; i < tableModelDGM.getRowCount(); i++) {
+        	System.out.println(i);
             String tenMon = tableModelDGM.getValueAt(i, 0).toString();
             int soLuong = (int) tableModelDGM.getValueAt(i, 1);
 
@@ -911,10 +909,9 @@ public class GoiMon_GUI extends JFrame{
 		lblMaBan.setText(txtMBan);
 	}
 	public void setSelectedBan(String maBan) {    
-	    comboBan.setSelectedItem(maBan);;
+	    comboBan.setSelectedItem(maBan);
 	    comboBan.setEnabled(false);
 	    comboBan.setBackground(new Color(240, 240, 240));
-	    
 	    // Cập nhật label hiển thị
 	    lblMaBan.setText("Mã bàn: " + maBan);
 	}
@@ -931,38 +928,37 @@ public class GoiMon_GUI extends JFrame{
 	        tableModelDGM.setRowCount(0);
 	        
 	        // Lấy danh sách đơn gọi món của bàn này
-	        ArrayList<DonGoiMon> dsDonGoiMon = DonGoiMon_DAO.getDonGoiMonTheoBan(maBan);
+	        String donGoiMon = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon,maBan);
 	        
-	        if (dsDonGoiMon.isEmpty()) {
+	        if (donGoiMon == null) {
 	            return;
 	        }
 	        
-	        // Duyệt qua các đơn gọi món và thêm vào bảng
-	        for (DonGoiMon don : dsDonGoiMon) {
-	            // Lấy chi tiết đơn gọi món
-	            ArrayList<ChiTietDonGoiMon> dsChiTiet = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
-	            
-	            for (ChiTietDonGoiMon ct : dsChiTiet) {
-	                // Lấy thông tin món
-	                Mon mon = Mon_DAO.getMonTheoMa(ct.getMaMon());
-	                
-	                if (mon != null) {
-	                    // Thêm vào bảng
-	                    Object[] row = {
-	                        mon.getTenMon(),
-	                        ct.getSoLuong(),
-	                        mon.getDonGia() * ct.getSoLuong(),
-	                        "Hủy"
-	                    };
-	                    tableModelDGM.addRow(row);
-	                }
-	            }
-	            
-	            // Cập nhật ghi chú nếu có
-	            if (don.getGhiChu() != null && !don.getGhiChu().isEmpty()) {
-	                ghiChu = don.getGhiChu();
-	            }
-	        }
+	        DonGoiMon don = DonGoiMon_DAO.getDonGoiMonTheoMaDGM(donGoiMon);
+            // Lấy chi tiết đơn gọi món
+            ArrayList<ChiTietDonGoiMon> dsChiTiet = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
+            
+            for (ChiTietDonGoiMon ct : dsChiTiet) {
+                // Lấy thông tin món
+                Mon mon = Mon_DAO.getMonTheoMa(ct.getMaMon());
+                
+                if (mon != null) {
+                    // Thêm vào bảng
+                    Object[] row = {
+                        mon.getTenMon(),
+                        ct.getSoLuong(),
+                        mon.getDonGia() * ct.getSoLuong(),
+                        "Hủy"
+                    };
+                    tableModelDGM.addRow(row);
+                }
+            }
+            
+            // Cập nhật ghi chú nếu có
+            if (don.getGhiChu() != null && !don.getGhiChu().isEmpty()) {
+                ghiChu = don.getGhiChu();
+            }
+	        
 	        
 	        // Cập nhật tổng tiền
 	        updateTongTien();
@@ -1094,5 +1090,8 @@ public class GoiMon_GUI extends JFrame{
             });
             return null;
         }
+    }
+    public JPanel getPanel() {
+    	return this.pGoiMon;
     }
 }

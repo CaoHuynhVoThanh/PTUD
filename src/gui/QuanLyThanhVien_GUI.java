@@ -48,6 +48,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
     private JDateChooser filterNgayCapChooser;
     private JTextField filterNgaySinhPlaceholder;
     private JTextField filterNgayCapPlaceholder;
+	private JPanel panel_QLThanhVien;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -240,24 +241,24 @@ public class QuanLyThanhVien_GUI extends JFrame {
         });
 
         // Panel chính chứa nội dung quản lý thành viên
-        JPanel panel_trangchu = new JPanel();
-        panel_trangchu.setBackground(new Color(255, 255, 255));
-        panel_trangchu.setBounds(285, 133, 1254, 704);
-        contentPane.add(panel_trangchu);
-        panel_trangchu.setLayout(null);
+        panel_QLThanhVien = new JPanel();
+        panel_QLThanhVien.setBackground(new Color(255, 255, 255));
+        panel_QLThanhVien.setBounds(285, 133, 1254, 704);
+        contentPane.add(panel_QLThanhVien);
+        panel_QLThanhVien.setLayout(null);
 
         // Tiêu đề "QUẢN LÝ THÀNH VIÊN"
         JLabel titleLabel = new JLabel("QUẢN LÝ THÀNH VIÊN", SwingConstants.CENTER);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
         titleLabel.setBounds(0, 10, 1254, 40);
-        panel_trangchu.add(titleLabel);
+        panel_QLThanhVien.add(titleLabel);
 
         // Panel chứa các ô nhập liệu
         JPanel inputPanel = new JPanel();
         inputPanel.setBounds(20, 60, 1214, 123);
         inputPanel.setBackground(new Color(240, 240, 240));
         inputPanel.setLayout(null);
-        panel_trangchu.add(inputPanel);
+        panel_QLThanhVien.add(inputPanel);
 
         // Số điện thoại (Mã TV)
         JLabel maTVLabel = new JLabel("Số ĐT (Mã TV)");
@@ -356,7 +357,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
         filterPanel.setBounds(20, 199, 1214, 60);
         filterPanel.setBackground(new Color(240, 240, 240));
         filterPanel.setLayout(null);
-        panel_trangchu.add(filterPanel);
+        panel_QLThanhVien.add(filterPanel);
 
         JLabel filterLabel = new JLabel("Lọc:");
         filterLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -544,7 +545,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
         table.setRowHeight(30);
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(20, 278, 1214, 426);
-        panel_trangchu.add(scrollPane);
+        panel_QLThanhVien.add(scrollPane);
 
         // Load data
         loadData();
@@ -590,10 +591,8 @@ public class QuanLyThanhVien_GUI extends JFrame {
                 String hangThe = "Silver";
                 int diemTichLuy = 0;
                 Date ngayCap = new Date();
-
                 ThanhVien tv = new ThanhVien(maTV, tenTV, email, ngaySinh, hangThe, diemTichLuy, ngayCap);
                 dao.addThanhVien(tv);
-
                 hangTheField.setText(hangThe);
                 diemTichLuyField.setText(String.valueOf(diemTichLuy));
                 ngayCapChooser.setDate(ngayCap);
@@ -618,7 +617,6 @@ public class QuanLyThanhVien_GUI extends JFrame {
                         JOptionPane.showMessageDialog(null, "Vui lòng nhập Tên thành viên!");
                         return;
                     }
-
                     ThanhVien tv = new ThanhVien(maTV, tenTV, null, null, null, 0, null);
                     dao.updateThanhVien(tv);
                     loadData();
@@ -755,5 +753,8 @@ public class QuanLyThanhVien_GUI extends JFrame {
         filterDiemTichLuyField.setForeground(Color.GRAY);
         filterNgayCapChooser.setDate(null);
         filterNgayCapPlaceholder.setVisible(true);
+    }
+    public JPanel getPanel() {
+        return panel_QLThanhVien;
     }
 }

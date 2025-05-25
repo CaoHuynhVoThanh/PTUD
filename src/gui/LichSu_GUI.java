@@ -17,7 +17,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-import javax.swing.RowFilter;
 
 public class LichSu_GUI extends JFrame {
 
@@ -26,6 +25,7 @@ public class LichSu_GUI extends JFrame {
     private JButton detailButtonHoaDon;
     private JTable tableHoaDon;
     private LichSu_DAO lichSuDAO = new LichSu_DAO();
+	private JPanel panel_trangchu;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -189,7 +189,7 @@ public class LichSu_GUI extends JFrame {
         panel.add(mi_TroGiup);
 
         // Main content panel
-        JPanel panel_trangchu = new JPanel();
+        panel_trangchu = new JPanel();
         panel_trangchu.setBackground(Color.WHITE);
         panel_trangchu.setBounds(285, 133, 1254, 704);
         contentPane.add(panel_trangchu);
@@ -1079,5 +1079,8 @@ public class LichSu_GUI extends JFrame {
             JOptionPane.showMessageDialog(null, "Lỗi khi lấy dữ liệu đơn đặt bàn: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             return new Object[0][];
         }
+    }
+    public JPanel getPanel() {
+    	return this.panel_trangchu;
     }
 }

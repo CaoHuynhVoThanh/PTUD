@@ -35,6 +35,7 @@ public class ThanhVien {
         return tenTV;
     }
 
+
     public void setTenTV(String tenTV) {
         this.tenTV = tenTV;
     }

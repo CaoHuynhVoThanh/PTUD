@@ -37,6 +37,7 @@ public class QuanLyBan_GUI extends JFrame {
     private DefaultTableModel model;
     private ArrayList<KhuVuc> khuVucList;
     private boolean isUpdating = false;
+	private JPanel mainPanel;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -218,7 +219,7 @@ public class QuanLyBan_GUI extends JFrame {
         sidebarPanel.add(mi_TroGiup);
 
         // Panel chính chứa nội dung quản lý bàn
-        JPanel mainPanel = new JPanel();
+        mainPanel = new JPanel();
         mainPanel.setBackground(Color.WHITE);
         mainPanel.setBounds(285, 133, 1254, 704);
         contentPane.add(mainPanel);
@@ -693,5 +694,8 @@ public class QuanLyBan_GUI extends JFrame {
                 });
             }
         }
+    }
+    public JPanel getPanel() {
+        return mainPanel;
     }
 }

@@ -55,31 +55,7 @@ public class DonGoiMon_DAO {
 	    }
 	    return count;
 	}
-	public static ArrayList<DonGoiMon> getDonGoiMonTheoBan(String maBan) {
-	    ArrayList<DonGoiMon> dsDon = new ArrayList<>();
-	    ConnectDB.getInstance();
-	    Connection conN = ConnectDB.getInstance().getConnection();
-	    try {
-	        String sql = "SELECT d.* FROM DonGoiMon d " +
-	                     "JOIN ChiTietDonDatBan c ON d.maDGM = c.maDGM " +
-	                     "WHERE c.maBan = ?";
-	        PreparedStatement stmt = conN.prepareStatement(sql);
-	        stmt.setString(1, maBan);
-	        ResultSet rs = stmt.executeQuery();
-	        
-	        while (rs.next()) {
-	            DonGoiMon don = new DonGoiMon(
-	                rs.getString("maDGM"),
-	                rs.getTimestamp("thoiGianGM").toLocalDateTime(),
-	                rs.getString("ghiChu")
-	            );
-	            dsDon.add(don);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return dsDon;
-	}
+
 	
 	public static DonGoiMon getDonGoiMonTheoMaDDBVaMaBan(String maDDB, String maBan) {
 	    DonGoiMon donGoiMon = null;
@@ -147,4 +123,29 @@ public class DonGoiMon_DAO {
         }
         return null;
     }
+    public static DonGoiMon getDonGoiMonTheoMaDGM(String maDGM) {
+        DonGoiMon donGoiMon = null;
+        ConnectDB.getInstance();
+        Connection conN = ConnectDB.getInstance().getConnection();
+        
+        String sql = "SELECT maDGM, thoiGianGM, ghiChu FROM DonGoiMon WHERE maDGM = ?";
+        
+        try (PreparedStatement stmt = conN.prepareStatement(sql)) {
+            stmt.setString(1, maDGM);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                Timestamp timestamp = rs.getTimestamp("thoiGianGM");
+                LocalDateTime thoiGianGM = timestamp != null ? timestamp.toLocalDateTime() : null;
+                String ghiChu = rs.getString("ghiChu");
+                
+                donGoiMon = new DonGoiMon(maDGM, thoiGianGM, ghiChu);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return donGoiMon;
+    }
+
 }

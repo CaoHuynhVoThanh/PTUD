@@ -61,6 +61,7 @@ public class ChiTietDonGoiMon_DAO {
 	    return dsChiTiet;
 	}
 	public static boolean xoaChiTietTheoMaDGM(String maDGM) {
+		System.out.println(maDGM);
 	    int n = 0;
 	    ConnectDB.getInstance();
 	    Connection conN = ConnectDB.getInstance().getConnection();
@@ -70,6 +71,7 @@ public class ChiTietDonGoiMon_DAO {
 	        pstm = conN.prepareStatement(sql);
 	        pstm.setString(1, maDGM);
 	        n = pstm.executeUpdate();
+	        System.out.println("Xóa chi tiết đơn gọi món thành công: " + n);
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
@@ -90,7 +92,12 @@ public class ChiTietDonGoiMon_DAO {
 	    ResultSet rs = null;
 
 	    try {
-	        String sql = "SELECT SUM(soLuong) AS tongSoLuong FROM ChiTietDonGoiMon";
+	    	  String sql = """
+	                  SELECT SUM(soLuong) AS tongSoLuong
+	                  FROM ChiTietDonGoiMon ct
+	                  JOIN DonGoiMon dgm ON ct.maDGM = dgm.maDGM
+	                  WHERE CAST(dgm.thoiGianGM AS DATE) = CAST(GETDATE() AS DATE)
+	                  """;
 	        stmt = conN.prepareStatement(sql);
 	        rs = stmt.executeQuery();
 

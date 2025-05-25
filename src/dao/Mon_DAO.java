@@ -84,11 +84,14 @@ public class Mon_DAO {
 
 	    String sql = """
 	        SELECT m.*, SUM(ct.soLuong + ct.soLuongDaThanhToan) AS luotDung
-	        FROM Mon m
-	        JOIN ChiTietDonGoiMon ct ON m.maMon = ct.maMon
-	        JOIN DonGoiMon dgm ON ct.maDGM = dgm.maDGM
-	        WHERE MONTH(dgm.thoiGianGM) = ? AND YEAR(dgm.thoiGianGM) = ?
-	        GROUP BY m.maMon, m.tenMon, m.loaiMon, m.donGia, m.hinhAnh
+			FROM Mon m
+			JOIN ChiTietDonGoiMon ct ON m.maMon = ct.maMon
+			JOIN DonGoiMon dgm ON ct.maDGM = dgm.maDGM
+			WHERE m.loaiMon <> N'Đồ uống' 
+			  AND MONTH(dgm.thoiGianGM) = ? 
+			  AND YEAR(dgm.thoiGianGM) = ?
+			GROUP BY m.maMon, m.tenMon, m.loaiMon, m.donGia, m.hinhAnh
+
 	    """;
 
 	    try (PreparedStatement stmt = con.prepareStatement(sql)) {

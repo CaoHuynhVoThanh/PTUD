@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hướng dẫn sử dụng phần mềm quản lý nhà hàng Takudo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(135deg, #ff9900, #ff7600);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header img {
+            height: 80px;
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header img {
+                height: 60px;
+            }
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+        }
+
+        h2 {
+            color: #ff9900;
+            font-size: 1.8rem;
+            margin-top: 0;
+            border-bottom: 2px solid #ff9900;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #666;
+            font-size: 1.3rem;
+            margin: 1rem 0;
+        }
+
+        .feature {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-left: 4px solid #ff9900;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 8px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        li:before {
+            content: "•";
+            color: #ff9900;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        p {
+            margin: 0.8rem 0;
+            color: #555;
+        }
+
+        strong {
+            color: #444;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="header">
+        <img src="../images/App/logo.png" alt="Takudo Logo">
+        <h1>Hướng dẫn sử dụng phần mềm quản lý nhà hàng</h1>
+    </div>
+    <div class="section">
+        <h2>1. Trang chủ</h2>
+        <div class="feature">
+            Màn hình chính hiển thị tổng quan về hoạt động của nhà hàng và các thông tin quan trọng.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>2. Đặt bàn</h2>
+        <div class="feature">
+            <p>Chức năng đặt bàn cho khách hàng:</p>
+            <ul>
+                <li>Chọn vị trí bàn</li>
+                <li>Xem tình trạng bàn</li>
+                <li>Đặt bàn cho khách</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. Nhận bàn</h2>
+        <div class="feature">
+            <p>Xử lý tiếp nhận khách đã đặt bàn:</p>
+            <ul>
+                <li>Xác nhận khách đến</li>
+                <li>Kiểm tra thông tin đặt bàn</li>
+                <li>Sắp xếp bàn cho khách</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>4. Gọi món</h2>
+        <div class="feature">
+            <p>Quản lý việc gọi món cho khách:</p>
+            <ul>
+                <li>Chọn món ăn từ menu</li>
+                <li>Ghi chú yêu cầu đặc biệt</li>
+                <li>Cập nhật/hủy món</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>5. Thanh toán</h2>
+        <div class="feature">
+            <p>Xử lý thanh toán cho khách:</p>
+            <ul>
+                <li>Tính tổng hóa đơn</li>
+                <li>Áp dụng giảm giá (nếu có)</li>
+                <li>In hóa đơn</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>6. Lịch sử</h2>
+        <div class="feature">
+            <p>Xem lịch sử hoạt động:</p>
+            <ul>
+                <li>Lịch sử đặt bàn</li>
+                <li>Lịch sử giao dịch</li>
+                <li>Tra cứu hóa đơn cũ</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>7. Thống kê</h2>
+        <div class="feature">
+            <p>Xem báo cáo thống kê:</p>
+            <ul>
+                <li>Doanh thu</li>
+                <li>Số lượng khách</li>
+                <li>Món ăn bán chạy</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>8. Quản lý</h2>
+        <div class="feature">
+            <p>Quản lý hệ thống:</p>
+            <ul>
+                <li>Quản lý nhân viên</li>
+                <li>Quản lý menu</li>
+                <li>Cài đặt hệ thống</li>
+            </ul>
+        </div>
+    </div>
+    <!-- Add this section after the existing sections -->
+    <div class="section">
+        <h2>9. Quy định</h2>
+
+        <div class="feature">
+            <h3>Quy định về đặt cọc</h3>
+            <p>Khách hàng phải thực hiện đặt cọc ngay thì mới được xác nhận đơn đặt bàn.</p>
+            <p><strong>Bảng giá tiền cọc:</strong></p>
+            <ul>
+                <li>Bàn 2 người: 0 VNĐ</li>
+                <li>Bàn 4 người: 120.000 VNĐ</li>
+                <li>Bàn 8 người: 200.000 VNĐ</li>
+                <li>Bàn 16 người: 300.000 VNĐ</li>
+            </ul>
+            <p><strong>Phụ thu:</strong></p>
+            <ul>
+                <li>Phòng riêng: 100.000 VNĐ</li>
+                <li>Ban công: 100.000 VNĐ</li>
+                <li>Trang trí: 50.000 - 100.000 VNĐ</li>
+            </ul>
+        </div>
+
+        <div class="feature">
+            <h3>Quy định về cập nhật thông tin đặt bàn</h3>
+            <p>Các yêu cầu thay đổi thông tin đặt bàn phải được thực hiện ít nhất 3 giờ trước thời điểm đặt bàn. Sau
+                thời điểm này, nhà hàng có thể từ chối giải quyết.</p>
+        </div>
+
+        <div class="feature">
+            <h3>Quy định về hủy bàn</h3>
+            <p>Mức hoàn cọc theo thời gian hủy:</p>
+            <ul>
+                <li>Hủy trước 24 giờ: Hoàn 100% tiền cọc</li>
+                <li>Hủy từ 24 giờ đến 12 giờ: Hoàn 50% tiền cọc</li>
+                <li>Hủy trong vòng 12 giờ: Mất toàn bộ tiền cọc</li>
+            </ul>
+        </div>
+
+        <div class="feature">
+            <h3>Quy định về thời gian giữ bàn</h3>
+            <p>Thời gian giữ bàn tối đa là 20 phút kể từ thời điểm đặt. Sau thời gian này, nhà hàng có quyền hủy bàn nếu
+                khách không đến.</p>
+        </div>
+
+        <div class="feature">
+            <h3>Quy định về chuyển bàn</h3>
+            <p>Nhà hàng sẽ hỗ trợ chuyển bàn nếu bàn khác còn trống và chưa có khách đặt.</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

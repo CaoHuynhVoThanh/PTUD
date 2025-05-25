@@ -45,6 +45,8 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 	JSpinner tf_sokhach;
 	public static JButton okButton;
 	ArrayList<Ban> dsbd;
+	private JLabel lb_tongban;
+	private JLabel lb_tongghe;
 
 	/**
 	 * Launch the application.
@@ -147,6 +149,27 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 		));
 		scrollPane.setViewportView(table);
 		
+		lb_tongban = new JLabel("0");
+		lb_tongban.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tongban.setForeground(Color.WHITE);
+		lb_tongban.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_tongban.setBounds(623, 280, 116, 27);
+		contentPanel.add(lb_tongban);
+		
+		lb_tongghe = new JLabel("0");
+		lb_tongghe.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tongghe.setForeground(Color.WHITE);
+		lb_tongghe.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_tongghe.setBounds(623, 321, 116, 27);
+		contentPanel.add(lb_tongghe);
+		
+		JLabel lblTngSBn_1_2 = new JLabel("0");
+		lblTngSBn_1_2.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblTngSBn_1_2.setForeground(Color.WHITE);
+		lblTngSBn_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblTngSBn_1_2.setBounds(623, 400, 116, 27);
+		contentPanel.add(lblTngSBn_1_2);
+		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -174,14 +197,18 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 	
 	public void setDsBan(ArrayList<Ban> ds) {
 		dsbd = ds;
+		int tongban =ds.size();
+		int tongghe =0;
 	    DefaultTableModel dtm = new DefaultTableModel(
 	    new Object[]{"Mã Bàn", "Loại Bàn", "Phụ Phí", "Tiền cọc"}, 0);
 	    double tongTien =0;
 	    for (Ban x : ds) {
 	        System.out.println(x.getMaBan()); // Kiểm tra log
 	        dtm.addRow(new Object[]{x.getMaBan(), x.getLoaiBan(), x.getPhuPhi(), x.getPhiCoc()});
+	        tongghe+=x.getLoaiBan();
 	    }
-
+	    lb_tongban.setText(tongban+"");
+	    lb_tongghe.setText(tongghe+"");
 	    table.setModel(dtm); 
 	}
 	
@@ -210,7 +237,7 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 		System.out.println(dateTime);
 		createKhachHang(makh, hoten, sdt);
 		
-		DonDatBan_DAO.insertDonDatBan(ma, null, currenUser.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, 0);
+		DonDatBan_DAO.insertDonDatBan(ma, null, Application.nhanvien.getMaNV(), makh, dateTime, dateTime, soKhach, tiencoc, 0);
 		for (Ban x: dsbd) {
 			createChiTietDDB(ma, x.getMaBan(), null);
 		}

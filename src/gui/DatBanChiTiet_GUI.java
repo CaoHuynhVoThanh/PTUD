@@ -54,6 +54,10 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	JLabel lb_coc;
 	ArrayList<Ban> dsbd;
 	ConnectDB con;
+	private JLabel lblTngSBn;
+	private JLabel lblTngSGh;
+	private JLabel lb_tongban;
+	private JLabel lb_soghe;
 
 	/**
 	 * Launch the application.
@@ -149,13 +153,13 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		lblNewLabel_1_1.setBounds(201, 238, 414, 32);
 		contentPanel.add(lblNewLabel_1_1);
 		
-		JLabel lblTngSBn = new JLabel("Tổng số bàn:");
+		lblTngSBn = new JLabel("Tổng số bàn:");
 		lblTngSBn.setForeground(Color.WHITE);
 		lblTngSBn.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblTngSBn.setBounds(510, 280, 116, 27);
 		contentPanel.add(lblTngSBn);
 		
-		JLabel lblTngSGh = new JLabel("Tổng số ghế:");
+		lblTngSGh = new JLabel("Tổng số ghế:");
 		lblTngSGh.setForeground(Color.WHITE);
 		lblTngSGh.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblTngSGh.setBounds(510, 312, 116, 27);
@@ -230,6 +234,27 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		combPhut.setBounds(649, 78, 45, 21);
 		contentPanel.add(combPhut);
 		
+		lb_tongban = new JLabel("0");
+		lb_tongban.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tongban.setForeground(Color.WHITE);
+		lb_tongban.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_tongban.setBounds(623, 280, 116, 27);
+		contentPanel.add(lb_tongban);
+		
+		lb_soghe = new JLabel("0");
+		lb_soghe.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_soghe.setForeground(Color.WHITE);
+		lb_soghe.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_soghe.setBounds(623, 312, 116, 27);
+		contentPanel.add(lb_soghe);
+		
+		JLabel lb_tongban_1 = new JLabel("0");
+		lb_tongban_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tongban_1.setForeground(Color.WHITE);
+		lb_tongban_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lb_tongban_1.setBounds(635, 400, 116, 27);
+		contentPanel.add(lb_tongban_1);
+		
 		ButtonGroup group = new ButtonGroup();
 		
 		JPanel buttonPane = new JPanel();
@@ -259,6 +284,8 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	
 	public void setDsBan(ArrayList<Ban> ds) {
 		dsbd = ds;
+		int tongban =ds.size();
+		int tongghe =0;
 	    DefaultTableModel dtm = new DefaultTableModel(
 	    new Object[]{"Mã Bàn", "Loại Bàn", "Phụ Phí", "Tiền cọc"}, 0);
 	    double tongTien =0;
@@ -266,9 +293,11 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	        System.out.println(x.getMaBan()); // Kiểm tra log
 	        dtm.addRow(new Object[]{x.getMaBan(), x.getLoaiBan(), x.getPhuPhi(), x.getPhiCoc()});
 	        tongTien+=x.getPhiCoc();
+	        tongghe+=x.getLoaiBan();
 	        lb_coc.setText(tongTien+"");
 	    }
-
+	    lb_tongban.setText(tongban+"");
+	    lb_soghe.setText(tongghe+"");
 	    table.setModel(dtm); 
 	}
 	
