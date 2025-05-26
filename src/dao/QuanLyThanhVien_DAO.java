@@ -2,7 +2,6 @@ package dao;
 
 import entities.ThanhVien;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class QuanLyThanhVien_DAO {
 
     public List<ThanhVien> getAllThanhVien() throws SQLException {
         List<ThanhVien> list = new ArrayList<>();
-        String sql = "SELECT * from ThanhVien";
+        String sql = "SELECT soDienThoai AS maTV, tenTV, email, ngaySinh, hangThe, diemTichLuy, ngayCap FROM ThanhVien";
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next()) {
@@ -24,17 +23,19 @@ public class QuanLyThanhVien_DAO {
                 rs.getString("tenTV"),
                 rs.getString("email"),
                 rs.getDate("ngaySinh"),
-                rs.getString("HangThe"),
-                rs.getInt("DiemTichLuy"),
-                rs.getDate("NgayCap")
+                rs.getString("hangThe"),
+                rs.getInt("diemTichLuy"),
+                rs.getDate("ngayCap")
             );
             list.add(tv);
         }
+        rs.close();
+        stmt.close();
         return list;
     }
 
     public void addThanhVien(ThanhVien tv) throws SQLException {
-        String sql = "INSERT INTO ThanhVien (maTV, tenTV, email, ngaySinh, HangThe, DiemTichLuy, NgayCap) " +
+        String sql = "INSERT INTO ThanhVien (soDienThoai, tenTV, email, ngaySinh, hangThe, diemTichLuy, ngayCap) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, tv.getMaTV());
@@ -45,29 +46,31 @@ public class QuanLyThanhVien_DAO {
         pstmt.setInt(6, tv.getDiemTichLuy());
         pstmt.setDate(7, new java.sql.Date(tv.getNgayCap().getTime()));
         pstmt.executeUpdate();
+        pstmt.close();
     }
 
     public void updateThanhVien(ThanhVien tv) throws SQLException {
-        String sql = "UPDATE ThanhVien SET tenTV=?, email = ?, ngaySinh = ? WHERE maTV = ?";
+        String sql = "UPDATE ThanhVien SET tenTV = ? WHERE soDienThoai = ?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setString(1, tv.getTenTV());
-        pstmt.setString(2, tv.getEmail());
-        pstmt.setDate(3, new java.sql.Date(tv.getNgaySinh().getTime()));
-        pstmt.setString(4, tv.getMaTV());
+        pstmt.setString(2, tv.getMaTV());
         pstmt.executeUpdate();
+        pstmt.close();
     }
 
-    public String generateMaTV() throws SQLException {
-        String sql = "SELECT MAX(maTV) FROM ThanhVien";
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+    public boolean isMaTVExistsInKhachHang(String maTV) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM KhachHang WHERE soDienThoai = ?";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, maTV);
+        ResultSet rs = pstmt.executeQuery();
         if (rs.next()) {
-            String maxMaTV = rs.getString(1);
-            if (maxMaTV != null) {
-                int num = Integer.parseInt(maxMaTV.substring(2)) + 1;
-                return String.format("%02d%06d", LocalDate.now().getYear() % 100, num);
-            }
+            int count = rs.getInt(1);
+            rs.close();
+            pstmt.close();
+            return count > 0;
         }
-        return String.format("%02d%06d", LocalDate.now().getYear() % 100, 1);
+        rs.close();
+        pstmt.close();
+        return false;
     }
 }

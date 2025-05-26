@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class ThanhVien {
     private String maTV;
-    private String tenTV; 
+    private String tenTV;
     private String email;
     private Date ngaySinh;
     private String hangThe;
@@ -12,9 +12,9 @@ public class ThanhVien {
     private Date ngayCap;
 
     // Constructor
-    public ThanhVien(String maTV, String tenKH, String email, Date ngaySinh, String hangThe, int diemTichLuy, Date ngayCap) {
+    public ThanhVien(String maTV, String tenTV, String email, Date ngaySinh, String hangThe, int diemTichLuy, Date ngayCap) {
         this.maTV = maTV;
-        this.tenTV = tenKH;
+        this.tenTV = tenTV;
         this.email = email;
         this.ngaySinh = ngaySinh;
         this.hangThe = hangThe;
@@ -35,8 +35,9 @@ public class ThanhVien {
         return tenTV;
     }
 
-    public void setTenTV(String tenKH) {
-        this.tenTV = tenKH;
+
+    public void setTenTV(String tenTV) {
+        this.tenTV = tenTV;
     }
 
     public String getEmail() {

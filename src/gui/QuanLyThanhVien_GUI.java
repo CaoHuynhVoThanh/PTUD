@@ -19,13 +19,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import com.toedter.calendar.JDateChooser;
+import java.time.ZoneId;
+import java.time.Period;
 
 public class QuanLyThanhVien_GUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextField maTVField;
-    private JTextField tenKHField;
+    private JTextField tenTVField;
     private JTextField emailField;
     private JDateChooser ngaySinhChooser;
     private JTextField hangTheField;
@@ -38,7 +40,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
 
     // Các trường lọc
     private JTextField filterMaTVField;
-    private JTextField filterTenKHField;
+    private JTextField filterTenTVField;
     private JTextField filterEmailField;
     private JDateChooser filterNgaySinhChooser;
     private JComboBox<String> filterHangTheCombo;
@@ -258,24 +260,23 @@ public class QuanLyThanhVien_GUI extends JFrame {
         inputPanel.setLayout(null);
         panel_QLThanhVien.add(inputPanel);
 
-        // Mã thành viên
-        JLabel maTVLabel = new JLabel("Mã thành viên");
+        // Số điện thoại (Mã TV)
+        JLabel maTVLabel = new JLabel("Số ĐT (Mã TV)");
         maTVLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        maTVLabel.setBounds(24, 20, 100, 30);
+        maTVLabel.setBounds(24, 20, 120, 30);
         inputPanel.add(maTVLabel);
         maTVField = new JTextField();
-        maTVField.setBounds(134, 20, 100, 30);
-        maTVField.setEditable(false);
+        maTVField.setBounds(144, 20, 100, 30);
         inputPanel.add(maTVField);
 
-        // Tên khách hàng
-        JLabel tenKHLabel = new JLabel("Tên khách hàng");
-        tenKHLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tenKHLabel.setBounds(256, 20, 134, 30);
-        inputPanel.add(tenKHLabel);
-        tenKHField = new JTextField();
-        tenKHField.setBounds(386, 20, 150, 30);
-        inputPanel.add(tenKHField);
+        // Tên thành viên
+        JLabel tenTVLabel = new JLabel("Tên thành viên");
+        tenTVLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        tenTVLabel.setBounds(266, 20, 134, 30);
+        inputPanel.add(tenTVLabel);
+        tenTVField = new JTextField();
+        tenTVField.setBounds(396, 20, 150, 30);
+        inputPanel.add(tenTVField);
 
         // Email
         JLabel emailLabel = new JLabel("Email");
@@ -284,6 +285,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
         inputPanel.add(emailLabel);
         emailField = new JTextField();
         emailField.setBounds(630, 20, 150, 30);
+//        emailField.setEditable(false); 
         inputPanel.add(emailField);
 
         // Ngày sinh
@@ -294,6 +296,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
         ngaySinhChooser = new JDateChooser();
         ngaySinhChooser.setDateFormatString("dd/MM/yyyy");
         ngaySinhChooser.setBounds(870, 20, 120, 30);
+        ngaySinhChooser.setEnabled(true); // Bật trường ngày sinh để nhập
         inputPanel.add(ngaySinhChooser);
 
         // Hạng thẻ
@@ -361,46 +364,44 @@ public class QuanLyThanhVien_GUI extends JFrame {
         filterLabel.setBounds(10, 15, 40, 30);
         filterPanel.add(filterLabel);
 
-        filterMaTVField = new JTextField("Mã TV");
+        filterMaTVField = new JTextField("SĐT (Mã TV)");
         filterMaTVField.setForeground(Color.GRAY);
         filterMaTVField.setBounds(60, 15, 100, 30);
         filterPanel.add(filterMaTVField);
         filterMaTVField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (filterMaTVField.getText().equals("Mã TV")) {
+                if (filterMaTVField.getText().equals("SĐT (Mã TV)")) {
                     filterMaTVField.setText("");
                     filterMaTVField.setForeground(Color.BLACK);
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
                 if (filterMaTVField.getText().trim().isEmpty()) {
-                    filterMaTVField.setText("Mã TV");
+                    filterMaTVField.setText("SĐT (Mã TV)");
                     filterMaTVField.setForeground(Color.GRAY);
                 }
             }
         });
 
-        filterTenKHField = new JTextField("Tên KH");
-        filterTenKHField.setForeground(Color.GRAY);
-        filterTenKHField.setBounds(170, 15, 100, 30);
-        filterPanel.add(filterTenKHField);
-        filterTenKHField.addFocusListener(new FocusAdapter() {
+        filterTenTVField = new JTextField("Tên TV");
+        filterTenTVField.setForeground(Color.GRAY);
+        filterTenTVField.setBounds(170, 15, 100, 30);
+        filterPanel.add(filterTenTVField);
+        filterTenTVField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (filterTenKHField.getText().equals("Tên KH")) {
-                    filterTenKHField.setText("");
-                    filterTenKHField.setForeground(Color.BLACK);
+                if (filterTenTVField.getText().equals("Tên TV")) {
+                    filterTenTVField.setText("");
+                    filterTenTVField.setForeground(Color.BLACK);
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
-                if (filterTenKHField.getText().trim().isEmpty()) {
-                    filterTenKHField.setText("Tên KH");
-                    filterTenKHField.setForeground(Color.GRAY);
+                if (filterTenTVField.getText().trim().isEmpty()) {
+                    filterTenTVField.setText("Tên TV");
+                    filterTenTVField.setForeground(Color.GRAY);
                 }
             }
         });
@@ -417,7 +418,6 @@ public class QuanLyThanhVien_GUI extends JFrame {
                     filterEmailField.setForeground(Color.BLACK);
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
                 if (filterEmailField.getText().trim().isEmpty()) {
@@ -437,7 +437,8 @@ public class QuanLyThanhVien_GUI extends JFrame {
         filterNgaySinhPlaceholder = new JTextField("Ngày sinh");
         filterNgaySinhPlaceholder.setForeground(Color.GRAY);
         filterNgaySinhPlaceholder.setBounds(390, 15, 100, 30);
-        filterNgaySinhPlaceholder.setBackground(filterNgaySinhChooser.getBackground());
+        filterNgaySinhPlaceholder.setOpaque(false);
+        filterNgaySinhPlaceholder.setBorder(null);
         filterPanel.add(filterNgaySinhPlaceholder);
 
         // Sự kiện để hiển thị/ẩn placeholder
@@ -455,6 +456,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
                 filterNgaySinhPlaceholder.setVisible(false);
             }
         });
+        filterNgaySinhPlaceholder.setVisible(true);
 
         // Hạng thẻ
         filterHangTheCombo = new JComboBox<>(new String[]{"Tất cả", "Silver", "Gold", "Diamond"});
@@ -474,7 +476,6 @@ public class QuanLyThanhVien_GUI extends JFrame {
                     filterDiemTichLuyField.setForeground(Color.BLACK);
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
                 if (filterDiemTichLuyField.getText().trim().isEmpty()) {
@@ -494,7 +495,8 @@ public class QuanLyThanhVien_GUI extends JFrame {
         filterNgayCapPlaceholder = new JTextField("Ngày cấp");
         filterNgayCapPlaceholder.setForeground(Color.GRAY);
         filterNgayCapPlaceholder.setBounds(750, 15, 100, 30);
-        filterNgayCapPlaceholder.setBackground(filterNgayCapChooser.getBackground());
+        filterNgayCapPlaceholder.setOpaque(false);
+        filterNgayCapPlaceholder.setBorder(null);
         filterPanel.add(filterNgayCapPlaceholder);
 
         // Sự kiện để hiển thị/ẩn placeholder
@@ -512,6 +514,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
                 filterNgayCapPlaceholder.setVisible(false);
             }
         });
+        filterNgayCapPlaceholder.setVisible(true);
 
         JButton applyFilterButton = new JButton("Áp dụng");
         applyFilterButton.setBackground(new Color(34, 139, 34));
@@ -535,7 +538,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
         filterPanel.add(khoiPhucButton);
 
         // Bảng dữ liệu
-        String[] columns = {"Mã thành viên", "Tên khách hàng", "Email", "Ngày sinh", "Hạng thẻ", "Điểm tích lũy", "Ngày cấp"};
+        String[] columns = {"Số ĐT (Mã TV)", "Tên thành viên", "Email", "Ngày sinh", "Hạng thẻ", "Điểm tích lũy", "Ngày cấp"};
         model = new DefaultTableModel(columns, 0);
         table = new JTable(model);
         table.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -550,28 +553,52 @@ public class QuanLyThanhVien_GUI extends JFrame {
         // Sự kiện cho nút "Thêm"
         themButton.addActionListener(e -> {
             try {
-                String maTV = dao.generateMaTV();
-                String tenKH = tenKHField.getText();
-                String email = emailField.getText();
+                String maTV = maTVField.getText().trim();
+                String tenTV = tenTVField.getText().trim();
+                String email = emailField.getText().trim();
                 Date ngaySinh = ngaySinhChooser.getDate();
-                if (tenKH.isEmpty() || email.isEmpty() || ngaySinh == null) {
-                    JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ Tên KH, Email và Ngày sinh!");
+
+                // Kiểm tra đầu vào
+                if (maTV.isEmpty() || tenTV.isEmpty() || email.isEmpty() || ngaySinh == null) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ SĐT (Mã TV), Tên TV, Email và Ngày sinh!");
                     return;
                 }
+
+                if (!maTV.matches("0\\d{9}")) {
+                    JOptionPane.showMessageDialog(null, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!");
+                    return;
+                }
+
+                if (!dao.isMaTVExistsInKhachHang(maTV)) {
+                    JOptionPane.showMessageDialog(null, "Số điện thoại chưa tồn tại trong bảng KhachHang! Vui lòng thêm vào KhachHang trước.");
+                    return;
+                }
+
+                LocalDate currentDate = LocalDate.now();
+                LocalDate birthDate = ngaySinh.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+                if (birthDate.isAfter(currentDate)) {
+                    JOptionPane.showMessageDialog(null, "Ngày sinh không được trong tương lai!");
+                    return;
+                }
+
+                Period age = Period.between(birthDate, currentDate);
+                if (age.getYears() < 18) {
+                    JOptionPane.showMessageDialog(null, "Thành viên phải từ 18 tuổi trở lên!");
+                    return;
+                }
+
                 String hangThe = "Silver";
                 int diemTichLuy = 0;
                 Date ngayCap = new Date();
-
-                ThanhVien tv = new ThanhVien(maTV, tenKH, email, ngaySinh, hangThe, diemTichLuy, ngayCap);
+                ThanhVien tv = new ThanhVien(maTV, tenTV, email, ngaySinh, hangThe, diemTichLuy, ngayCap);
                 dao.addThanhVien(tv);
-
-                maTVField.setText(maTV);
                 hangTheField.setText(hangThe);
                 diemTichLuyField.setText(String.valueOf(diemTichLuy));
                 ngayCapChooser.setDate(ngayCap);
                 loadData();
                 JOptionPane.showMessageDialog(null, "Thêm thành viên thành công!");
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Lỗi khi thêm thành viên!");
             }
@@ -583,22 +610,18 @@ public class QuanLyThanhVien_GUI extends JFrame {
             if (selectedRow >= 0) {
                 try {
                     String maTV = (String) model.getValueAt(selectedRow, 0);
-                    String tenKH = tenKHField.getText();
-                    String email = emailField.getText();
-                    Date ngaySinh = ngaySinhChooser.getDate();
-                    if (tenKH.isEmpty() || email.isEmpty() || ngaySinh == null) {
-                        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ Tên KH, Email và Ngày sinh!");
+                    String tenTV = tenTVField.getText().trim();
+
+                    // Kiểm tra đầu vào
+                    if (tenTV.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Vui lòng nhập Tên thành viên!");
                         return;
                     }
-                    String hangThe = (String) model.getValueAt(selectedRow, 4);
-                    int diemTichLuy = (int) model.getValueAt(selectedRow, 5);
-                    Date ngayCap = dateFormat.parse((String) model.getValueAt(selectedRow, 6));
-
-                    ThanhVien tv = new ThanhVien(maTV, tenKH, email, ngaySinh, hangThe, diemTichLuy, ngayCap);
+                    ThanhVien tv = new ThanhVien(maTV, tenTV, null, null, null, 0, null);
                     dao.updateThanhVien(tv);
                     loadData();
-                    JOptionPane.showMessageDialog(null, "Cập nhật thành công!");
-                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Cập nhật tên thành viên thành công!");
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật!");
                 }
@@ -610,12 +633,15 @@ public class QuanLyThanhVien_GUI extends JFrame {
         // Sự kiện cho nút "Xóa rỗng"
         xoaRongButton.addActionListener(e -> {
             maTVField.setText("");
-            tenKHField.setText("");
+            tenTVField.setText("");
             emailField.setText("");
             ngaySinhChooser.setDate(null);
             hangTheField.setText("");
             diemTichLuyField.setText("");
             ngayCapChooser.setDate(null);
+            maTVField.setEditable(true);
+            emailField.setEditable(true);
+            ngaySinhChooser.setEnabled(true);
         });
 
         // Sự kiện cho nút "Áp dụng" lọc
@@ -625,9 +651,9 @@ public class QuanLyThanhVien_GUI extends JFrame {
                 List<ThanhVien> list = dao.getAllThanhVien();
                 for (ThanhVien tv : list) {
                     boolean match = true;
-                    if (!filterMaTVField.getText().equals("Mã TV") && !tv.getMaTV().toLowerCase().contains(filterMaTVField.getText().toLowerCase()))
+                    if (!filterMaTVField.getText().equals("SĐT (Mã TV)") && !tv.getMaTV().toLowerCase().contains(filterMaTVField.getText().toLowerCase()))
                         match = false;
-                    if (!filterTenKHField.getText().equals("Tên KH") && !tv.getTenTV().toLowerCase().contains(filterTenKHField.getText().toLowerCase()))
+                    if (!filterTenTVField.getText().equals("Tên TV") && !tv.getTenTV().toLowerCase().contains(filterTenTVField.getText().toLowerCase()))
                         match = false;
                     if (!filterEmailField.getText().equals("Email") && !tv.getEmail().toLowerCase().contains(filterEmailField.getText().toLowerCase()))
                         match = false;
@@ -659,21 +685,32 @@ public class QuanLyThanhVien_GUI extends JFrame {
         taiLaiButton.addActionListener(e -> {
             loadData();
             resetFilterFields();
+            maTVField.setEditable(true);
+            emailField.setEditable(true);
+            ngaySinhChooser.setEnabled(true);
         });
 
         // Sự kiện cho nút "Khôi phục"
-        khoiPhucButton.addActionListener(e -> resetFilterFields());
+        khoiPhucButton.addActionListener(e -> {
+            resetFilterFields();
+            maTVField.setEditable(true);
+            emailField.setEditable(true);
+            ngaySinhChooser.setEnabled(true);
+        });
 
         // Sự kiện khi chọn dòng trong JTable
         table.getSelectionModel().addListSelectionListener(event -> {
             if (!event.getValueIsAdjusting() && table.getSelectedRow() != -1) {
                 int selectedRow = table.getSelectedRow();
                 maTVField.setText((String) model.getValueAt(selectedRow, 0));
-                tenKHField.setText((String) model.getValueAt(selectedRow, 1));
+                maTVField.setEditable(false); 
+                tenTVField.setText((String) model.getValueAt(selectedRow, 1));
                 emailField.setText((String) model.getValueAt(selectedRow, 2));
+                emailField.setEditable(false); 
                 try {
                     Date ngaySinh = dateFormat.parse((String) model.getValueAt(selectedRow, 3));
                     ngaySinhChooser.setDate(ngaySinh);
+                    ngaySinhChooser.setEnabled(false); 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -703,10 +740,10 @@ public class QuanLyThanhVien_GUI extends JFrame {
     }
 
     private void resetFilterFields() {
-        filterMaTVField.setText("Mã TV");
+        filterMaTVField.setText("SĐT (Mã TV)");
         filterMaTVField.setForeground(Color.GRAY);
-        filterTenKHField.setText("Tên KH");
-        filterTenKHField.setForeground(Color.GRAY);
+        filterTenTVField.setText("Tên TV");
+        filterTenTVField.setForeground(Color.GRAY);
         filterEmailField.setText("Email");
         filterEmailField.setForeground(Color.GRAY);
         filterNgaySinhChooser.setDate(null);

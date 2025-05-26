@@ -7,7 +7,6 @@ import java.awt.event.*;
 import java.sql.*;
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -311,7 +310,6 @@ public class LichSu_GUI extends JFrame {
         resetButtonHoaDon.setBounds(1035, 49, 100, 30);
         filterPanelHoaDon.add(resetButtonHoaDon);
 
-        // Thêm nút "Xem chi tiết" vào filterPanelHoaDon
         detailButtonHoaDon = new JButton("Xem chi tiết");
         detailButtonHoaDon.setBounds(1035, 12, 100, 30);
         detailButtonHoaDon.setForeground(Color.WHITE);
@@ -319,7 +317,6 @@ public class LichSu_GUI extends JFrame {
         detailButtonHoaDon.setEnabled(false);
         filterPanelHoaDon.add(detailButtonHoaDon);
 
-        // Thêm FocusListener cho các trường nhập liệu
         maHoaDonField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -352,7 +349,6 @@ public class LichSu_GUI extends JFrame {
             }
         });
 
-        // Bảng dữ liệu
         String[] columnsHoaDon = {"Mã HD", "Thời gian", "Người tạo", "Thông tin KH", "Phương thức", "Tổng tiền"};
         DefaultTableModel modelHoaDon = new DefaultTableModel(fetchHoaDonData(), columnsHoaDon);
         tableHoaDon = new JTable(modelHoaDon);
@@ -364,12 +360,10 @@ public class LichSu_GUI extends JFrame {
         scrollPaneHoaDon.setBounds(0, 111, 1194, 528);
         panel_lichSuHoaDon.add(scrollPaneHoaDon);
 
-        // Kích hoạt nút "Xem chi tiết" khi chọn hàng trong bảng
         tableHoaDon.getSelectionModel().addListSelectionListener(e -> {
             detailButtonHoaDon.setEnabled(!e.getValueIsAdjusting() && tableHoaDon.getSelectedRow() != -1);
         });
 
-        // Xử lý sự kiện nút "Xem chi tiết"
         detailButtonHoaDon.addActionListener(e -> {
             int selectedRow = tableHoaDon.getSelectedRow();
             if (selectedRow != -1) {
@@ -379,12 +373,11 @@ public class LichSu_GUI extends JFrame {
                 String nguoiTao = (String) modelHoaDon.getValueAt(modelRow, 2);
                 String thongTinKH = (String) modelHoaDon.getValueAt(modelRow, 3);
                 String phuongThuc = (String) modelHoaDon.getValueAt(modelRow, 4);
-                double tongTien = (double) modelHoaDon.getValueAt(modelRow, 5);
+                String tongTien = ""; // Giữ cột Tổng tiền rỗng
                 showHoaDonDetailDialog(maHD, thoiGian, nguoiTao, thongTinKH, phuongThuc, tongTien);
             }
         });
 
-        // Sự kiện nút "Áp dụng"
         applyButtonHoaDon.addActionListener(e -> {
             String maHoaDonText = maHoaDonField.getText().trim();
             String thongTinKHText = thongTinKHField.getText().trim();
@@ -397,27 +390,33 @@ public class LichSu_GUI extends JFrame {
 
             List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
 
+            // Lọc mã hóa đơn
             if (!maHoaDonText.isEmpty() && !maHoaDonText.equals("Nhập mã hóa đơn...")) {
                 int columnIndex = modelHoaDon.findColumn("Mã HD");
                 if (columnIndex != -1) {
-                    filters.add(RowFilter.regexFilter("(?i)" + maHoaDonText, columnIndex));
+                    String regexPattern = "(?i).*" + maHoaDonText + ".*";
+                    filters.add(RowFilter.regexFilter(regexPattern, columnIndex));
                 }
             }
 
+            // Lọc thông tin khách hàng
             if (!thongTinKHText.isEmpty() && !thongTinKHText.equals("Nhập thông tin KH...")) {
                 int columnIndex = modelHoaDon.findColumn("Thông tin KH");
                 if (columnIndex != -1) {
-                    filters.add(RowFilter.regexFilter("(?i)" + thongTinKHText, columnIndex));
+                    String regexPattern = "(?i)" + thongTinKHText.replaceAll("\\s+", ".*");
+                    filters.add(RowFilter.regexFilter(regexPattern, columnIndex));
                 }
             }
 
+            // Lọc người tạo
             if (!selectedNguoiTao.equals("Tất cả")) {
                 int columnIndex = modelHoaDon.findColumn("Người tạo");
                 if (columnIndex != -1) {
-                    filters.add(RowFilter.regexFilter("(?i)" + selectedNguoiTao, columnIndex));
+                    filters.add(RowFilter.regexFilter(selectedNguoiTao, columnIndex));
                 }
             }
 
+            // Lọc theo ngày
             if (startDate != null && endDate != null) {
                 try {
                     LocalDate start = startDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
@@ -443,19 +442,23 @@ public class LichSu_GUI extends JFrame {
                 }
             }
 
+            // Lọc phương thức thanh toán
             if (!selectedPaymentMethod.equals("Tất cả")) {
                 int paymentMethodIndex = modelHoaDon.findColumn("Phương thức");
-                filters.add(RowFilter.regexFilter("(?i)" + selectedPaymentMethod, paymentMethodIndex));
+                filters.add(RowFilter.regexFilter(selectedPaymentMethod, paymentMethodIndex));
             }
 
+            // Lọc tổng tiền
             try {
                 if (!minTotalStr.isEmpty()) {
                     double minTotal = Double.parseDouble(minTotalStr);
                     filters.add(new RowFilter<DefaultTableModel, Object>() {
                         @Override
                         public boolean include(Entry<? extends DefaultTableModel, ? extends Object> entry) {
-                            Object value = entry.getValue(5);
-                            if (value instanceof Double) {
+                            Object value = entry.getValue(5); 
+                            if (value instanceof String && ((String) value).isEmpty()) {
+                                return false; 
+                            } else if (value instanceof Double) {
                                 return (Double) value >= minTotal;
                             }
                             return false;
@@ -467,8 +470,10 @@ public class LichSu_GUI extends JFrame {
                     filters.add(new RowFilter<DefaultTableModel, Object>() {
                         @Override
                         public boolean include(Entry<? extends DefaultTableModel, ? extends Object> entry) {
-                            Object value = entry.getValue(5);
-                            if (value instanceof Double) {
+                            Object value = entry.getValue(5); 
+                            if (value instanceof String && ((String) value).isEmpty()) {
+                                return false; 
+                            } else if (value instanceof Double) {
                                 return (Double) value <= maxTotal;
                             }
                             return false;
@@ -480,10 +485,10 @@ public class LichSu_GUI extends JFrame {
                 return;
             }
 
+            // Áp dụng bộ lọc
             sorterHoaDon.setRowFilter(filters.isEmpty() ? null : RowFilter.andFilter(filters));
         });
 
-        // Sự kiện nút "Khôi phục"
         resetButtonHoaDon.addActionListener(e -> {
             maHoaDonField.setText("Nhập mã hóa đơn...");
             thongTinKHField.setText("Nhập thông tin KH...");
@@ -540,7 +545,6 @@ public class LichSu_GUI extends JFrame {
         endDateChooserDatBan.setBounds(614, 11, 120, 30);
         filterPanelDatBan.add(endDateChooserDatBan);
 
-        // Thêm nút "Xem chi tiết" vào filterPanelDatBan
         JButton detailButtonDatBan = new JButton("Xem chi tiết");
         detailButtonDatBan.setBounds(1008, 11, 100, 30);
         detailButtonDatBan.setForeground(Color.WHITE);
@@ -586,13 +590,11 @@ public class LichSu_GUI extends JFrame {
         soKhachField.setBounds(474, 51, 60, 30);
         filterPanelDatBan.add(soKhachField);
 
-        // Thêm JLabel và JComboBox cho vị trí (tầng)
         JLabel lblViTri = new JLabel("Vị trí:");
         lblViTri.setFont(new Font("Tahoma", Font.PLAIN, 14));
         lblViTri.setBounds(544, 51, 50, 30);
         filterPanelDatBan.add(lblViTri);
 
-        // Tạo JComboBox cho vị trí (tầng)
         Vector<String> tangListDisplay = new Vector<>();
         Vector<String> tangListValue = new Vector<>();
         tangListDisplay.add("Tất cả");
@@ -617,7 +619,6 @@ public class LichSu_GUI extends JFrame {
         lblKhuVuc.setBounds(674, 51, 60, 30);
         filterPanelDatBan.add(lblKhuVuc);
 
-        // Tạo JComboBox cho Khu vực và tải tất cả khu vực ngay từ đầu
         Vector<String> khuVucList = new Vector<>();
         khuVucList.add("Tất cả");
         try {
@@ -637,12 +638,10 @@ public class LichSu_GUI extends JFrame {
         lblBan.setBounds(840, 51, 40, 30);
         filterPanelDatBan.add(lblBan);
 
-        // Thay JComboBox bằng JTextField cho Bàn
         JTextField banField = new JTextField();
         banField.setBounds(880, 51, 60, 30);
         filterPanelDatBan.add(banField);
 
-        // Cập nhật danh sách khu vực khi chọn vị trí (tầng)
         tangComboBox.addActionListener(e -> {
             int selectedIndex = tangComboBox.getSelectedIndex();
             String selectedTang = tangListValue.get(selectedIndex);
@@ -653,8 +652,7 @@ public class LichSu_GUI extends JFrame {
                 try {
                     List<String> khuVucByViTri = lichSuDAO.getKhuVucByViTri(Integer.parseInt(selectedTang));
                     if (khuVucByViTri.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Không có khu vực nào ở " + tangComboBox.getSelectedItem(),
-                                                      "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Không có khu vực nào ở " + tangComboBox.getSelectedItem(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         khuVucList.addAll(khuVucByViTri);
                     }
@@ -675,11 +673,6 @@ public class LichSu_GUI extends JFrame {
             khuVucComboBox.setModel(new DefaultComboBoxModel<>(khuVucList));
         });
 
-        // Cập nhật danh sách khu vực khi chọn khu vực (không cần cập nhật bàn nữa)
-        khuVucComboBox.addActionListener(e -> {
-            // Không cần logic cập nhật bàn vì đã chuyển sang JTextField
-        });
-
         JButton applyButtonDatBan = new JButton("Áp dụng");
         applyButtonDatBan.setBounds(950, 51, 100, 30);
         applyButtonDatBan.setForeground(Color.WHITE);
@@ -692,7 +685,6 @@ public class LichSu_GUI extends JFrame {
         resetButtonDatBan.setBackground(Color.BLACK);
         filterPanelDatBan.add(resetButtonDatBan);
 
-        // Sửa lỗi FocusListener cho ô "Thông tin KH"
         thongTinKHField2.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -709,13 +701,11 @@ public class LichSu_GUI extends JFrame {
             }
         });
 
-        // Sửa cột của bảng chính: Giữ nguyên các cột
         String[] columnsDatBan = {"Mã DDB", "Thời gian nhận bàn", "Thông tin KH", "Đặt cọc", "Số khách", "Khu vực/Bàn", "Vị trí", "Trạng thái"};
         DefaultTableModel modelDatBan = new DefaultTableModel(fetchDatBanDataWithViTri(), columnsDatBan);
         JTable tableDatBan = new JTable(modelDatBan);
         tableDatBan.setFont(new Font("SansSerif", Font.PLAIN, 16));
         tableDatBan.setRowHeight(30);
-        // Ẩn cột "Mã DDB"
         tableDatBan.getColumnModel().getColumn(0).setMinWidth(0);
         tableDatBan.getColumnModel().getColumn(0).setMaxWidth(0);
         tableDatBan.getColumnModel().getColumn(0).setWidth(0);
@@ -725,15 +715,10 @@ public class LichSu_GUI extends JFrame {
         scrollPaneDatBan.setBounds(0, 113, 1194, 510);
         panel_lichSuDatBan.add(scrollPaneDatBan);
 
-        // Kích hoạt nút "Xem chi tiết" khi chọn hàng trong bảng
         tableDatBan.getSelectionModel().addListSelectionListener(e -> {
             detailButtonDatBan.setEnabled(!e.getValueIsAdjusting() && tableDatBan.getSelectedRow() != -1);
-            if (thongTinKHField2.getText().equals("Nhập thông tin KH...")) {
-                thongTinKHField2.setText("");
-            }
         });
 
-        // Xử lý sự kiện nút "Xem chi tiết"
         detailButtonDatBan.addActionListener(e -> {
             int selectedRow = tableDatBan.getSelectedRow();
             if (selectedRow != -1) {
@@ -763,7 +748,6 @@ public class LichSu_GUI extends JFrame {
 
             List<RowFilter<DefaultTableModel, Object>> filters = new ArrayList<>();
 
-            // Lọc theo thông tin khách hàng
             if (!thongTinKHText.isEmpty() && !thongTinKHText.equals("Nhập thông tin KH...")) {
                 int columnIndex = modelDatBan.findColumn("Thông tin KH");
                 if (columnIndex != -1) {
@@ -771,7 +755,6 @@ public class LichSu_GUI extends JFrame {
                 }
             }
 
-            // Lọc theo ngày
             if (startDate != null && endDate != null) {
                 try {
                     LocalDate start = startDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
@@ -797,13 +780,11 @@ public class LichSu_GUI extends JFrame {
                 }
             }
 
-            // Lọc theo trạng thái
             if (!selectedStatus.equals("Tất cả trạng thái")) {
                 int statusIndex = modelDatBan.findColumn("Trạng thái");
                 filters.add(RowFilter.regexFilter("(?i)" + selectedStatus, statusIndex));
             }
 
-            // Lọc theo tiền cọc
             try {
                 if (!minDepositStr.isEmpty()) {
                     double minDeposit = Double.parseDouble(minDepositStr);
@@ -836,7 +817,6 @@ public class LichSu_GUI extends JFrame {
                 return;
             }
 
-            // Lọc theo số khách
             try {
                 if (!soKhachStr.isEmpty()) {
                     int soKhach = Integer.parseInt(soKhachStr);
@@ -856,7 +836,6 @@ public class LichSu_GUI extends JFrame {
                 return;
             }
 
-            // Lọc theo khu vực, bàn và vị trí
             if (!selectedKhuVuc.equals("Tất cả") || !selectedBan.isEmpty() || !selectedTang.equals("Tất cả")) {
                 int khuVucBanIndex = modelDatBan.findColumn("Khu vực/Bàn");
                 int viTriIndex = modelDatBan.findColumn("Vị trí");
@@ -870,7 +849,7 @@ public class LichSu_GUI extends JFrame {
                         String viTri = viTriValue.toString();
                         boolean matchKhuVuc = selectedKhuVuc.equals("Tất cả") || khuVucBan.toLowerCase().contains(selectedKhuVuc.toLowerCase());
                         boolean matchBan = selectedBan.isEmpty() || khuVucBan.toLowerCase().contains("bàn " + selectedBan.toLowerCase());
-                        boolean matchTang = selectedTang.equals("Tất cả") || viTri.equals(selectedTang.equals("0") ? "Tầng trệt" : "Tầng " + selectedTang);
+                        boolean matchTang = selectedTang.equals("Tất cả") || viTri.equals("Tầng " + selectedTang);
                         return matchKhuVuc && matchBan && matchTang;
                     }
                 });
@@ -905,12 +884,13 @@ public class LichSu_GUI extends JFrame {
         });
     }
 
-    private void showHoaDonDetailDialog(String maHD, Timestamp thoiGian, String nguoiTao, String thongTinKH, String phuongThuc, double tongTien) {
+    private void showHoaDonDetailDialog(String maHD, Timestamp thoiGian, String nguoiTao, String thongTinKH, String phuongThuc, String tongTien) {
         JDialog dialog = new JDialog(this, "Chi tiết hóa đơn", true);
         dialog.setSize(600, 500);
         dialog.setLocationRelativeTo(this);
         dialog.getContentPane().setLayout(new BorderLayout(10, 10));
 
+        // Panel thông tin hóa đơn
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayout(6, 2, 10, 10));
         infoPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -931,10 +911,11 @@ public class LichSu_GUI extends JFrame {
         infoPanel.add(new JLabel(phuongThuc));
 
         infoPanel.add(new JLabel("Tổng tiền:"));
-        infoPanel.add(new JLabel(String.format("%.2f", tongTien)));
+        infoPanel.add(new JLabel(tongTien)); // Giữ trống
 
         dialog.getContentPane().add(infoPanel, BorderLayout.NORTH);
 
+        // Panel danh sách món ăn
         JPanel monAnPanel = new JPanel();
         monAnPanel.setLayout(new BorderLayout());
         monAnPanel.setBorder(new EmptyBorder(0, 10, 10, 10));
@@ -951,15 +932,19 @@ public class LichSu_GUI extends JFrame {
         JScrollPane monAnScrollPane = new JScrollPane(monAnTable);
         monAnPanel.add(monAnScrollPane, BorderLayout.CENTER);
 
+        // Lấy và hiển thị danh sách món ăn
         try {
             List<Object[]> chiTietMonAnList = lichSuDAO.getChiTietMonAnByMaHD(maHD);
             for (Object[] mon : chiTietMonAnList) {
                 Vector<Object> row = new Vector<>();
-                row.add(mon[0]); // tenMon
-                row.add(mon[1]); // soLuong
-                row.add(mon[2]); // donGia
-                row.add(mon[3]); // thanhTien
+                row.add(mon[0]); // Tên món
+                row.add(mon[1]); // Số lượng
+                row.add(mon[2]); // Đơn giá
+                row.add(mon[3]); // Thành tiền
                 monAnModel.addRow(row);
+            }
+            if (monAnModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(dialog, "Không có món ăn nào trong hóa đơn này.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -968,6 +953,7 @@ public class LichSu_GUI extends JFrame {
 
         dialog.getContentPane().add(monAnPanel, BorderLayout.CENTER);
 
+        // Nút đóng
         JButton closeButton = new JButton("Đóng");
         closeButton.setForeground(Color.WHITE);
         closeButton.setBackground(new Color(255, 153, 0));
@@ -989,7 +975,7 @@ public class LichSu_GUI extends JFrame {
         infoPanel.setLayout(new GridLayout(8, 2, 10, 10));
         infoPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        LocalDateTime thoiGianDat = null;
+        java.time.LocalDateTime thoiGianDat = null;
         String nguoiDat = null;
         try {
             thoiGianDat = lichSuDAO.getThoiGianDatByMaDDB(maDDB);
