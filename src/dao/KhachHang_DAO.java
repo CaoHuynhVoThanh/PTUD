@@ -176,5 +176,30 @@ public class KhachHang_DAO {
 	    }
 	    return kh;
 	}
+	
+	public static ArrayList<KhachHang> getAllKhachHang(){
+		ArrayList<KhachHang> ds = new ArrayList<>();
+		ConnectDB.getInstance().connect();;
+		Connection conN = ConnectDB.getInstance().getConnection();
+		String sql = "Select * from KhachHang";
+
+	    
+	    try (PreparedStatement ps = conN.prepareStatement(sql)) {
+	        ResultSet rs = ps.executeQuery();
+	        while(rs.next()) {
+	        	String ma = rs.getString("maKH");
+	        	String ten = rs.getString("tenKH");
+	        	String sdt = rs.getString("soDienThoai");
+	        	Date timestamp = rs.getDate("ngayTao");
+	        	LocalDate localDateTime = timestamp.toLocalDate();
+	        	
+	        	KhachHang kh = new KhachHang(ma, ten, sdt, localDateTime);
+	        	ds.add(kh);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return ds;
+	}
 
 }
