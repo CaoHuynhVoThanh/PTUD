@@ -15,16 +15,21 @@ public class ConnectDB {
 		return instance;
 	}
 	public void connect() {
-		String url = "jdbc:sqlserver://localhost:1433;databaseName=QLNH;trustServerCertificate=true;encrypt=true";
-		String user = "sa";
-		String password = "sapassword";
-		try {
-			con = DriverManager.getConnection(url, user, password);
-			System.out.println("OK");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	    String url = "jdbc:sqlserver://localhost:1433;databaseName=QLNH;trustServerCertificate=true;encrypt=true";
+	    String user = "sa";
+	    String password = "sapassword";
+	    try {
+	        System.out.println(">>> Đang tải JDBC Driver...");
+	        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+	        System.out.println(">>> Đang kết nối tới SQL Server...");
+	        con = DriverManager.getConnection(url, user, password);
+	        System.out.println(">>> Kết nối thành công!");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
+
 	public void disconnect() {
         if (con != null) {
             try {

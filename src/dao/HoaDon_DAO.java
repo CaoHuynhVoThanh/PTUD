@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entities.HoaDon;
+import entities.Mon;
 
 public class HoaDon_DAO {
 	public static int demHoaDonTrongNgay() {
@@ -333,6 +334,43 @@ public class HoaDon_DAO {
 
 	    return tongTien;
 	}
-
+	
+//	public static ArrayList<Mon> getDsMonCuaHoaDon(String mahd){
+//		ArrayList<Mon> ds = null;
+//		Connection con = ConnectDB.getInstance().getConnection();
+//        String sql = """
+//            SELECT 
+//                M.maMon, 
+//                M.tenMon, 
+//                CTDGM.soLuong, 
+//                M.donGia, 
+//                (CTDGM.soLuong * M.donGia) AS thanhTien
+//            FROM 
+//                HoaDon HD
+//            JOIN DonDatBan DDB ON HD.maHD = DDB.maHD
+//            JOIN ChiTietDonDatBan CTDDB ON DDB.maDDB = CTDDB.maDDB
+//            JOIN DonGoiMon DGM ON CTDDB.maDGM = DGM.maDGM
+//            JOIN ChiTietDonGoiMon CTDGM ON DGM.maDGM = CTDGM.maDGM
+//            JOIN Mon M ON CTDGM.maMon = M.maMon
+//            WHERE HD.maHD = ?
+//        """;
+//        
+//        try {
+//        	PreparedStatement stmt = con.prepareStatement(sql);
+//        	stmt.setString(0, mahd);
+//        	ResultSet rs = stmt.executeQuery();
+// 	        while(rs.next()) {
+// 	        	String maMon = rs.getString("maMon");
+// 	        	String tenMon = rs.getString("tenMon");
+// 	        	int sl = rs.getInt("soLuong");
+// 	        	double donGia = rs.getDouble("donGia");
+// 	        	double than
+// 	        }
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
+//        
+//		return ds;
+//	}
 
 }

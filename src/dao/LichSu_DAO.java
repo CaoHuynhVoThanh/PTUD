@@ -1,6 +1,7 @@
 package dao;
 
 import connectDB.ConnectDB;
+import entities.Mon;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -74,12 +75,12 @@ public class LichSu_DAO {
         }
         return dataList.toArray(new Object[0][]);
     }
-
+    
     public Object[][] getAllHoaDon() throws SQLException {
         Vector<Vector<Object>> data = new Vector<>();
         String query = "SELECT hd.maHD AS MaHD, hd.thoiGianThanhToan AS ThoiGian, nv.tenNV AS NguoiTao, " +
                       "ISNULL(kh.tenKH, N'Khách vãng lai') + CASE WHEN kh.soDienThoai IS NOT NULL THEN N' (' + kh.soDienThoai + N')' ELSE N'' END AS ThongTinKH, " +
-                      "hd.phuongThucThanhToan AS PhuongThuc, hd.tongTien AS TongTien " +
+                      "hd.phuongThucThanhToan AS PhuongThuc " +
                       "FROM HoaDon hd " +
                       "INNER JOIN NhanVien nv ON hd.maNV = nv.maNV " +
                       "LEFT JOIN DonDatBan ddb ON hd.maHD = ddb.maHD " +
@@ -90,12 +91,14 @@ public class LichSu_DAO {
              ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Vector<Object> row = new Vector<>();
-                row.add(rs.getString("MaHD"));
+                String mahd = rs.getString("MaHD");
+                row.add(mahd);
                 row.add(rs.getTimestamp("ThoiGian"));
                 row.add(rs.getString("NguoiTao"));
                 row.add(rs.getString("ThongTinKH"));
                 row.add(rs.getString("PhuongThuc"));
-                row.add(rs.getDouble("TongTien"));
+                double tt = HoaDon_DAO.tinhTongTien(mahd);
+                row.add(tt);
                 data.add(row);
             }
         }
@@ -128,10 +131,21 @@ public class LichSu_DAO {
 
     public List<Object[]> getChiTietMonAnByMaHD(String maHD) throws SQLException {
         List<Object[]> result = new ArrayList<>();
-        String query = "SELECT ma.tenMon, cthd.soLuong, ma.donGia, (cthd.soLuong * ma.donGia) AS ThanhTien " +
-                      "FROM ChiTietHoaDon cthd " +
-                      "INNER JOIN Mon ma ON cthd.maMon = ma.maMon " +
-                      "WHERE cthd.maHD = ?";
+        String query= """
+            SELECT 
+                M.tenMon, 
+                CTDGM.soLuong, 
+                M.donGia, 
+                (CTDGM.soLuong * M.donGia) AS thanhTien
+            FROM 
+                HoaDon HD
+            JOIN DonDatBan DDB ON HD.maHD = DDB.maHD
+            JOIN ChiTietDonDatBan CTDDB ON DDB.maDDB = CTDDB.maDDB
+            JOIN DonGoiMon DGM ON CTDDB.maDGM = DGM.maDGM
+            JOIN ChiTietDonGoiMon CTDGM ON DGM.maDGM = CTDGM.maDGM
+            JOIN Mon M ON CTDGM.maMon = M.maMon
+            WHERE HD.maHD = ?
+        """;
         try (Connection conn = ConnectDB.getInstance().getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, maHD);
@@ -141,7 +155,7 @@ public class LichSu_DAO {
                     rs.getString("tenMon"),
                     rs.getInt("soLuong"),
                     rs.getDouble("donGia"),
-                    rs.getDouble("ThanhTien")
+                    rs.getDouble("thanhTien")
                 };
                 result.add(row);
             }

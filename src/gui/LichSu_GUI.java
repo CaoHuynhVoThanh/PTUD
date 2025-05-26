@@ -59,12 +59,12 @@ public class LichSu_GUI extends JFrame {
         panel_1.setLayout(null);
 
         JLabel logo = new JLabel("");
-        logo.setIcon(new ImageIcon("src\\images\\icon.png"));
+        logo.setIcon(new ImageIcon(getClass().getResource("/images/App/logo.png")));
         logo.setBounds(66, 22, 247, 89);
         panel_1.add(logo);
 
         JLabel avt = new JLabel("");
-        ImageIcon originalIcon = new ImageIcon("src\\images\\avt.png");
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/avt.png"));
         Image scaledImg = originalIcon.getImage().getScaledInstance(90, 90, Image.SCALE_SMOOTH);
         avt.setIcon(new ImageIcon(scaledImg));
         avt.setBounds(1365, 22, 100, 104);
