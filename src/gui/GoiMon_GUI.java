@@ -150,12 +150,12 @@ public class GoiMon_GUI extends JFrame{
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
+		logo.setIcon(new ImageIcon(getClass().getResource("/images/App/logo.png")));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
+		ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/avt.png"));
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -376,7 +376,7 @@ public class GoiMon_GUI extends JFrame{
 			}
 		});
 		btnTimKiem.setBounds(264, 29, 50, 45);
-		ImageIcon iconTim = new ImageIcon("src\\images\\App\\iconSearch.png");
+		ImageIcon iconTim = new ImageIcon(getClass().getResource("/images/App/iconSearch.png"));
 		Image imgTim = iconTim.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
 		btnTimKiem.setIcon(new ImageIcon(imgTim));
 		btnTimKiem.setFocusPainted(false);
@@ -669,12 +669,12 @@ public class GoiMon_GUI extends JFrame{
 	        JLabel lblImgMon = new JLabel("");
 	        lblImgMon.setBounds(38, 0, 100, 88);
 	        try {
-	            ImageIcon originalIcon = new ImageIcon("src/images/imageMon/" + mon.getHinhAnh());
+	            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
 	            Image scaledImage = originalIcon.getImage().getScaledInstance(100, 88, Image.SCALE_SMOOTH);
 	            lblImgMon.setIcon(new ImageIcon(scaledImage));
 	        } catch (Exception e) {
 	            // Fallback nếu không load được ảnh
-	            lblImgMon.setIcon(new ImageIcon("src/images/imageMon/default.png"));
+	            lblImgMon.setIcon(new ImageIcon(getClass().getResource("/images/imageMon/default.png")));
 	        }
 	        pMon.add(lblImgMon);
 	        
@@ -699,7 +699,7 @@ public class GoiMon_GUI extends JFrame{
 	        lblTenMon.setBounds(10, 31, ITEM_WIDTH - 20, 48);
 	        pThongTinMon.add(lblTenMon);
 	     
-	        ImageIcon originalIcon = new ImageIcon("src/images/App/iconAdd.png");
+	        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/iconAdd.png"));
 
 	     // Resize icon nhỏ hơn so với button (ví dụ: 24x24 pixel)
 	        Image scaledImage = originalIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
@@ -1036,7 +1036,7 @@ public class GoiMon_GUI extends JFrame{
     static class ButtonRenderer extends JButton implements TableCellRenderer {
     	private final ImageIcon scaledIcon;
         public ButtonRenderer() {
-        	ImageIcon originalIcon = new ImageIcon("src/images/App/iconDelete.png");
+        	ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/iconDelete.png"));
             Image scaledImage = originalIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
             scaledIcon = new ImageIcon(scaledImage);
 
@@ -1063,7 +1063,7 @@ public class GoiMon_GUI extends JFrame{
             super(checkBox);
             this.table = table;
             button.addActionListener(e -> fireEditingStopped());
-            ImageIcon originalIcon = new ImageIcon("src/images/App/iconDelete.png");
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/iconDelete.png"));
 
          // Resize icon nhỏ hơn so với button (ví dụ: 24x24 pixel)
             Image scaledImage = originalIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);

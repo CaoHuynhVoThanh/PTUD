@@ -19,13 +19,12 @@ import java.util.TimerTask;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-
+import javax.swing.JDialog;
 
 import connectDB.ConnectDB;
 import entities.NhanVien;
@@ -33,7 +32,11 @@ import test.LoadingPanel;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.awt.event.ActionEvent;
 public class Application extends JFrame implements ActionListener{
 
@@ -88,6 +91,8 @@ public class Application extends JFrame implements ActionListener{
 
 
 	private JButton btn_dangxuat;
+	public static JLabel name;
+	public static JLabel role;
 
 	/**
 	 * Create the frame.
@@ -110,12 +115,12 @@ public class Application extends JFrame implements ActionListener{
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
+		logo.setIcon(new ImageIcon(getClass().getResource("/images/App/logo.png")));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
+		ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/avt.png"));
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -123,19 +128,19 @@ public class Application extends JFrame implements ActionListener{
 		avt.setBounds(1365, 22, 100, 104);
 		panel_1.add(avt);
 		
-		JLabel name = new JLabel("Lê Vinh Quang");
+		name = new JLabel();
 		name.setHorizontalAlignment(SwingConstants.RIGHT);
 		name.setFont(new Font("Arial", Font.BOLD, 22));
 		name.setForeground(new Color(255, 255, 255));
 		name.setBounds(1114, 43, 247, 41);
 		panel_1.add(name);
 		
-		JLabel lblNewLabel = new JLabel("Nhân viên quầy");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		lblNewLabel.setForeground(new Color(255, 255, 255));
-		lblNewLabel.setBounds(1220, 74, 135, 29);
-		panel_1.add(lblNewLabel);
+		role = new JLabel();
+		role.setHorizontalAlignment(SwingConstants.RIGHT);
+		role.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
+		role.setForeground(new Color(255, 255, 255));
+		role.setBounds(1220, 74, 135, 29);
+		panel_1.add(role);
 		
 		JLabel lb_ngay = new JLabel("");
 		lb_ngay.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -182,7 +187,7 @@ public class Application extends JFrame implements ActionListener{
 		
 		mi_TrangChu = new JMenuItem("              TRANG CHỦ");
 		mi_TrangChu.addActionListener(this);
-		mi_TrangChu.setBackground(new Color(255, 153, 0));
+		mi_TrangChu.setBackground(new Color(204, 153, 102));
 		mi_TrangChu.setSelected(true);
 		mi_TrangChu.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		mi_TrangChu.setHorizontalAlignment(SwingConstants.LEFT);
@@ -283,40 +288,6 @@ public class Application extends JFrame implements ActionListener{
 		panel_trangchu.setBounds(285, 133, 1254, 704);
 		contentPane.add(panel_trangchu);
 		mi_TrangChu.doClick();
-//		panel_trangchu.setLayout(null);
-//		ArrayList<Integer> viTriKhongTrung = (ArrayList<Integer>) dsb.stream()
-//			    .map(Ban::getViTri)              // Lấy vị trí
-//			    .distinct()                      // Loại bỏ trùng lặp
-//			    .sorted()                        // Sắp xếp tăng dần
-//			    .collect(Collectors.toList());   // Thu về danh sách
-//		for (Integer i: viTriKhongTrung) {
-//			comb_tang.addItem(i.toString());
-//		}
-//		ArrayList<String> tenKhuVucKhongTrung = (ArrayList<String>) dsb.stream()
-//			    .map(Ban::getTenKV)               // Lấy tên khu vực
-//			    .filter(Objects::nonNull)         // Bỏ null nếu có
-//			    .distinct()                       // Loại trùng lặp
-//			    .sorted()                         // Sắp xếp tăng dần
-//			    .collect(Collectors.toList());
-//		for (String s: tenKhuVucKhongTrung) {
-//			comb_kv.addItem(s);
-//		}
-//		ArrayList<Integer> loaiBanKhongTrung = (ArrayList<Integer>) dsb.stream()
-//			    .map(Ban::getLoaiBan)           // Lấy giá trị loaiBan
-//			    .distinct()                     // Loại trùng
-//			    .sorted()                       // Sắp xếp tăng dần
-//			    .collect(Collectors.toList());
-//		for (Integer i: loaiBanKhongTrung) {
-//			comb_loaiban.addItem(i.toString());
-//		}
-//		hiddenDateChange.setVisible(false);
-//		hiddenDateChange.addActionListener(this);
-//		loadAllBan();
-//		displayBan(dsb);
-//		hiddenButton.addActionListener(this);
-	}
-	public void loadPanel(JPanel gui) {
-		
 	}
 	
 
@@ -331,7 +302,7 @@ public class Application extends JFrame implements ActionListener{
 			}
 			LoadingPanel loading = new LoadingPanel();
 			contentPane.add(loading);
-
+			
 			// Quan trọng: cập nhật lại giao diện sau khi thay đổi component
 			contentPane.revalidate();
 			contentPane.repaint();
@@ -340,6 +311,8 @@ public class Application extends JFrame implements ActionListener{
 			    TrangChu_GUI gui = new TrangChu_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_TrangChu.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equals("ĐĂNG XUẤT")){
 			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn đăng xuất không?")==JOptionPane.YES_OPTION) {
@@ -348,7 +321,6 @@ public class Application extends JFrame implements ActionListener{
 				g.setVisible(true);
 				nhanvien=null;
 			}
-			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("đặt bàn")) {
 			int count = contentPane.getComponentCount();
@@ -366,6 +338,8 @@ public class Application extends JFrame implements ActionListener{
 			    DatBan_GUI gui = new DatBan_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_DatBan.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equalsIgnoreCase("nhận bàn")) {
 			int count = contentPane.getComponentCount();
@@ -383,6 +357,8 @@ public class Application extends JFrame implements ActionListener{
 			    NhanDon_GUI gui = new NhanDon_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_NhanBan.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equalsIgnoreCase("gọi món")) {
 			int count = contentPane.getComponentCount();
@@ -400,6 +376,8 @@ public class Application extends JFrame implements ActionListener{
 			    GoiMon_GUI gui = new GoiMon_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_GoiMon.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equalsIgnoreCase("thanh toán")) {
 			int count = contentPane.getComponentCount();
@@ -417,6 +395,8 @@ public class Application extends JFrame implements ActionListener{
 			    ThanhToan_GUI gui = new ThanhToan_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_ThanhToan.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equalsIgnoreCase("lịch sử")) {
 			int count = contentPane.getComponentCount();
@@ -434,6 +414,8 @@ public class Application extends JFrame implements ActionListener{
 			    LichSu_GUI gui = new LichSu_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_LichSu.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equalsIgnoreCase("thống kê")) {
 			int count = contentPane.getComponentCount();
@@ -451,6 +433,8 @@ public class Application extends JFrame implements ActionListener{
 			    ThongKe_GUI gui = new ThongKe_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_ThongKe.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equalsIgnoreCase("quản lý")) {
 			int count = contentPane.getComponentCount();
@@ -468,19 +452,61 @@ public class Application extends JFrame implements ActionListener{
 			    QuanLy_GUI gui = new QuanLy_GUI();
 			    return gui.getPanel();
 			}, 500);
+			resetBtn();
+			mi_QuanLy.setBackground(new Color(204, 153, 102));
 		}
 		if (cmd.equalsIgnoreCase("trợ giúp")) {
-		    try {
-		        File htmlFile = new File("src/gui/help.html");
-		        Desktop.getDesktop().browse(htmlFile.toURI());
-		    } catch (IOException ex) {
-		        System.err.println("Error opening help file: " + ex.getMessage());
-		        JOptionPane.showMessageDialog(this, 
-		            "Không thể mở trang trợ giúp", 
-		            "Lỗi", 
-		            JOptionPane.ERROR_MESSAGE);
-		    }
+//		    try {
+//		        File htmlFile = new File("src/gui/help.html");
+//		        Desktop.getDesktop().browse(htmlFile.toURI());
+//		    } catch (IOException ex) {
+//		        System.err.println("Error opening help file: " + ex.getMessage());
+//		        JOptionPane.showMessageDialog(this, 
+//		            "Không thể mở trang trợ giúp", 
+//		            "Lỗi", 
+//		            JOptionPane.ERROR_MESSAGE);
+//		    }
+			try {
+			    // Lấy file help.html từ resources trong JAR
+			    InputStream input = getClass().getResourceAsStream("/gui/help.html");
+
+			    if (input == null) {
+			        throw new FileNotFoundException("Không tìm thấy file help.html trong resources.");
+			    }
+
+			    // Tạo file tạm để chứa nội dung HTML
+			    File tempFile = File.createTempFile("help", ".html");
+			    tempFile.deleteOnExit(); // Xóa khi đóng ứng dụng
+
+			    // Ghi nội dung từ .jar ra file tạm
+			    Files.copy(input, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+			    // Mở file tạm trong trình duyệt
+			    Desktop.getDesktop().browse(tempFile.toURI());
+
+			} catch (IOException ex) {
+			    System.err.println("Error opening help file: " + ex.getMessage());
+			    JOptionPane.showMessageDialog(this, 
+			        "Không thể mở trang trợ giúp", 
+			        "Lỗi", 
+			        JOptionPane.ERROR_MESSAGE);
+			}
+
 		}
 	}
-
+	public static void setUser() {
+		name.setText(nhanvien.getTenNV());
+		role.setText(nhanvien.getChucVu());
+	}
+	
+	private void resetBtn() {
+		mi_GoiMon.setBackground(new Color(255, 153, 0));
+		mi_LichSu.setBackground(new Color(255, 153, 0));
+		mi_DatBan.setBackground(new Color(255, 153, 0));
+		mi_NhanBan.setBackground(new Color(255, 153, 0));
+		mi_QuanLy.setBackground(new Color(255, 153, 0));
+		mi_ThongKe.setBackground(new Color(255, 153, 0));
+		mi_TrangChu.setBackground(new Color(255, 153, 0));
+		mi_ThanhToan.setBackground(new Color(255, 153, 0));
+	}
 }

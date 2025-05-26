@@ -14,9 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import dao.NhanVien_DAO;
+import dao.TaiKhoan_DAO;
 import entities.NhanVien;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -30,6 +33,8 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 	private JTextField tf_manv;
 	private JPasswordField tf_mk;
 	private JButton btn_dangnhap;
+	private JButton btnNewButton_1;
+	public static QuenMatKhau_GUI q;
 
 	/**
 	 * Launch the application.
@@ -55,7 +60,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 		setBounds(400, 200, 750, 450);
 		setResizable(false);
 		contentPane = new JPanel() {
-            private Image background = new ImageIcon("src/images/App/login-background.png").getImage();
+            private Image background = new ImageIcon(getClass().getResource("/images/App/login-background.png")).getImage();
 
             @Override
             protected void paintComponent(Graphics g) {
@@ -68,15 +73,19 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 
         setContentPane(contentPane); 
         
-        ImageIcon icon = new ImageIcon("src/images/App/login-logo.png"); // đổi thành đường dẫn ảnh của bạn
-        JLabel iconLabel = new JLabel(icon);
-        iconLabel.setFont(new Font("Arial", Font.PLAIN, 8));
-        iconLabel.setSize(200, 200);
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/App/logo.png"));
 
-        // Đặt vị trí tuyệt đối cho icon trên panel
-        iconLabel.setBounds(453, 94, 168, 208);
-        // Thêm icon vào panel
-        contentPane.add(iconLabel);
+	     // Resize ảnh về đúng kích thước bạn muốn
+	     Image scaledImage = icon.getImage().getScaledInstance(300, 90, Image.SCALE_SMOOTH);
+	     ImageIcon resizedIcon = new ImageIcon(scaledImage);
+	
+	     // Tạo JLabel chứa ảnh đã resize
+	     JLabel iconLabel = new JLabel(resizedIcon);
+	     iconLabel.setBounds(413, 94, 300, 200);
+	
+	     // Thêm vào panel
+	     contentPane.add(iconLabel);
+
         
         JPanel panel = new JPanel();
         panel.setBackground(new Color(255, 153, 0));
@@ -117,11 +126,12 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         btn_dangnhap.addActionListener(this);
         panel.add(btn_dangnhap);
         
-        JButton btnNewButton_1 = new JButton("<html><u>Quên mật khẩu</u></html>");
+        btnNewButton_1 = new JButton("<html><u>Quên mật khẩu</u></html>");
         btnNewButton_1.setFont(new Font("Tahoma", Font.ITALIC, 10));
         btnNewButton_1.setHorizontalAlignment(SwingConstants.RIGHT);
         btnNewButton_1.setBounds(128, 175, 115, 21);
         panel.add(btnNewButton_1);
+        btnNewButton_1.addActionListener(this);
         
         btnNewButton_1.setOpaque(false);
         btnNewButton_1.setContentAreaFilled(false);
@@ -136,14 +146,25 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 		if (cmd.equals("ĐĂNG NHẬP")) {
 			String ma = tf_manv.getText().trim();
 			Application.nhanvien = NhanVien_DAO.timNhanVienTheoMa(ma);
-			if (Application.nhanvien==null) {
+			String pass =String.copyValueOf(tf_mk.getPassword());
+			String mk = TaiKhoan_DAO.getMatKhau(ma);
+			System.out.println(pass);
+			System.out.println(mk);
+			if (Application.nhanvien==null || mk==null || !mk.equals(pass)) {
 				JOptionPane.showMessageDialog(null, "Mã nhân viên hoặc mật khẩu không đúng");
 			}
 			else {
-				JOptionPane.showMessageDialog(null, "Đăng nhập thành công");
+				JOptionPane.showMessageDialog(null, "Xin chào "+Application.nhanvien.getTenNV()+" !");
+				Application.setUser();
 				this.setVisible(false);
 				Application.frame.setVisible(true);
 			}
+		}
+		if (cmd.equals("<html><u>Quên mật khẩu</u></html>")) {
+			System.out.println("Hihi");
+			Sent_OTP o = new Sent_OTP();
+			o.setVisible(true);
+			o.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		}
 	}
 	

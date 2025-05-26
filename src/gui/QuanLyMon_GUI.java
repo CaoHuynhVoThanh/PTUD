@@ -107,12 +107,12 @@ public class QuanLyMon_GUI extends JFrame {
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
+		logo.setIcon(new ImageIcon(getClass().getResource("/images/App/logo.png")));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
+		ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/avt.png"));
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -296,7 +296,7 @@ public class QuanLyMon_GUI extends JFrame {
 		
 		textField_nhapTenMon = new JTextField("   Tên món ăn");
 		textField_nhapTenMon.setBounds(410, 0, 300, 35);
-		ImageIcon searchIcon = new ImageIcon("src/images/App/iconsearch.png");
+		ImageIcon searchIcon = new ImageIcon(getClass().getResource("/images/App/iconSearch.png"));
 		Image imageIcon = searchIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
 		ImageIcon resizedIcon = new ImageIcon(imageIcon);
 		JLabel searchLabel = new JLabel(resizedIcon);
@@ -374,8 +374,7 @@ public class QuanLyMon_GUI extends JFrame {
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		for (Mon mon : dsMon) {
 		    // Load ảnh
-		    String path = "src/images/imageMon/" + mon.getHinhAnh();
-		    ImageIcon icon = new ImageIcon(path);
+		    ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
 		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 		    ImageIcon monAn = new ImageIcon(image);
 		    
@@ -428,8 +427,7 @@ public class QuanLyMon_GUI extends JFrame {
 
 		        // Load lại dữ liệu món ăn theo loại được chọn
 		        for (Mon mon : dsMon) {
-		            String path = "src/images/imageMon/" + mon.getHinhAnh();
-		            ImageIcon icon = new ImageIcon(path);
+		        	ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
 		            Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 		            ImageIcon monAn = new ImageIcon(image);
 
@@ -461,8 +459,7 @@ public class QuanLyMon_GUI extends JFrame {
 
 		            // Đổ dữ liệu mới vào bảng
 		            for (Mon mon : dsMon) {
-		                String path = "src/images/imageMon/" + mon.getHinhAnh();
-		                ImageIcon icon = new ImageIcon(path);
+		            	ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
 		                Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 		                ImageIcon monAn = new ImageIcon(image);
 
@@ -634,8 +631,7 @@ public class QuanLyMon_GUI extends JFrame {
 		                    model.setRowCount(0);
 		                    ArrayList<Mon> dsMon = QuanLyMon_DAO.getAllMon();
 		                    for (Mon mon : dsMon) {
-				                String path = "src/images/imageMon/" + mon.getHinhAnh();
-				                ImageIcon icon = new ImageIcon(path);
+		                    	ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
 				                Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 				                ImageIcon monAn = new ImageIcon(image);
 

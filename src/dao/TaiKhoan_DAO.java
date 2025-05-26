@@ -28,4 +28,42 @@ public class TaiKhoan_DAO {
             return false;
         }
     }
+    
+    public static String getMatKhau(String ma) {
+        PreparedStatement stmt = null;
+        ConnectDB.getInstance();
+        String mk = null;
+		Connection conN = ConnectDB.getInstance().getConnection();
+        try {
+            String sql = "Select MatKhau from TaiKhoan where MaTK=?";
+            stmt = conN.prepareStatement(sql);
+            stmt.setString(1, ma);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+            	mk = rs.getString(1);
+            }
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return mk;
+    }
+    
+    public static boolean resetMK(String manv, String mk) {
+    	 PreparedStatement stmt = null;
+         ConnectDB.getInstance();
+ 		Connection conN = ConnectDB.getInstance().getConnection();
+         try {
+             String sql = "Update TaiKhoan Set MatKhau=? Where MaTK=?";
+             stmt = conN.prepareStatement(sql);
+             stmt.setString(1, mk);
+             stmt.setString(2, manv);
+             stmt.executeUpdate();
+             
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         return true;
+    }
 }

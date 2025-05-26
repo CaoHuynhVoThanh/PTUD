@@ -14,9 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import dao.NhanVien_DAO;
+import dao.TaiKhoan_DAO;
 import entities.NhanVien;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -27,9 +30,10 @@ public class QuenMatKhau_GUI extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField tf_manv;
-	private JPasswordField tf_mk;
-	private JButton btn_dangnhap;
+	private JPasswordField tf_mk2;
+	private JButton btn_reset;
+	private JPasswordField tf_mk1;
+	public static String makp;
 
 	/**
 	 * Launch the application.
@@ -55,7 +59,7 @@ public class QuenMatKhau_GUI extends JFrame implements ActionListener{
 		setBounds(400, 200, 750, 450);
 		setResizable(false);
 		contentPane = new JPanel() {
-            private Image background = new ImageIcon("src/images/App/login-background.png").getImage();
+            private Image background = new ImageIcon(getClass().getResource("/images/App/login-background.png")).getImage();
 
             @Override
             protected void paintComponent(Graphics g) {
@@ -68,7 +72,7 @@ public class QuenMatKhau_GUI extends JFrame implements ActionListener{
 
         setContentPane(contentPane); 
         
-        ImageIcon icon = new ImageIcon("src/images/App/login-logo.png"); // đổi thành đường dẫn ảnh của bạn
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/App/login-logo.png")); // đổi thành đường dẫn ảnh của bạn
         JLabel iconLabel = new JLabel(icon);
         iconLabel.setFont(new Font("Arial", Font.PLAIN, 8));
         iconLabel.setSize(200, 200);
@@ -84,43 +88,44 @@ public class QuenMatKhau_GUI extends JFrame implements ActionListener{
         contentPane.add(panel);
         panel.setLayout(null);
         
-        JLabel lblNewLabel = new JLabel("Lấy lại mật khẩu");
+        JLabel lblNewLabel = new JLabel("ĐẶT LẠI MẬT KHẨU");
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
         lblNewLabel.setBounds(13, 15, 230, 28);
         panel.add(lblNewLabel);
         
-        tf_manv = new JTextField();
-        tf_manv.setBounds(23, 82, 206, 28);
-        panel.add(tf_manv);
-        tf_manv.setColumns(10);
-        
-        JLabel lblNewLabel_1 = new JLabel("Mã nhân viên của bạn:");
+        JLabel lblNewLabel_1 = new JLabel("Mật khẩu mới:");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_1.setBounds(25, 65, 174, 13);
         panel.add(lblNewLabel_1);
         
-        JLabel lblNewLabel_1_1 = new JLabel("OTP:");
+        JLabel lblNewLabel_1_1 = new JLabel("Nhập lại mật khẩu mới:");
         lblNewLabel_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_1_1.setBounds(25, 124, 126, 13);
+        lblNewLabel_1_1.setBounds(25, 124, 206, 13);
         panel.add(lblNewLabel_1_1);
         
-        tf_mk = new JPasswordField();
-        tf_mk.setBounds(23, 143, 206, 28);
-        panel.add(tf_mk);
+        tf_mk2 = new JPasswordField();
+        tf_mk2.setBounds(23, 143, 206, 28);
+        panel.add(tf_mk2);
         
-        btn_dangnhap = new JButton("ĐĂNG NHẬP");
-        btn_dangnhap.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btn_dangnhap.setForeground(new Color(255, 255, 255));
-        btn_dangnhap.setBackground(new Color(0, 0, 0));
-        btn_dangnhap.setBounds(23, 221, 201, 38);
-        btn_dangnhap.addActionListener(this);
-        panel.add(btn_dangnhap);
+        btn_reset = new JButton("KHÔI PHỤC");
+        btn_reset.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btn_reset.setForeground(new Color(255, 255, 255));
+        btn_reset.setBackground(new Color(0, 0, 0));
+        btn_reset.setBounds(25, 200, 206, 36);
+        btn_reset.addActionListener(this);
+        panel.add(btn_reset);
         
-        JLabel lblNewLabel_1_2 = new JLabel("Mã nhân viên của bạn:");
-        lblNewLabel_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_1_2.setBounds(23, 198, 174, 13);
-        panel.add(lblNewLabel_1_2);
+        tf_mk1 = new JPasswordField();
+        tf_mk1.setBounds(25, 83, 206, 28);
+        panel.add(tf_mk1);
+        
+        JButton btn_exit = new JButton("Quay lại");
+        btn_exit.setForeground(Color.WHITE);
+        btn_exit.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btn_exit.setBackground(Color.BLACK);
+        btn_exit.setBounds(58, 246, 142, 28);
+        panel.add(btn_exit);
 	}
 
 	@Override
@@ -128,22 +133,19 @@ public class QuenMatKhau_GUI extends JFrame implements ActionListener{
 		// TODO Auto-generated method stub
 		String cmd = e.getActionCommand();
 		System.out.println(cmd);
-		if (cmd.equals("ĐĂNG NHẬP")) {
-			String ma = tf_manv.getText().trim();
-			Application.nhanvien = NhanVien_DAO.timNhanVienTheoMa(ma);
-			if (Application.nhanvien==null) {
-				JOptionPane.showMessageDialog(null, "Mã nhân viên hoặc mật khẩu không đúng");
+		if (cmd.equals("KHÔI PHỤC")) {
+			String ma1 = String.copyValueOf(tf_mk1.getPassword());
+			String ma2 = String.copyValueOf(tf_mk2.getPassword());
+			if (ma1.equals(ma2)) {
+				JOptionPane.showMessageDialog(null, "Khôi phục mật khẩu thành công, quay về đăng nhập");
+				TaiKhoan_DAO.resetMK(makp, ma2);
+				this.dispose();
+				Application.g.setVisible(true);
 			}
 			else {
-				JOptionPane.showMessageDialog(null, "Đăng nhập thành công");
-				this.setVisible(false);
-				Application.frame.setVisible(true);
+				JOptionPane.showMessageDialog(null, "Nhập lại mật khẩu không khớp!");
 			}
+			
 		}
-	}
-	
-	public void clearAll() {
-		tf_manv.setText("");
-		tf_mk.setText("");
 	}
 }

@@ -12,6 +12,13 @@ import javax.swing.border.EmptyBorder;
 import dao.DonDatBan_DAO;
 import dao.HoaDon_DAO;
 import entities.NhanVien;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.awt.Color;
 import javax.swing.JLabel;
@@ -21,14 +28,19 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 
 public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
-	private NhanVien currenUser = new NhanVien("25000001", "Lê Vinh Quang", "quankle@gmail.com", "0987654321", "Gò Vấp", "Nhân Viên Quầy", null, true);
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_km;
@@ -47,6 +59,8 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 	private JLabel lb_tv;
 	private JButton btn_xemtruoc;
 	private ArrayList<String> dsddb;
+	public static List<Map<String, ?>> dataList = new ArrayList<>();
+	public static Map<String, Object> params = new HashMap<>();
 
 	/**
 	 * Launch the application.
@@ -244,6 +258,7 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		btn_xemtruoc.setBorderPainted(false);
 		btn_xemtruoc.setBounds(301, 466, 101, 21);
 		contentPanel.add(btn_xemtruoc);
+		btn_xemtruoc.addActionListener(this);
 	}
 	public void setTT(LocalDateTime tgd, String tamtinh) {
 		lb_tgdb.setText(tgd.toString());
@@ -251,12 +266,27 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		lb_tgtt.setText(LocalDateTime.now().withNano(0).toString());
 		double tam = Double.parseDouble(tamtinh);
 		lb_vat.setText((tam*0.1)+"");
-		lb_tennv.setText(currenUser.getTenNV());
+		lb_tennv.setText(Application.nhanvien.getTenNV());
 		lb_km.setText("0.0");
 		lb_tv.setText("0.0");
 		double tong = Double.parseDouble(tamtinh)+Double.parseDouble(lb_vat.getText())-Double.parseDouble(lb_km.getText())-Double.parseDouble(lb_tv.getText());
 		lb_tongtt.setText(tong+"");
 	}
+	public static String norText(String str) {
+        if (str == null) return null;
+
+        // Chuẩn hóa Unicode thành dạng decomposed (NFD)
+        String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
+
+        // Loại bỏ các dấu thanh (dấu sắc, huyền, hỏi, ngã, nặng)
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        String noDiacritics = pattern.matcher(normalized).replaceAll("");
+
+        // Thay thế riêng ký tự Đ và đ
+        noDiacritics = noDiacritics.replace("Đ", "D").replace("đ", "d");
+
+        return noDiacritics;
+    }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -303,21 +333,37 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 
 			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn thanh toán?")==JOptionPane.YES_OPTION) {
 				LocalDate now = LocalDate.now(); 
-		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		        String num = String.format("%06d", HoaDon_DAO.demHoaDonTrongNgay());
 		        String formattedDate = now.format(formatter);
-				String ma = formattedDate+currenUser.getMaNV()+HoaDon_DAO.demHoaDonTrongNgay()+"";
+				String ma ="HD"+ formattedDate+num+"";
 				String makm = "";
 				if (tf_km.getText().equals("")) makm=null;
 				String matv = "";
 				if (tf_tv.getText().equals("")) matv=null;
 				double tongtien = Double.parseDouble(lb_tongtt.getText());
-				HoaDon_DAO.insertHoaDon(ma, currenUser.getMaNV(), LocalDateTime.now(), makm, tongtien, "Tiền mặt", matv, tongtien/10000);
+				HoaDon_DAO.insertHoaDon(ma, Application.nhanvien.getMaNV(), LocalDateTime.now(), makm, tongtien, "Tiền mặt", matv, tongtien/10000);
 				for (String s: dsddb) {
 					DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
 					DonDatBan_DAO.capNhatTrangThaiDonDatBan(s, 2);
 				}
 				Double tientra = tien-tongTien;
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công! Số tiền trả khách: "+tientra);
+				String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+				JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
+				params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
+				params.put("cashier", norText(Application.nhanvien.getTenNV()));
+	            params.put("invoiceID", norText(ma));
+	            LocalDateTime d = LocalDateTime.now();
+	            params.put("dateTime", d.toString());
+	            try {
+	            	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
+	            	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
+	                JasperPrint print = JasperFillManager.fillReport(report, params, dataSource);
+	                JasperExportManager.exportReportToPdfFile(print, "invoice_output.pdf");
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 				ThanhToan_GUI.hiddenButtonThanhToan.doClick();
 				this.dispose();
 			}
@@ -326,20 +372,36 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		if (cmd.equals("Chuyển khoản")) {
 			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn thanh toán?")==JOptionPane.YES_OPTION) {
 				LocalDate now = LocalDate.now(); 
-		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		        String num = String.format("%06d", HoaDon_DAO.demHoaDonTrongNgay());
 		        String formattedDate = now.format(formatter);
-				String ma = formattedDate+currenUser.getMaNV()+HoaDon_DAO.demHoaDonTrongNgay()+"";
+				String ma ="HD"+ formattedDate+num+"";
 				String makm = "";
 				if (tf_km.getText().equals("")) makm=null;
 				String matv = "";
 				if (tf_tv.getText().equals("")) matv=null;
 				double tongtien = Double.parseDouble(lb_tongtt.getText());
-				HoaDon_DAO.insertHoaDon(ma, currenUser.getMaNV(), LocalDateTime.now(), makm, tongtien, "Chuyển khoản", matv, tongtien/10000);
+				HoaDon_DAO.insertHoaDon(ma, Application.nhanvien.getMaNV(), LocalDateTime.now(), makm, tongtien, "Chuyển khoản", matv, tongtien/10000);
 				for (String s: dsddb) {
 					DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
 					DonDatBan_DAO.capNhatTrangThaiDonDatBan(ma, 2);
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
+				String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+				JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
+				params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
+				params.put("cashier", norText(Application.nhanvien.getTenNV()));
+	            params.put("invoiceID", norText(ma));
+	            LocalDateTime d = LocalDateTime.now();
+	            params.put("dateTime", d.toString());
+	            try {
+	            	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
+	            	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
+	                JasperPrint print = JasperFillManager.fillReport(report, params, dataSource);
+	                JasperExportManager.exportReportToPdfFile(print, "invoice_output.pdf");
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 				ThanhToan_GUI.hiddenButtonThanhToan.doClick();
 				this.dispose();
 			}
@@ -347,26 +409,69 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		if (cmd.equals("Thẻ")) {
 			if (JOptionPane.showConfirmDialog(null, "Bạn có muốn thanh toán?")==JOptionPane.YES_OPTION) {
 				LocalDate now = LocalDate.now(); 
-		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		        String num = String.format("%06d", HoaDon_DAO.demHoaDonTrongNgay());
 		        String formattedDate = now.format(formatter);
-				String ma = formattedDate+currenUser.getMaNV()+HoaDon_DAO.demHoaDonTrongNgay()+"";
+				String ma ="HD"+ formattedDate+num+"";
 				String makm = "";
 				if (tf_km.getText().equals("")) makm=null;
 				String matv = "";
 				if (tf_tv.getText().equals("")) matv=null;
 				double tongtien = Double.parseDouble(lb_tongtt.getText());
-				HoaDon_DAO.insertHoaDon(ma, currenUser.getMaNV(), LocalDateTime.now(), makm, tongtien, "Thẻ", matv, tongtien/10000);
+				HoaDon_DAO.insertHoaDon(ma, Application.nhanvien.getMaNV(), LocalDateTime.now(), makm, tongtien, "Thẻ", matv, tongtien/10000);
 				for (String s: dsddb) {
 					DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
-					DonDatBan_DAO.capNhatTrangThaiDonDatBan(ma, 2);
+					DonDatBan_DAO.capNhatTrangThaiDonDatBan(s, 2);
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
+				String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+				JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
+				params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
+				params.put("cashier", norText(Application.nhanvien.getTenNV()));
+	            params.put("invoiceID", norText(ma));
+	            LocalDateTime d = LocalDateTime.now();
+	            params.put("dateTime", d.toString());
+	            try {
+	            	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
+	            	if (jrxmlStream == null) {
+	            	    throw new RuntimeException("Không tìm thấy file JRXML! Đảm bảo file nằm trong thư mục resources và được export vào JAR.");
+	            	}
+	            	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
+	                JasperPrint print = JasperFillManager.fillReport(report, params, dataSource);
+	                JasperExportManager.exportReportToPdfFile(print, "invoice_output.pdf");
+				} catch (Exception e2) {
+				    e2.printStackTrace(); // THAY vì để trống
+				    JOptionPane.showMessageDialog(this,
+				        "Lỗi khi in báo cáo: " + e2.getMessage(),
+				        "Lỗi", JOptionPane.ERROR_MESSAGE);
+				}
 				ThanhToan_GUI.hiddenButtonThanhToan.doClick();
 				this.dispose();
 			}
 		}
 		if (cmd.equals("Xem trước")) {
+			String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+			JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
+			params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
+			params.put("cashier", norText(Application.nhanvien.getTenNV()));
 			
+			LocalDate now = LocalDate.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	        String num = String.format("%06d", HoaDon_DAO.demHoaDonTrongNgay());
+	        String formattedDate = now.format(formatter);
+			String ma ="HD"+ formattedDate+num+"";
+            params.put("invoiceID", norText(ma));
+            LocalDateTime d = LocalDateTime.now();
+            params.put("dateTime", d.toString());
+            try {
+            	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
+            	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
+                JasperPrint print = JasperFillManager.fillReport(report, params, dataSource);
+                JasperViewer.viewReport(print, false);
+			} catch (Exception e2) {
+				// TODO: handle exception
+			}
+            
 		}
 	}
 

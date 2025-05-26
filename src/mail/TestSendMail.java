@@ -41,7 +41,7 @@ public class TestSendMail {
     }
 
  // Gửi mã OTP
-    public static void sendOTP(String toEmail) throws EmailException, MalformedURLException {
+    public static String sendOTP(String toEmail) throws EmailException, MalformedURLException {
         String otpCode = generateOTP(4);
         String subject = "Mã xác thực OTP của bạn";
         String htmlContent = "<h2>Nhà hàng Takudo xin chào,</h2>"
@@ -54,6 +54,7 @@ public class TestSendMail {
 
         sendEmail(toEmail, subject, htmlContent, textContent, null); // không gửi kèm hình ảnh
         System.out.println("Đã gửi mã OTP: " + otpCode + " tới " + toEmail);
+        return otpCode;
     }
 
 
