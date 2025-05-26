@@ -159,8 +159,31 @@ public class QuanLyMon_DAO {
 	    }
 	}
 
+	public static String taoMaMon() {
+        ConnectDB.getInstance().connect();
+        Connection con = ConnectDB.getInstance().getConnection();
+        String prefix = "MO";
+        String sql = "SELECT TOP 1 maMon FROM Mon WHERE maMon LIKE 'MO%' ORDER BY maMon DESC";
 
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
 
+            if (rs.next()) {
+                String lastMaMon = rs.getString("maMon"); // ví dụ MO023
+                // Lấy phần số
+                int lastNum = Integer.parseInt(lastMaMon.substring(2));
+                int newNum = lastNum + 1;
+                return prefix + String.format("%03d", newNum);
+            } else {
+                // Nếu chưa có mã nào
+                return prefix + "001";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+	}
 
 
 

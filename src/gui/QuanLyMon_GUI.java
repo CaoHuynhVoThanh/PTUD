@@ -19,6 +19,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -47,9 +50,11 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import com.toedter.calendar.JDateChooser;
 
+import dao.QuanLyKhuyenMai_DAO;
 import dao.QuanLyMon_DAO;
 import entities.Mon;
 import java.util.HashSet;
@@ -325,18 +330,11 @@ public class QuanLyMon_GUI extends JFrame {
 		});
 		
 		JPanel panel_table = new JPanel();
-		panel_table.setBounds(0, 60, 1000, 450); // vị trí & size tùy chỉnh
+		panel_table.setBounds(320, 220, 1150, 450); // vị trí & size tùy chỉnh
 		panel_table.setLayout(new BorderLayout()); // dùng layout này để bảng tự mở rộng
 		contentPane.add(panel_table);
 		
-		pQuanLyMon = new JPanel();
-		pQuanLyMon.setBounds(286, 138, 1237, 689);
-		contentPane.add(pQuanLyMon);
-		pQuanLyMon.add(panel_dropdown);
-		pQuanLyMon.add(panel_table);
-		pQuanLyMon.setLayout(null);
-		
-		String[] columnNames = {"Mã món", "Tên món ăn", "Loại","Đơn giá", "Hình ảnh", "Xóa", "Chỉnh sửa"};
+		String[] columnNames = {"Mã món", "Tên món ăn", "Loại","Đơn giá", "Hình ảnh", "Xóa", "Chỉnh sửa","Path"};
 		DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 		JTable table = new JTable(model);
 		
@@ -369,6 +367,8 @@ public class QuanLyMon_GUI extends JFrame {
 		    }
 		};
 		table.getColumnModel().getColumn(4).setCellRenderer(imageRenderer);
+		table.getColumnModel().getColumn(5).setCellRenderer(imageRenderer);
+		table.getColumnModel().getColumn(6).setCellRenderer(imageRenderer);
 		
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
@@ -378,6 +378,16 @@ public class QuanLyMon_GUI extends JFrame {
 		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 		    ImageIcon monAn = new ImageIcon(image);
 		    
+		    String path_delete = "src/images/App/iconDelete.png"; 
+		    ImageIcon icon_delete = new ImageIcon(path_delete);
+		    Image image_delete = icon_delete.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		    ImageIcon xoa = new ImageIcon(image_delete);
+		    
+		    String path_pencil = "src/images/App/edit.png"; 
+		    ImageIcon icon_pencil = new ImageIcon(path_pencil);
+		    Image image_pencil = icon_pencil.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		    ImageIcon sua = new ImageIcon(image_pencil);
+		    
 		    // Thêm hàng vào bảng
 		    model.addRow(new Object[] {
 		    	mon.getMaMon(),	
@@ -385,12 +395,17 @@ public class QuanLyMon_GUI extends JFrame {
 		        mon.getLoaiMon(),
 		        String.format("%,.0f VNĐ", mon.getDonGia()), // format tiền
 		        monAn,
-		        "Xóa", "Sửa"
+		        xoa, sua,
+		        path
 		    });
 		}    
+		TableColumn hiddenColumn = table.getColumnModel().getColumn(7);
+		hiddenColumn.setMinWidth(0);
+		hiddenColumn.setMaxWidth(0);
+		hiddenColumn.setPreferredWidth(0);
 
 		for (int i = 0; i < table.getColumnCount(); i++) {
-			if(i==4) {
+			if(i==4 || i==5 || i==6) {
 				continue;
 			}else {
 				table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
@@ -402,7 +417,7 @@ public class QuanLyMon_GUI extends JFrame {
 		
 		
 		JButton btn_themMon = new JButton("Thêm");
-		btn_themMon.setBounds(1150, 730, 100, 40); 
+		btn_themMon.setBounds(1350, 710, 100, 40); 
 		btn_themMon.setFont(new Font("Arial", Font.BOLD, 20)); 
 		btn_themMon.setForeground(Color.BLACK);
 		btn_themMon.setBackground(new Color(255, 153, 0));
@@ -427,18 +442,31 @@ public class QuanLyMon_GUI extends JFrame {
 
 		        // Load lại dữ liệu món ăn theo loại được chọn
 		        for (Mon mon : dsMon) {
-		        	ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
-		            Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-		            ImageIcon monAn = new ImageIcon(image);
-
-		            model.addRow(new Object[]{
-		                mon.getMaMon(),
-		                mon.getTenMon(),
-		                mon.getLoaiMon(),
-		                String.format("%,.0f VNĐ", mon.getDonGia()),
-		                monAn,
-		                "Xóa", "Sửa"
-		            });
+		        	 String path = "src/images/imageMon/" + mon.getHinhAnh();
+		 		    ImageIcon icon = new ImageIcon(path);
+		 		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		 		    ImageIcon monAn = new ImageIcon(image);
+		 		    
+		 		    String path_delete = "src/images/App/iconDelete.png"; 
+		 		    ImageIcon icon_delete = new ImageIcon(path_delete);
+		 		    Image image_delete = icon_delete.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		 		    ImageIcon xoa = new ImageIcon(image_delete);
+		 		    
+		 		    String path_pencil = "src/images/App/edit.png"; 
+		 		    ImageIcon icon_pencil = new ImageIcon(path_pencil);
+		 		    Image image_pencil = icon_pencil.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		 		    ImageIcon sua = new ImageIcon(image_pencil);
+		 		    
+		 		    // Thêm hàng vào bảng
+		 		    model.addRow(new Object[] {
+		 		    	mon.getMaMon(),	
+		 		        mon.getTenMon(),
+		 		        mon.getLoaiMon(),
+		 		        String.format("%,.0f VNĐ", mon.getDonGia()), // format tiền
+		 		        monAn,
+		 		        xoa, sua,
+		 		        path
+		 		    });
 		        }
 		    }
 		});
@@ -459,18 +487,31 @@ public class QuanLyMon_GUI extends JFrame {
 
 		            // Đổ dữ liệu mới vào bảng
 		            for (Mon mon : dsMon) {
-		            	ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
-		                Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-		                ImageIcon monAn = new ImageIcon(image);
-
-		                model.addRow(new Object[]{
-		                    mon.getMaMon(),
-		                    mon.getTenMon(),
-		                    mon.getLoaiMon(),
-		                    String.format("%,.0f VNĐ", mon.getDonGia()),
-		                    monAn,
-		                    "Xóa", "Sửa"
-		                });
+		            	String path = "src/images/imageMon/" + mon.getHinhAnh();
+		     		    ImageIcon icon = new ImageIcon(path);
+		     		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		     		    ImageIcon monAn = new ImageIcon(image);
+		     		    
+		     		    String path_delete = "src/images/App/iconDelete.png"; 
+		     		    ImageIcon icon_delete = new ImageIcon(path_delete);
+		     		    Image image_delete = icon_delete.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		     		    ImageIcon xoa = new ImageIcon(image_delete);
+		     		    
+		     		    String path_pencil = "src/images/App/edit.png"; 
+		     		    ImageIcon icon_pencil = new ImageIcon(path_pencil);
+		     		    Image image_pencil = icon_pencil.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		     		    ImageIcon sua = new ImageIcon(image_pencil);
+		     		    
+		     		    // Thêm hàng vào bảng
+		     		    model.addRow(new Object[] {
+		     		    	mon.getMaMon(),	
+		     		        mon.getTenMon(),
+		     		        mon.getLoaiMon(),
+		     		        String.format("%,.0f VNĐ", mon.getDonGia()), // format tiền
+		     		        monAn,
+		     		        xoa, sua,
+		     		        path
+		     		    });
 		            }
 		        }
 		    }
@@ -505,7 +546,7 @@ public class QuanLyMon_GUI extends JFrame {
 		        }
 		        if(column == 6) {
 		        	if (row >= 0 && row < table.getRowCount()) {
-		        		hienThiChinhMon(dsMon,model.getValueAt(row, 0).toString(), model.getValueAt(row, 1).toString(), model.getValueAt(row, 2).toString(), model.getValueAt(row, 3).toString(), model.getValueAt(row, 4).toString());
+		        		frameThem_ChinhMon("Chỉnh sửa món ăn",dsMon,model.getValueAt(row, 0).toString(), model.getValueAt(row, 1).toString(), model.getValueAt(row, 2).toString(), model.getValueAt(row, 3).toString(), model.getValueAt(row, 7).toString(),"Chỉnh sửa",model);
 		        	}
 		        }
 		    }
@@ -518,183 +559,18 @@ public class QuanLyMon_GUI extends JFrame {
 
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        // Tạo Frame mới khi nhấn nút
-		        JFrame frameThemMon = new JFrame("Thêm Món");
-		        frameThemMon.setSize(800, 500);
-		        frameThemMon.setLayout(null);
-		        frameThemMon.setLocationRelativeTo(null); // Canh giữa màn hình
-
-		        // Ví dụ: Thêm các component vào frame này
-		        Font fontTo = new Font("Arial", Font.BOLD, 16); // Font to
-
-		        JLabel lblTenMon = new JLabel("Tên món:");
-		        lblTenMon.setBounds(30, 30, 100, 30);
-		        lblTenMon.setFont(fontTo);
-		        JTextField txtTenMon = new JTextField();
-		        txtTenMon.setBounds(120, 30, 220, 30);
-		        txtTenMon.setFont(fontTo);
-
-		        JLabel lblLoaiMon = new JLabel("Loại món:");
-		        lblLoaiMon.setBounds(380, 30, 100, 30);
-		        lblLoaiMon.setFont(fontTo);
-		        JComboBox<String> cbLoaiMon = new JComboBox<>();
-		        for (String loai : loaiSet) {
-		        	cbLoaiMon.addItem(loai);
-				}
-		        cbLoaiMon.setBounds(470, 30, 220, 30);
-		        cbLoaiMon.setFont(fontTo);
-
-		        JLabel lblGia = new JLabel("Giá:");
-		        lblGia.setBounds(30, 80, 100, 30);
-		        lblGia.setFont(fontTo);
-		        JTextField txtGia = new JTextField();
-		        txtGia.setBounds(120, 80, 220, 30);
-		        txtGia.setFont(fontTo);
-		        
-		     // Khai báo JLabel để hiển thị ảnh
-		        JLabel lblHinhAnh = new JLabel("Hình ảnh:");
-		        lblHinhAnh.setBounds(30, 200, 120, 30);
-		        lblHinhAnh.setFont(fontTo);
-		        
-		        
-		        JLabel lblAnhMon = new JLabel();
-		        lblAnhMon.setBounds(120, 130, 150, 150);
-		        lblAnhMon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-		        // Nút chọn ảnh
-		        JButton btnChonAnh = new JButton("Chọn ảnh");
-		        btnChonAnh.setBounds(135, 300, 120, 30);
-		        btnChonAnh.setFont(fontTo);
-
-		        // Sự kiện chọn ảnh
-		        btnChonAnh.addActionListener(new ActionListener() {
-		            @Override
-		            public void actionPerformed(ActionEvent e) {
-		            	JFileChooser fileChooser = new JFileChooser();
-		                fileChooser.setDialogTitle("Chọn ảnh món ăn");
-		                int result = fileChooser.showOpenDialog(null);
-		                if (result == JFileChooser.APPROVE_OPTION) {
-		                	selectedFile = fileChooser.getSelectedFile();
-		                    ImageIcon icon = new ImageIcon(selectedFile.getAbsolutePath());
-
-		                    // Resize ảnh để hiển thị đẹp trong label
-		                    Image image = icon.getImage().getScaledInstance(lblAnhMon.getWidth(), lblAnhMon.getHeight(), Image.SCALE_SMOOTH);
-		                    lblAnhMon.setIcon(new ImageIcon(image));
-		                }
-		            }
-		        });
-
-
-
-		        JButton btnLuu = new JButton("Thêm");
-		        btnLuu.setFont(fontTo);
-		        btnLuu.setBounds(510, 400, 80, 30);
-		        btnLuu.setForeground(Color.BLACK);
-		        btnLuu.setBackground(new Color(255, 153, 0));
-		        
-		        btnLuu.addActionListener(new ActionListener() {
-		            @Override
-		            public void actionPerformed(ActionEvent e) {
-		                String tenMon = txtTenMon.getText().trim();
-		                String loaiMon = cbLoaiMon.getSelectedItem().toString();
-		                String donGiaStr = txtGia.getText().trim();
-		                String hinhAnh = selectedFile.getName();
-
-		                if (tenMon.isEmpty() || donGiaStr.isEmpty() || hinhAnh.isEmpty()) {
-		                    JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin.");
-		                    return;
-		                }
-
-		                double donGia = 0;
-		                try {
-		                    donGia = Double.parseDouble(donGiaStr);
-		                } catch (NumberFormatException ex) {
-		                    JOptionPane.showMessageDialog(null, "Đơn giá phải là số.");
-		                    return;
-		                }
-
-		                // Sinh mã món tự động
-		                String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		                StringBuilder randomPart = new StringBuilder();
-		                Random rand = new Random();
-
-		                for (int i = 0; i < 5; i++) {
-		                    int index = rand.nextInt(characters.length());
-		                    randomPart.append(characters.charAt(index));
-		                }
-
-		                String maMon = randomPart.toString();
-		                Mon monMoi = new Mon(maMon, tenMon, loaiMon, donGia, hinhAnh);
-		                boolean thanhCong = QuanLyMon_DAO.addMon(monMoi);
-		                if (thanhCong) {
-		                    JOptionPane.showMessageDialog(null, "Thêm món thành công!");
-		                    model.setRowCount(0);
-		                    ArrayList<Mon> dsMon = QuanLyMon_DAO.getAllMon();
-		                    for (Mon mon : dsMon) {
-		                    	ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
-				                Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-				                ImageIcon monAn = new ImageIcon(image);
-
-				                model.addRow(new Object[]{
-				                    mon.getMaMon(),
-				                    mon.getTenMon(),
-				                    mon.getLoaiMon(),
-				                    String.format("%,.0f VNĐ", mon.getDonGia()),
-				                    monAn,
-				                    "Xóa", "Sửa"
-				                });
-				            }
-		                } else {
-		                    JOptionPane.showMessageDialog(null, "Thêm món thất bại!");
-		                }
-		            }
-		        });
-
-		        
-		        JButton btnHuy = new JButton("Hủy");
-		        btnHuy.setFont(fontTo);
-		        btnHuy.setBounds(610, 400, 80, 30);
-		        btnHuy.setForeground(Color.WHITE);
-		        btnHuy.setBackground(new Color(255, 0, 0));
-		        btnLuu.addActionListener(ev -> {
-		            String tenMon = txtTenMon.getText();
-		            String gia = txtGia.getText();
-		            // Bạn có thể xử lý logic lưu ở đây
-		            JOptionPane.showMessageDialog(frameThemMon, "Đã lưu món: " + tenMon + " - " + gia + " VND");
-		            frameThemMon.dispose(); // Đóng frame sau khi lưu
-		        });
-		        btnHuy.addActionListener(new ActionListener() {
-		            @Override
-		            public void actionPerformed(ActionEvent e) {
-		            	frameThemMon.dispose();
-		                
-		            }
-		        });
-
-		        // Thêm vào frame
-		        frameThemMon.add(lblTenMon);
-		        frameThemMon.add(txtTenMon);
-		        frameThemMon.add(lblLoaiMon);
-		        frameThemMon.add(cbLoaiMon);
-		        frameThemMon.add(lblAnhMon);
-		        frameThemMon.add(lblHinhAnh);
-		        frameThemMon.add(btnChonAnh);
-		        frameThemMon.add(lblGia);
-		        frameThemMon.add(txtGia);
-		        frameThemMon.add(btnLuu);
-		        frameThemMon.add(btnHuy);
-
-		        frameThemMon.setVisible(true);
+		    	System.err.println("haha");
+				frameThem_ChinhMon("Thêm món ăn", dsMon, "", "", "", "", "","Thêm",model);
 		    }
-		});
-	}
+		});	        	
+}
 	
 	
-    public void hienThiChinhMon(ArrayList<Mon> dsMon, String maMon, String tenMon, String loai, String donGia, String hinhAnh) {
-        JFrame frameChinhMon = new JFrame("Chỉnh sửa món");
-        frameChinhMon.setSize(800, 500);
-        frameChinhMon.setLayout(null);
-        frameChinhMon.setLocationRelativeTo(null);
+    public void frameThem_ChinhMon(String title,ArrayList<Mon> dsMon, String maMon, String tenMon, String loai, String donGia, String hinhAnh, String currentBtn, DefaultTableModel model) {
+    	JFrame frameThem_Chinh = new JFrame(title);
+        frameThem_Chinh.setSize(800, 500);
+        frameThem_Chinh.setLayout(null);
+        frameThem_Chinh.setLocationRelativeTo(null);
 
         Font fontTo = new Font("Arial", Font.BOLD, 16);
 
@@ -729,7 +605,7 @@ public class QuanLyMon_GUI extends JFrame {
         lblGia.setFont(fontTo);
         JTextField txtGia = new JTextField();
         txtGia.setBounds(120, 80, 220, 30);
-        txtGia.setText(donGia+"");
+        txtGia.setText(donGia);
         txtGia.setFont(fontTo);
         
         JLabel lblHinhAnh = new JLabel("Hình ảnh:");
@@ -741,16 +617,11 @@ public class QuanLyMon_GUI extends JFrame {
         lblAnhMon.setBounds(120, 130, 150, 150);
         lblAnhMon.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         
-        
-
-        // Nút chọn ảnh
         JButton btnChonAnh = new JButton("Chọn ảnh");
         btnChonAnh.setBounds(135, 300, 120, 30);
         btnChonAnh.setFont(fontTo);
-        System.out.println("Duong dan anh: " + hinhAnh);
         
         final File[] selectedFile = { new File(hinhAnh) };
-     // Nếu đường dẫn hình ảnh không rỗng thì hiển thị ảnh luôn
         if (hinhAnh != null && !hinhAnh.isEmpty()) {
             File file = new File(hinhAnh);
             if (file.exists()) {
@@ -759,7 +630,7 @@ public class QuanLyMon_GUI extends JFrame {
                 lblAnhMon.setIcon(new ImageIcon(image));
             }
         }
-
+        final String[] duongDan = new String[1];
         btnChonAnh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -770,20 +641,20 @@ public class QuanLyMon_GUI extends JFrame {
                 	selectedFile[0] = fileChooser.getSelectedFile();
                     ImageIcon icon = new ImageIcon(selectedFile[0].getAbsolutePath());
 
-                    // Resize ảnh để hiển thị đẹp trong label
                     Image image = icon.getImage().getScaledInstance(lblAnhMon.getWidth(), lblAnhMon.getHeight(), Image.SCALE_SMOOTH);
                     lblAnhMon.setIcon(new ImageIcon(image));
+                    duongDan[0] = selectedFile[0].getAbsolutePath();
                 }
             }
         });
         
-        JButton btnChinhSua = new JButton("Chỉnh sửa");
-        btnChinhSua.setFont(fontTo);
-        btnChinhSua.setBounds(500, 400, 120, 30);
-        btnChinhSua.setForeground(Color.BLACK);
-        btnChinhSua.setBackground(new Color(255, 153, 0));
+        JButton btnThem_Chinh = new JButton(currentBtn);
+        btnThem_Chinh.setFont(fontTo);
+        btnThem_Chinh.setBounds(500, 400, 120, 30);
+        btnThem_Chinh.setForeground(Color.BLACK);
+        btnThem_Chinh.setBackground(new Color(255, 153, 0));
         
-        btnChinhSua.addActionListener(new ActionListener() {
+        btnThem_Chinh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String tenMon = txtTenMon.getText().trim();
@@ -791,25 +662,86 @@ public class QuanLyMon_GUI extends JFrame {
                 String donGiaStr = txtGia.getText().trim();
                 String hinhAnh = selectedFile[0].getName();
 
+
                 if (tenMon.isEmpty() || donGiaStr.isEmpty() || hinhAnh.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin.");
                     return;
                 }
 
-                double donGia = 0;
+                double donGia;
                 try {
-                    donGia = Double.parseDouble(donGiaStr);
+                	donGiaStr = donGiaStr.replace(" VNĐ", "").replace(" VND", "").replace(",", "");
+                	donGia = Double.parseDouble(donGiaStr);
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Đơn giá phải là số.");
                     return;
                 }
+                
+                String thuMucAnh = "src/images/imageMon/";  // thư mục lưu ảnh
+                File fileDich = new File(thuMucAnh + hinhAnh);
+
+                // Nếu ảnh chưa tồn tại thì sao chép vào thư mục
+                if (!fileDich.exists()) {
+                    try {
+                        // Tạo thư mục nếu chưa tồn tại
+                        File thuMuc = new File(thuMucAnh);
+                        if (!thuMuc.exists()) {
+                            thuMuc.mkdirs();
+                        }
+
+                        Files.copy(selectedFile[0].toPath(), fileDich.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        System.out.println("Đã sao chép ảnh vào thư mục.");
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Lỗi khi sao chép ảnh: " + ex.getMessage());
+                        return;
+                    }
+                }
 
                 Mon monMoi = new Mon(maMon, tenMon, loaiMon, donGia, hinhAnh);
-                boolean thanhCong = QuanLyMon_DAO.addMon(monMoi);
-                if (thanhCong) {
-                    JOptionPane.showMessageDialog(null, "Chỉnh sửa thành công!");
+                boolean result = false;
+                if (currentBtn.equals("Thêm")) {
+//                	System.err.println(duongDan[0]+hinhAnh);
+                	String maMon = QuanLyMon_DAO.taoMaMon();
+                	monMoi.setMaMon(maMon);
+                	result = QuanLyMon_DAO.addMon(monMoi);
+                	
+                	
+                } else if (currentBtn.equals("Chỉnh sửa")) {
+                	result = QuanLyMon_DAO.updateMon(monMoi);
+                }
+          
+                if (result) {
+                	model.setRowCount(0);
+    		        for (Mon mon : dsMon) {
+    		        	String path = "src/images/imageMon/" + mon.getHinhAnh();
+		     		    ImageIcon icon = new ImageIcon(path);
+		     		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+		     		    ImageIcon monAn = new ImageIcon(image);
+		     		    
+		     		    String path_delete = "src/images/App/iconDelete.png"; 
+		     		    ImageIcon icon_delete = new ImageIcon(path_delete);
+		     		    Image image_delete = icon_delete.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		     		    ImageIcon xoa = new ImageIcon(image_delete);
+		     		    
+		     		    String path_pencil = "src/images/App/edit.png"; 
+		     		    ImageIcon icon_pencil = new ImageIcon(path_pencil);
+		     		    Image image_pencil = icon_pencil.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+		     		    ImageIcon sua = new ImageIcon(image_pencil);
+		     		    
+		     		    // Thêm hàng vào bảng
+		     		    model.addRow(new Object[] {
+		     		    	mon.getMaMon(),	
+		     		        mon.getTenMon(),
+		     		        mon.getLoaiMon(),
+		     		        String.format("%,.0f VNĐ", mon.getDonGia()), // format tiền
+		     		        monAn,
+		     		        xoa, sua,
+		     		        path
+		     		    });
+    		        }
+                    JOptionPane.showMessageDialog(null, currentBtn+" thành công!");
                 } else {
-                    JOptionPane.showMessageDialog(null, "Chỉnh sửa thất bại!");
+                    JOptionPane.showMessageDialog(null, currentBtn+" thất bại!");
                 }
             }
         });
@@ -820,35 +752,31 @@ public class QuanLyMon_GUI extends JFrame {
         btnHuy.setBounds(630, 400, 80, 30);
         btnHuy.setForeground(Color.WHITE);
         btnHuy.setBackground(new Color(255, 0, 0));
-//        btnChinhSua.addActionListener(ev -> {
-//            String tenMon = txtTenMon.getText();
-//            String gia = txtGia.getText();
-//            // Bạn có thể xử lý logic lưu ở đây
-//            JOptionPane.showMessageDialog(frameThemMon, "Đã lưu món: " + tenMon + " - " + gia + " VND");
-//            frameThemMon.dispose(); // Đóng frame sau khi lưu
-//        });
+        btnThem_Chinh.addActionListener(ev -> {
+        	frameThem_Chinh.dispose();
+        });
         btnHuy.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	frameChinhMon.dispose();
+            	frameThem_Chinh.dispose();
                 
             }
         });
         
-        frameChinhMon.add(lblTenMon);
-        frameChinhMon.add(txtTenMon);
-        frameChinhMon.add(lblLoaiMon);
-        frameChinhMon.add(cbLoaiMon);
-        frameChinhMon.add(lblAnhMon);
-        frameChinhMon.add(lblHinhAnh);
-        frameChinhMon.add(btnChonAnh);
-        frameChinhMon.add(lblGia);
-        frameChinhMon.add(txtGia);
-        frameChinhMon.add(btnChinhSua);
-        frameChinhMon.add(btnHuy);
+        frameThem_Chinh.add(lblTenMon);
+        frameThem_Chinh.add(txtTenMon);
+        frameThem_Chinh.add(lblLoaiMon);
+        frameThem_Chinh.add(cbLoaiMon);
+        frameThem_Chinh.add(lblAnhMon);
+        frameThem_Chinh.add(lblHinhAnh);
+        frameThem_Chinh.add(btnChonAnh);
+        frameThem_Chinh.add(lblGia);
+        frameThem_Chinh.add(txtGia);
+        frameThem_Chinh.add(btnThem_Chinh);
+        frameThem_Chinh.add(btnHuy);
         
         
-        frameChinhMon.setVisible(true);
+        frameThem_Chinh.setVisible(true);
     }
     public JPanel getPanel() {
         return pQuanLyMon;

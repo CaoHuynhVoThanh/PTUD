@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
@@ -171,6 +172,48 @@ public class QuanLyKhuyenMai_DAO {
 	    }
 	}
 
+	public static String sinhMaKhuyenMai() {
+	    try {
+	        ConnectDB.getInstance().connect();
+	        Connection con = ConnectDB.getInstance().getConnection();
+
+	        LocalDateTime now = LocalDateTime.now();
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+	        String datePart = now.format(formatter);
+
+	        String prefix = "KM" + datePart;
+
+	        String sql = "SELECT maCTKM FROM ChuongTrinhKhuyenMai WHERE maCTKM LIKE ?";
+
+	        try (PreparedStatement pst = con.prepareStatement(sql)) {
+	            pst.setString(1, prefix + "%");
+
+	            ResultSet rs = pst.executeQuery();
+	            int maxSoThuTu = 0;
+
+	            while (rs.next()) {
+	                String ma = rs.getString("maCTKM");
+	                if (ma.length() >= 10) {
+	                    try {
+	                        int soThuTu = Integer.parseInt(ma.substring(8));
+	                        if (soThuTu > maxSoThuTu) {
+	                            maxSoThuTu = soThuTu;
+	                        }
+	                    } catch (NumberFormatException ignored) {
+	                        // Bỏ qua nếu không đúng định dạng
+	                    }
+	                }
+	            }
+
+	            int soThuTuMoi = maxSoThuTu + 1;
+	            String maMoi = String.format("KM%s%02d", datePart, soThuTuMoi);
+	            return maMoi;
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 
 }
