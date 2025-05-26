@@ -119,12 +119,12 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		panel_1.setLayout(null);
 		
 		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon("src\\images\\App\\logo.png"));
+		logo.setIcon(new ImageIcon(getClass().getResource("/images/App/logo.png")));
 		logo.setBounds(66, 22, 247, 89);
 		panel_1.add(logo);
 		
 		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon("src\\images\\App\\avt.png");
+		ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/avt.png"));
 		Image img = originalIcon.getImage();
         Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
@@ -424,6 +424,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 		comb_tinhtrang.addItem("Đặt trước");
 		comb_tinhtrang.addItem("Ngừng phục vụ");
 		comb_tinhtrang.setBounds(1000, 90, 172, 34);
+		comb_tinhtrang.setSelectedItem("Trống");
 		panel_2.add(comb_tinhtrang);
 		
 		JLabel lblNewLabel_1_2_1_3 = new JLabel("Tình trạng:");
@@ -648,7 +649,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 			String kv = x.getMaBan()+" "+ x.getTenKV();
 			JButton BanMoi = new JButton(kv);
 			BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			BanMoi.setIcon(new ImageIcon("src\\images\\Ban\\"+x.getHinh()+".png"));
+			BanMoi.setIcon(new ImageIcon(getClass().getResource("/images/Ban/"+x.getHinh()+".png")));
 			BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
 			BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
 			BanMoi.setOpaque(false);
@@ -689,7 +690,7 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 				String kv = x.getMaBan()+" "+ x.getTenKV();
 				JButton BanMoi = new JButton(kv);
 				BanMoi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				BanMoi.setIcon(new ImageIcon("src\\images\\Ban\\"+x.getHinh()+".png"));
+				BanMoi.setIcon(new ImageIcon(getClass().getResource("/images/Ban/"+x.getHinh()+".png")));
 				BanMoi.setHorizontalTextPosition(SwingConstants.CENTER);
 				BanMoi.setVerticalTextPosition(SwingConstants.BOTTOM);
 				BanMoi.setOpaque(false);
@@ -712,6 +713,9 @@ public class DatBan_GUI extends JFrame implements ActionListener{
 	
 	public void loadAllBan() {
 		dsb = Ban_DAO.getAllBan(JDC_ngaychon.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		for (Ban x: dsb) {
+			System.out.println(x.toString());
+		}
 	}
 	
 	public ArrayList<Ban> filterTang(ArrayList<Ban> dsb, String tang){

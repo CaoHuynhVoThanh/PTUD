@@ -759,7 +759,7 @@ public class GoiMon_GUI extends JFrame{
 	    model.addElement("Chọn bàn");
 	    ArrayList<String> dsBanPhucVu = new ArrayList<>();
 	    for (Ban ban: dsBan) {
-	        if (ban.getTinhTrang() == 2 || ban.getTinhTrang() == 3) {
+	        if (ban.getTinhTrang() == 2) {
 	        	dsBanPhucVu.add(ban.getMaBan());
 	        	model.addElement(ban.getMaBan());
 	        }

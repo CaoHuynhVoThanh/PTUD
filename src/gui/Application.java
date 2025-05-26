@@ -348,7 +348,6 @@ public class Application extends JFrame implements ActionListener{
 				g.setVisible(true);
 				nhanvien=null;
 			}
-			}, 500);
 		}
 		if (cmd.equalsIgnoreCase("đặt bàn")) {
 			int count = contentPane.getComponentCount();
