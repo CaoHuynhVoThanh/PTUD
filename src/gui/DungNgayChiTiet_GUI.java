@@ -37,7 +37,6 @@ import entities.NhanVien;
 
 
 public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
-	private NhanVien currenUser = new NhanVien("25000001", "Lê Vinh Quang", "quankle@gmail.com", "0987654321", "Gò Vấp", "Nhân Viên Quầy", null, true);
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_ngayNhan;

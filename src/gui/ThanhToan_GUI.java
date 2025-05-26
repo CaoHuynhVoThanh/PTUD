@@ -76,9 +76,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField tf_tenkh;
-	private JTextField tf_soban;
 	private JTextField tf_sdt;
-	private JTextField tf_vt;
 	private JTable scrollBan;
 	private JTable tbmon;
 	JScrollPane tb_ban;
@@ -97,6 +95,8 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 	private JLabel lb_tongdatban_1;
 	private JLabel lb_tonggoimon_1;
 	private JPanel panel_trangchu;
+	private JButton btn_tim;
+	private JButton btn_khoiphuc;
 	public static JButton hiddenButtonThanhToan = new JButton();
 
 	/**
@@ -303,73 +303,55 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(new LineBorder(new Color(0, 0, 0), 1, true), "B\u1ED9 l\u1ECDc", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel_2.setBackground(new Color(255, 255, 255));
-		panel_2.setBounds(31, 20, 659, 142);
+		panel_2.setBounds(31, 20, 659, 94);
 		panel_trangchu.add(panel_2);
 		panel_2.setLayout(null);
 		
 		tf_tenkh = new JTextField();
-		tf_tenkh.setBounds(38, 39, 204, 27);
+		tf_tenkh.setBounds(23, 42, 204, 27);
 		panel_2.add(tf_tenkh);
 		tf_tenkh.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Tên khách hàng");
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_1.setBounds(38, 20, 131, 13);
+		lblNewLabel_1.setBounds(23, 23, 131, 13);
 		panel_2.add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_1_1 = new JLabel("Mã số của bàn:");
-		lblNewLabel_1_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_1_1.setBounds(38, 76, 177, 13);
-		panel_2.add(lblNewLabel_1_1);
-		
-		tf_soban = new JTextField();
-		tf_soban.setColumns(10);
-		tf_soban.setBounds(38, 95, 204, 27);
-		panel_2.add(tf_soban);
 		
 		tf_sdt = new JTextField();
 		tf_sdt.setColumns(10);
-		tf_sdt.setBounds(287, 39, 204, 27);
+		tf_sdt.setBounds(237, 42, 155, 27);
 		panel_2.add(tf_sdt);
 		
 		JLabel lblNewLabel_1_2 = new JLabel("Số điện thoại");
 		lblNewLabel_1_2.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_1_2.setBounds(287, 20, 131, 13);
+		lblNewLabel_1_2.setBounds(237, 23, 131, 13);
 		panel_2.add(lblNewLabel_1_2);
 		
-		JLabel lblNewLabel_1_1_1 = new JLabel("Vị trí");
-		lblNewLabel_1_1_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_1_1_1.setBounds(287, 76, 131, 13);
-		panel_2.add(lblNewLabel_1_1_1);
+		btn_tim = new JButton("Tìm");
+		btn_tim.setBackground(new Color(255, 153, 0));
+		btn_tim.setForeground(new Color(255, 255, 255));
+		btn_tim.setBounds(433, 36, 100, 33);
+		btn_tim.addActionListener(this);
+		panel_2.add(btn_tim);
 		
-		tf_vt = new JTextField();
-		tf_vt.setColumns(10);
-		tf_vt.setBounds(287, 95, 204, 27);
-		panel_2.add(tf_vt);
-		
-		JButton btnNewButton_1 = new JButton("Tìm");
-		btnNewButton_1.setBackground(new Color(255, 153, 0));
-		btnNewButton_1.setForeground(new Color(255, 255, 255));
-		btnNewButton_1.setBounds(522, 36, 100, 33);
-		panel_2.add(btnNewButton_1);
-		
-		JButton btnNewButton_1_1 = new JButton("Khôi phục");
-		btnNewButton_1_1.setForeground(new Color(255, 255, 255));
-		btnNewButton_1_1.setBackground(new Color(0, 0, 0));
-		btnNewButton_1_1.setBounds(522, 89, 100, 33);
-		panel_2.add(btnNewButton_1_1);
+		btn_khoiphuc = new JButton("Khôi phục");
+		btn_khoiphuc.setForeground(new Color(255, 255, 255));
+		btn_khoiphuc.setBackground(new Color(0, 0, 0));
+		btn_khoiphuc.setBounds(536, 36, 100, 33);
+		btn_khoiphuc.addActionListener(this);
+		panel_2.add(btn_khoiphuc);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		panel_3.setBackground(new Color(255, 255, 255));
-		panel_3.setBounds(31, 172, 659, 401);
+		panel_3.setBounds(31, 124, 659, 449);
 		panel_trangchu.add(panel_3);
 		panel_3.setLayout(null);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setBounds(10, 10, 639, 381);
+		scrollPane.setBounds(10, 10, 639, 429);
 		panel_3.add(scrollPane);
 		
 		panel_dsban = new JPanel();
@@ -523,6 +505,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		mon = Mon_DAO.getAllMon();
 		dsddb = DonDatBan_DAO.getDonDatBanTheoNgayChuaTT(LocalDate.now());
 		loadDsDDB(dsddb);
+		dskh = KhachHang_DAO.getAllKhachHang();
 	}
 	public void loadDsDDB(ArrayList<DonDatBan> ds) {	
 		panel_dsban.removeAll();
@@ -754,11 +737,34 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 			dialog.setDsDDB(listcb.getList());
 			dialog.setVisible(true);
 		}
-		if (cmd.equals("Update DDB")) {
+		if (cmd.equals("Update DDB") || cmd.equals("Khôi phục")) {
 			clearAll();
 			dsddb = DonDatBan_DAO.getDonDatBanTheoNgayChuaTT(LocalDate.now());
 			loadDsDDB(dsddb);
 		}
+		if (cmd.equals("Tìm")) {
+		    String ten = tf_tenkh.getText().trim().toLowerCase();
+		    String sdt = tf_sdt.getText().trim();
+		    
+		    ArrayList<DonDatBan> ketQua = new ArrayList<>();
+
+		    for (DonDatBan ddb : dsddb) {
+		        for (KhachHang kh : dskh) {
+		            if (ddb.getMaKH().equals(kh.getMaKH())) {
+		                boolean tenMatch = ten.isEmpty() || kh.getTenKH().toLowerCase().contains(ten);
+		                boolean sdtMatch = sdt.isEmpty() || kh.getSoDienThoai().contains(sdt);
+		                if (tenMatch && sdtMatch) {
+		                    ketQua.add(ddb);
+		                    break;
+		                }
+		            }
+		        }
+		    }
+
+		    loadDsDDB(ketQua);
+		}
+
+
 	}
     public JPanel getPanel() {
     	return this.panel_trangchu;

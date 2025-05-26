@@ -59,6 +59,10 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 	private JLabel lb_tv;
 	private JButton btn_xemtruoc;
 	private ArrayList<String> dsddb;
+	private JLabel lb_makm;
+	private JLabel lb_kmgiam;
+	private JLabel lb_tentv;
+	private JLabel lb_rank;
 	public static List<Map<String, ?>> dataList = new ArrayList<>();
 	public static Map<String, Object> params = new HashMap<>();
 
@@ -140,21 +144,21 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		btnNewButton_1.setBounds(237, 247, 54, 25);
 		contentPanel.add(btnNewButton_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setBounds(23, 226, 45, 13);
-		contentPanel.add(lblNewLabel_2);
+		lb_makm = new JLabel("");
+		lb_makm.setBounds(23, 226, 45, 13);
+		contentPanel.add(lb_makm);
 		
-		JLabel lblNewLabel_2_1 = new JLabel("New label");
-		lblNewLabel_2_1.setBounds(131, 226, 45, 13);
-		contentPanel.add(lblNewLabel_2_1);
+		lb_kmgiam = new JLabel("");
+		lb_kmgiam.setBounds(131, 226, 45, 13);
+		contentPanel.add(lb_kmgiam);
 		
-		JLabel lblNewLabel_2_1_1 = new JLabel("New label");
-		lblNewLabel_2_1_1.setBounds(131, 280, 45, 13);
-		contentPanel.add(lblNewLabel_2_1_1);
+		lb_rank = new JLabel("");
+		lb_rank.setBounds(131, 280, 45, 13);
+		contentPanel.add(lb_rank);
 		
-		JLabel lblNewLabel_2_2 = new JLabel("New label");
-		lblNewLabel_2_2.setBounds(23, 280, 45, 13);
-		contentPanel.add(lblNewLabel_2_2);
+		lb_tentv = new JLabel("");
+		lb_tentv.setBounds(23, 280, 45, 13);
+		contentPanel.add(lb_tentv);
 		
 		lb_tgdb = new JLabel("0000000");
 		lb_tgdb.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -384,7 +388,7 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				HoaDon_DAO.insertHoaDon(ma, Application.nhanvien.getMaNV(), LocalDateTime.now(), makm, tongtien, "Chuyển khoản", matv, tongtien/10000);
 				for (String s: dsddb) {
 					DonDatBan_DAO.capNhatMaHDChoDonDatBan(s, ma);
-					DonDatBan_DAO.capNhatTrangThaiDonDatBan(ma, 2);
+					DonDatBan_DAO.capNhatTrangThaiDonDatBan(s, 2);
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
 				String jrxmlFile = "/other/Blank_Letter_2.jrxml";

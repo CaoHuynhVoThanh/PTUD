@@ -86,5 +86,13 @@ public class Ban {
 	public String getHinh() {
 		return ""+this.loaiBan+this.tinhTrang;
 	}
+
+	@Override
+	public String toString() {
+		return "Ban [maBan=" + maBan + ", loaiBan=" + loaiBan + ", viTri=" + viTri + ", soBan=" + soBan + ", tinhTrang="
+				+ tinhTrang + ", tenKV=" + tenKV + ", phuPhi=" + phuPhi + ", phiCoc=" + phiCoc + "]";
+	}
+	
+	
 	
 }
