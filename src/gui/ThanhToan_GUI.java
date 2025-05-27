@@ -782,7 +782,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 			    ThanhToanChiTiet_GUI.dataList.add(item);
 			    System.out.println(tbmon.getValueAt(row, 5));
 			}
-			ThanhToanChiTiet_GUI.params.put("prepayment", prepayment);
+			ThanhToanChiTiet_GUI.tinhTruoc=prepayment;
 			LocalDateTime thoiGianDatBan = Collections.min(time);
 			System.out.println(thoiGianDatBan);
 			dialog.setTT(thoiGianDatBan, lb_tamTinh.getText());

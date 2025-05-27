@@ -137,7 +137,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         btn_dangnhap.setBounds(23, 221, 201, 38);
         btn_dangnhap.addActionListener(this);
         panel.add(btn_dangnhap);
-        
+        	
         btnNewButton_1 = new JButton("<html><u>Quên mật khẩu</u></html>");
         btnNewButton_1.setFont(new Font("Tahoma", Font.ITALIC, 10));
         btnNewButton_1.setHorizontalAlignment(SwingConstants.RIGHT);

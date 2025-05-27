@@ -79,6 +79,7 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 	private KhuyenMai kmad = null;
 	private JLabel lb_phanTramGiam;
 	private JLabel lb_tenkm;
+	public static Double tinhTruoc =0.0;
 
 	/**
 	 * Launch the application.
@@ -378,13 +379,20 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				}
 				Double tientra = tien-tongTien;
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công! Số tiền trả khách: "+tientra);
-				String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+				String jrxmlFile = "/other/Blank_Letter01.jrxml";
 				JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
 				params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
 				params.put("cashier", norText(Application.nhanvien.getTenNV()));
 	            params.put("invoiceID", norText(ma));
 	            LocalDateTime d = LocalDateTime.now();
 	            params.put("dateTime", d.toString());
+	            double pre = Double.parseDouble(lb_tamtinh.getText());
+	            double vat = Double.parseDouble(lb_vat.getText());
+	            double tong = Double.parseDouble(lb_tongtt.getText());
+	            params.put("pre", tinhTruoc);
+	            params.put("totalamount", pre);
+	            params.put("vat1", vat);
+	            params.put("total", tong);
 	            try {
 	            	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
 	            	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
@@ -417,13 +425,20 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 					DonDatBan_DAO.capNhatTrangThaiDonDatBan(s, 2);
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
-				String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+				String jrxmlFile = "/other/Blank_Letter01.jrxml";
 				JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
 				params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
 				params.put("cashier", norText(Application.nhanvien.getTenNV()));
 	            params.put("invoiceID", norText(ma));
 	            LocalDateTime d = LocalDateTime.now();
 	            params.put("dateTime", d.toString());
+	            double pre = Double.parseDouble(lb_tamtinh.getText());
+	            double vat = Double.parseDouble(lb_vat.getText());
+	            double tong = Double.parseDouble(lb_tongtt.getText());
+	            params.put("pre", tinhTruoc);
+	            params.put("totalamount", pre);
+	            params.put("vat1", vat);
+	            params.put("total", tong);
 	            try {
 	            	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
 	            	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
@@ -455,13 +470,20 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 					DonDatBan_DAO.capNhatTrangThaiDonDatBan(s, 2);
 				}
 				JOptionPane.showMessageDialog(null, "Thanh toán thành công!");
-				String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+				String jrxmlFile = "/other/Blank_Letter01.jrxml";
 				JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
 				params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
 				params.put("cashier", norText(Application.nhanvien.getTenNV()));
 	            params.put("invoiceID", norText(ma));
 	            LocalDateTime d = LocalDateTime.now();
 	            params.put("dateTime", d.toString());
+	            double pre = Double.parseDouble(lb_tamtinh.getText());
+	            double vat = Double.parseDouble(lb_vat.getText());
+	            double tong = Double.parseDouble(lb_tongtt.getText());
+	            params.put("pre", tinhTruoc);
+	            params.put("totalamount", pre);
+	            params.put("vat1", vat);
+	            params.put("total", tong);
 	            try {
 	            	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
 	            	if (jrxmlStream == null) {
@@ -481,7 +503,7 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 			}
 		}
 		if (cmd.equals("Xem trước")) {
-			String jrxmlFile = "/other/Blank_Letter_2.jrxml";
+			String jrxmlFile = "/other/Blank_Letter01.jrxml";
 			JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataList);
 			params.put("address", norText("Số 13, Nguyễn Văn Bảo, Phường 7, Gò Vấp"));
 			params.put("cashier", norText(Application.nhanvien.getTenNV()));
@@ -494,6 +516,13 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
             params.put("invoiceID", norText(ma));
             LocalDateTime d = LocalDateTime.now();
             params.put("dateTime", d.toString());
+            double pre = Double.parseDouble(lb_tamtinh.getText());
+            double vat = Double.parseDouble(lb_vat.getText());
+            double tong = Double.parseDouble(lb_tongtt.getText());
+            params.put("pre", tinhTruoc);
+            params.put("totalamount", pre);
+            params.put("vat1", vat);
+            params.put("total", tong);
             try {
             	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
             	if (jrxmlStream == null) {
