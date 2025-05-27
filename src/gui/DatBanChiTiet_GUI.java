@@ -606,8 +606,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	        LocalDate ngayDat = thoiGian.toLocalDate();
 
 	        // Check if there are selected items
-	        if (modelSelected.getRowCount() == 0) {
-	            JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất một món!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+	        if (modelSelected == null || modelSelected.getRowCount() == 0) {
 	            return;
 	        }
 
@@ -633,7 +632,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	            Mon mon = Mon_DAO.getMonTheoTen(tenMon);
 	            String maMon = mon.getMaMon();
 
-	            ChiTietDonGoiMon chiTiet = new ChiTietDonGoiMon(maMon, maDGM, soLuong, 0);
+	            ChiTietDonGoiMon chiTiet = new ChiTietDonGoiMon(maMon, maDGM, soLuong, soLuong);
 	            ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
 	        }
 
@@ -707,8 +706,8 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
     protected JButton button;
     private String label;
     private boolean isPushed;
-    private final JTable tblAllItems;
-    private final DefaultTableModel modelSelected;
+    private JTable tblAllItems;
+    private DefaultTableModel modelSelected;
 
     public ButtonEditor(JCheckBox checkBox, JTable tblAllItems, DefaultTableModel modelSelected) {
         super(checkBox);

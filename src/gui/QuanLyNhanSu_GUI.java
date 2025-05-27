@@ -589,10 +589,10 @@ public class QuanLyNhanSu_GUI extends JFrame {
 
 	        // Tạo mã nhân viên dạng YYXXXXXX
 	        int year = LocalDate.now().getYear();
-	        String yearSuffix = String.format("%02d", year % 100);
+	        String yearSuffix = String.format("%04d", year);
 	        int stt = NhanVien_DAO.getAllNhanVien().size() + 1;
 	        String soThuTu = String.format("%06d", stt);
-	        String maNV = yearSuffix + soThuTu;
+	        String maNV ="NV" + yearSuffix + soThuTu;
 
 	        NhanVien nv = new NhanVien(
 	            maNV,

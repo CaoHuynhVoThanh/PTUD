@@ -675,13 +675,11 @@ public class GoiMon_GUI extends JFrame{
 	        }
 	        pMon.add(lblImgMon);
 	        
-	        // Panel thông tin món (giống code cũ)
 	        JPanel pThongTinMon = new JPanel();
 	        pThongTinMon.setLayout(null);
 	        pThongTinMon.setBounds(0, 72, ITEM_WIDTH, 78);
 	        pMon.add(pThongTinMon);
 	        
-	        // Hiển thị giá (giống code cũ)
 	        DecimalFormat df = new DecimalFormat("#,##0");
 	        JLabel lblGiaMon = new JLabel(df.format(mon.getDonGia()) + " VND");
 	        lblGiaMon.setHorizontalAlignment(SwingConstants.CENTER);
@@ -689,7 +687,6 @@ public class GoiMon_GUI extends JFrame{
 	        lblGiaMon.setBounds(10, 22, ITEM_WIDTH - 20, 18);
 	        pThongTinMon.add(lblGiaMon);
 
-	        // Hiển thị tên món (giống code cũ)
 	        JLabel lblTenMon = new JLabel("<html><div style='text-align: center;'>" + mon.getTenMon() + "</div></html>");
 	        lblTenMon.setHorizontalAlignment(SwingConstants.CENTER);
 	        lblTenMon.setFont(new Font("Arial", Font.BOLD, 14));
@@ -697,18 +694,16 @@ public class GoiMon_GUI extends JFrame{
 	        pThongTinMon.add(lblTenMon);
 	     
 	        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/iconAdd.png"));
-
-	     // Resize icon nhỏ hơn so với button (ví dụ: 24x24 pixel)
 	        Image scaledImage = originalIcon.getImage().getScaledInstance(35, 35, Image.SCALE_SMOOTH);
 	        ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
 	        JButton btnThemMon = new JButton();
-	        btnThemMon.setIcon(scaledIcon); // Gán icon đã resize
-	        btnThemMon.setText(""); // Xóa text nếu chỉ muốn hiển thị icon
-	        btnThemMon.setToolTipText("Thêm món"); // Tooltip nếu cần
+	        btnThemMon.setIcon(scaledIcon); 
+	        btnThemMon.setText(""); 
+	        btnThemMon.setToolTipText("Thêm món"); 
 	        btnThemMon.setBackground(Color.WHITE);
 	        btnThemMon.setOpaque(true);
-	        btnThemMon.setBorderPainted(false); // Ẩn viền nút
+	        btnThemMon.setBorderPainted(false); 
 	        btnThemMon.setBounds(140, 0, 40, 40);
 
 	        btnThemMon.addActionListener(e -> themMonVaoBang(mon));
@@ -832,15 +827,10 @@ public class GoiMon_GUI extends JFrame{
 	        String maDGMMoi = String.format("GM%s%04d", ngayThangNam, soThuTu);
 	        LocalDateTime thoiGian = LocalDateTime.now();
 	        
-	        // 1. First create the DonGoiMon
 	        DonGoiMon donGoiMon = new DonGoiMon(maDGMMoi, thoiGian, ghiChu);
 	        try {
 	            DonGoiMon_DAO.themDonGoiMon(donGoiMon);
-	            
-	            // 2. Then update ChiTietDonDatBan with the new maDGM
 	            ChiTietDonDatBan_DAO.capNhatMaDGMTheoNgayVaBan(ngayChon, maBan, maDGMMoi);
-	            
-	            // 3. Now add the order details
 	            for (int i = 0; i < tableModelDGM.getRowCount(); i++) {
 	                String tenMon = tableModelDGM.getValueAt(i, 0).toString();
 	                int soLuong = (int) tableModelDGM.getValueAt(i, 1);
@@ -927,7 +917,6 @@ public class GoiMon_GUI extends JFrame{
 	        // Xóa dữ liệu cũ trong bảng
 	        tableModelDGM.setRowCount(0);
 	        
-	        // Lấy danh sách đơn gọi món của bàn này
 	        String donGoiMon = ChiTietDonDatBan_DAO.getMaDGMTheoNgayVaBan(ngayChon,maBan);
 	        
 	        if (donGoiMon == null) {

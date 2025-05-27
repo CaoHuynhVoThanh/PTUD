@@ -94,8 +94,9 @@ public class NhanDon_GUI extends JFrame {
 	 * Create the frame.
 	 */
 	public NhanDon_GUI() {
+		
+		
 		List<Map<String, Object>> donList = NhanDon_DAO.getAllDon();
-
 		JDC_ngaychon.setDate(new Date());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setExtendedState(MAXIMIZED_BOTH);
