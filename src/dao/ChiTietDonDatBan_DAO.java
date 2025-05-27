@@ -131,5 +131,20 @@ public class ChiTietDonDatBan_DAO {
 	    return tongSoLuong;
 	}
 
-
+	public static boolean insertChiTietDonDatBan(String maDDB, String maBan, String maDGM) {
+		String sql = "INSERT INTO ChiTietDonDatBan (maDDB, maBan, maDGM) VALUES (?, ?, ?)";
+		ConnectDB.getInstance().connect();
+	    Connection conn = ConnectDB.getInstance().getConnection();
+	    try {
+	    	PreparedStatement stmt = conn.prepareStatement(sql);
+	    	 stmt.setString(1, maDDB);
+	         stmt.setString(2, maBan);
+	         stmt.setString(3, maDGM);
+	         int rowsInserted = stmt.executeUpdate();
+	         return rowsInserted > 0;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	    return false;
+	}
 }

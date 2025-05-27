@@ -28,6 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JTree;
@@ -97,6 +98,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 	private JPanel panel_trangchu;
 	private JButton btn_tim;
 	private JButton btn_khoiphuc;
+	private JButton btn_tach;
 	public static JButton hiddenButtonThanhToan = new JButton();
 
 	/**
@@ -424,16 +426,9 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		btn_thanhtoan.setForeground(new Color(255, 255, 255));
 		btn_thanhtoan.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btn_thanhtoan.setBackground(new Color(255, 153, 0));
-		btn_thanhtoan.setBounds(319, 588, 185, 41);
+		btn_thanhtoan.setBounds(270, 588, 185, 41);
 		btn_thanhtoan.addActionListener(this);
 		panel_4.add(btn_thanhtoan);
-		
-		JButton btnNewButton_2_1 = new JButton("GỘP");
-		btnNewButton_2_1.setForeground(new Color(255, 255, 255));
-		btnNewButton_2_1.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnNewButton_2_1.setBackground(new Color(0, 0, 0));
-		btnNewButton_2_1.setBounds(21, 588, 115, 41);
-		panel_4.add(btnNewButton_2_1);
 		
 		JLabel lblNewLabel_5_1_2 = new JLabel("Tạm tính:");
 		lblNewLabel_5_1_2.setHorizontalAlignment(SwingConstants.LEFT);
@@ -441,12 +436,13 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		lblNewLabel_5_1_2.setBounds(21, 544, 78, 26);
 		panel_4.add(lblNewLabel_5_1_2);
 		
-		JButton btnNewButton_2_1_1 = new JButton("TÁCH");
-		btnNewButton_2_1_1.setForeground(Color.WHITE);
-		btnNewButton_2_1_1.setFont(new Font("Tahoma", Font.BOLD, 18));
-		btnNewButton_2_1_1.setBackground(Color.BLACK);
-		btnNewButton_2_1_1.setBounds(156, 588, 115, 41);
-		panel_4.add(btnNewButton_2_1_1);
+		btn_tach = new JButton("TÁCH");
+		btn_tach.setForeground(Color.WHITE);
+		btn_tach.setFont(new Font("Tahoma", Font.BOLD, 18));
+		btn_tach.setBackground(Color.BLACK);
+		btn_tach.setBounds(119, 589, 115, 41);
+		panel_4.add(btn_tach);
+		btn_tach.addActionListener(this);
 		
 		lb_tongdatban = new JLabel("0.0");
 		lb_tongdatban.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -717,6 +713,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 			}
 			double prepayment=0;
 			ThanhToanChiTiet_GUI.dataList.clear();
+			ThanhToanChiTiet_GUI.params.clear();
 			for (int row = 0; row < tbmon.getRowCount(); row++) {
 				System.out.println(tbmon.getRowCount());
 			    Map<String, Object> item = new HashMap<>();
@@ -763,6 +760,38 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		    }
 
 		    loadDsDDB(ketQua);
+		}
+		
+		if (cmd.equals("TÁCH")) {
+			 ArrayList<String> maddb = listcb.getList();
+			 if (maddb.size()!=1) JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 đơn đặt bàn để tách!");
+			 else {
+				 ArrayList<Ban> dsban = Ban_DAO.getBanInfoByMaDDB(maddb.get(0));
+				 if (dsban.size()==danhSachBanDuocChon.size()) {
+					 JOptionPane.showMessageDialog(null, "Vui lòng không chọn hết các bàn!");
+					 return;
+				 }
+				 int sl = DonDatBan_DAO.getSLDDBHomNay()+1;
+				 String formattedNumber = String.format("%05d", sl);
+				 LocalDate today = LocalDate.now();
+			     String formattedDate = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+			     String ma = formattedDate+formattedNumber;
+			     DonDatBan old_ddb = DonDatBan_DAO.layDonDatBanTheoMa(maddb.get(0));
+				 DonDatBan_DAO.insertDonDatBan(ma, null, Application.nhanvien.getMaNV(), old_ddb.getMaKH(), old_ddb.getThoiGianDat(), old_ddb.getThoiGianNhan(), 0, 0.0, 0);
+				 for (String s: danhSachBanDuocChon) {
+					 String maDGM = DonGoiMon_DAO.getDonGoiMonTheo2Ma(maddb.get(0), s);
+					 DonDatBan_DAO.xoaBanRaKhoiDon(maddb.get(0), s);
+					 ChiTietDonDatBan_DAO.insertChiTietDonDatBan(ma, s, maDGM);
+					 
+					 
+					 dsddb = DonDatBan_DAO.getDonDatBanTheoNgayChuaTT(LocalDate.now());
+					 listcb.clear();
+					 dsddb = DonDatBan_DAO.getDonDatBanTheoNgayChuaTT(today);
+					 loadDsDDB(dsddb);
+					 updateBan(listcb);
+				}
+				 
+			 }
 		}
 
 

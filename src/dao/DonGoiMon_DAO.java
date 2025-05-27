@@ -147,5 +147,26 @@ public class DonGoiMon_DAO {
         
         return donGoiMon;
     }
+    
+    public static String getDonGoiMonTheo2Ma(String maDDB, String maBan) {
+    	String ma = null;
+    	ConnectDB.getInstance();
+        Connection conN = ConnectDB.getInstance().getConnection();
+        
+        String sql = "SELECT maDGM from ChiTietDonDatBan where maDDB=? and maBan=?";
+        
+        try (PreparedStatement stmt = conN.prepareStatement(sql)) {
+            stmt.setString(1, maDDB);
+            stmt.setString(2, maBan);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                ma = rs.getString("maDGM");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return ma;
+    }
 
 }

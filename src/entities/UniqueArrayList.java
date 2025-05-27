@@ -25,5 +25,9 @@ public class UniqueArrayList {
     public ArrayList<String> getList(){
     	return this.list;
     }
+    
+    public void clear() {
+    	this.list.clear();
+    }
 
 }

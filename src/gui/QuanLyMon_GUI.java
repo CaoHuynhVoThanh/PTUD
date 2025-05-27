@@ -20,6 +20,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
@@ -69,7 +70,7 @@ public class QuanLyMon_GUI extends JFrame {
 	private JPanel contentPane;
 	JDateChooser JDC_ngaychon = new JDateChooser();
 	private JTextField textField_nhapTenMon;
-	private JPanel pQuanLyMon;
+	private JPanel pQuanLyMon = new JPanel();
 
 	/**
 	 * Launch the application.
@@ -101,178 +102,15 @@ public class QuanLyMon_GUI extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		setContentPane(pQuanLyMon);
+		pQuanLyMon.setLayout(null);
 
-		setContentPane(contentPane);
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(UIManager.getColor("Button.foreground"));
-		panel_1.setBounds(0, 0, 1556, 136);
-		contentPane.add(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel logo = new JLabel("New label");
-		logo.setIcon(new ImageIcon(getClass().getResource("/images/App/logo.png")));
-		logo.setBounds(66, 22, 247, 89);
-		panel_1.add(logo);
-		
-		JLabel avt = new JLabel("");
-		ImageIcon originalIcon = new ImageIcon(getClass().getResource("/images/App/avt.png"));
-		Image img = originalIcon.getImage();
-        Image scaledImg = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH); 
-        ImageIcon scaledIcon = new ImageIcon(scaledImg);
-        avt.setIcon(scaledIcon);
-		avt.setBounds(1365, 22, 100, 104);
-		panel_1.add(avt);
-		
-		JLabel name = new JLabel("Lê Vinh A");
-		name.setHorizontalAlignment(SwingConstants.RIGHT);
-		name.setFont(new Font("Arial", Font.BOLD, 22));
-		name.setForeground(new Color(255, 255, 255));
-		name.setBounds(1230, 43, 125, 41);
-		panel_1.add(name);
-		
-		JLabel lblNewLabel = new JLabel("Nhân viên quèn");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
-		lblNewLabel.setForeground(new Color(255, 255, 255));
-		lblNewLabel.setBounds(1220, 82, 135, 13);
-		panel_1.add(lblNewLabel);
-		
-		JLabel lb_ngay = new JLabel("");
-		lb_ngay.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lb_ngay.setForeground(new Color(255, 255, 255));
-		lb_ngay.setBackground(new Color(0, 0, 0));
-		lb_ngay.setBounds(475, 57, 263, 54);
-		panel_1.add(lb_ngay);
-		
-		JLabel lb_thoiGian = new JLabel("");
-		lb_thoiGian.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lb_thoiGian.setForeground(new Color(255, 255, 255));
-		lb_thoiGian.setBounds(767, 57, 269, 54);
-		panel_1.add(lb_thoiGian);
-		
-		JLabel lblGio = new JLabel();
-		lblGio.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblGio.setBounds(21, 39, 229, 25);
-		
-	
-		// Định dạng ngày và giờ
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        // Cập nhật ngày và giờ mỗi giây
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                LocalDate currentDate = LocalDate.now();
-                LocalTime currentTime = LocalTime.now();
-
-                lb_ngay.setText("Ngày: " + currentDate.format(dateFormatter));
-                lb_thoiGian.setText("Thời gian: " + currentTime.format(timeFormatter));
-            }
-        }, 0, 1000);
-		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(255, 153, 0));
-		panel.setBounds(-27, 112, 311, 748);
-		contentPane.add(panel);
-		panel.setLayout(null);
-		
-		JMenuItem mi_TrangChu = new JMenuItem("              TRANG CHỦ");
-		mi_TrangChu.setBackground(new Color(255, 153, 0));
-		mi_TrangChu.setSelected(true);
-		mi_TrangChu.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_TrangChu.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_TrangChu.setForeground(new Color(255, 255, 255));
-		mi_TrangChu.setBounds(20, 48, 291, 61);
-		panel.add(mi_TrangChu);
-		
-		JButton btnNewButton = new JButton("ĐĂNG XUẤT");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setBackground(new Color(0, 0, 0));
-		btnNewButton.setBounds(89, 641, 164, 42);
-		panel.add(btnNewButton);
-		
-		JMenuItem mi_DatBan = new JMenuItem("              ĐẶT BÀN");
-		mi_DatBan.setSelected(true);
-		mi_DatBan.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_DatBan.setForeground(Color.WHITE);
-		mi_DatBan.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_DatBan.setBackground(new Color(255, 153, 0));
-		mi_DatBan.setBounds(20, 109, 291, 61);
-		panel.add(mi_DatBan);
-		
-		JMenuItem mi_NhanBan = new JMenuItem("              NHẬN BÀN");
-		mi_NhanBan.setSelected(true);
-		mi_NhanBan.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_NhanBan.setForeground(Color.WHITE);
-		mi_NhanBan.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_NhanBan.setBackground(new Color(255, 153, 0));
-		mi_NhanBan.setBounds(20, 171, 291, 61);
-		panel.add(mi_NhanBan);
-		
-		JMenuItem mi_GoiMon = new JMenuItem("              GỌI MÓN");
-		mi_GoiMon.setSelected(true);
-		mi_GoiMon.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_GoiMon.setForeground(Color.WHITE);
-		mi_GoiMon.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_GoiMon.setBackground(new Color(255, 153, 0));
-		mi_GoiMon.setBounds(20, 233, 291, 61);
-		panel.add(mi_GoiMon);
-		
-		JMenuItem mi_ThanhToan = new JMenuItem("              THANH TOÁN");
-		mi_ThanhToan.setSelected(true);
-		mi_ThanhToan.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_ThanhToan.setForeground(Color.WHITE);
-		mi_ThanhToan.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_ThanhToan.setBackground(new Color(255, 153, 0));
-		mi_ThanhToan.setBounds(20, 293, 291, 61);
-		panel.add(mi_ThanhToan);
-		
-		JMenuItem mi_LichSu = new JMenuItem("              LỊCH SỬ");
-		mi_LichSu.setSelected(true);
-		mi_LichSu.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_LichSu.setForeground(Color.WHITE);
-		mi_LichSu.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_LichSu.setBackground(new Color(255, 153, 0));
-		mi_LichSu.setBounds(20, 353, 291, 61);
-		panel.add(mi_LichSu);
-		
-		JMenuItem mi_ThongKe = new JMenuItem("              THỐNG KÊ");
-		mi_ThongKe.setSelected(true);
-		mi_ThongKe.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_ThongKe.setForeground(Color.WHITE);
-		mi_ThongKe.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_ThongKe.setBackground(new Color(255, 153, 0));
-		mi_ThongKe.setBounds(20, 478, 291, 61);
-		panel.add(mi_ThongKe);
-		
-		JMenuItem mi_QuanLy = new JMenuItem("              QUẢN LÝ");
-		mi_QuanLy.setSelected(true);
-		mi_QuanLy.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_QuanLy.setForeground(Color.WHITE);
-		mi_QuanLy.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_QuanLy.setBackground(new Color(255, 153, 0));
-		mi_QuanLy.setBounds(20, 417, 291, 61);
-		panel.add(mi_QuanLy);
-		
-		JMenuItem mi_ThongKe_1 = new JMenuItem("              TRỢ GIÚP");
-		mi_ThongKe_1.setSelected(true);
-		mi_ThongKe_1.setHorizontalAlignment(SwingConstants.LEFT);
-		mi_ThongKe_1.setForeground(Color.WHITE);
-		mi_ThongKe_1.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		mi_ThongKe_1.setBackground(new Color(255, 153, 0));
-		mi_ThongKe_1.setBounds(20, 541, 291, 61);
-		panel.add(mi_ThongKe_1);
 //		aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 		
 		
 		JPanel panel_dropdown = new JPanel();
-		panel_dropdown.setBounds(0, 10, 900, 40);
-		contentPane.add(panel_dropdown);
+		panel_dropdown.setBounds(60, 60, 900, 40);
+		pQuanLyMon.add(panel_dropdown);
 		panel_dropdown.setLayout(null);
 		
 		JComboBox<String> comboBox_loai = new JComboBox<>();
@@ -330,9 +168,9 @@ public class QuanLyMon_GUI extends JFrame {
 		});
 		
 		JPanel panel_table = new JPanel();
-		panel_table.setBounds(320, 220, 1150, 450); // vị trí & size tùy chỉnh
+		panel_table.setBounds(60, 100, 1150, 450); // vị trí & size tùy chỉnh
 		panel_table.setLayout(new BorderLayout()); // dùng layout này để bảng tự mở rộng
-		contentPane.add(panel_table);
+		pQuanLyMon.add(panel_table);
 		
 		String[] columnNames = {"Mã món", "Tên món ăn", "Loại","Đơn giá", "Hình ảnh", "Xóa", "Chỉnh sửa","Path"};
 		DefaultTableModel model = new DefaultTableModel(columnNames, 0);
@@ -374,7 +212,8 @@ public class QuanLyMon_GUI extends JFrame {
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		for (Mon mon : dsMon) {
 		    // Load ảnh
-		    ImageIcon icon = new ImageIcon(getClass().getResource("/images/imageMon/" + mon.getHinhAnh()));
+			String path =  "src/images/imageMon/" + mon.getHinhAnh();
+		    ImageIcon icon = new ImageIcon(path);
 		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 		    ImageIcon monAn = new ImageIcon(image);
 		    
@@ -396,7 +235,7 @@ public class QuanLyMon_GUI extends JFrame {
 		        String.format("%,.0f VNĐ", mon.getDonGia()), // format tiền
 		        monAn,
 		        xoa, sua,
-//		        path
+		        path
 		    });
 		}    
 		TableColumn hiddenColumn = table.getColumnModel().getColumn(7);
@@ -417,11 +256,11 @@ public class QuanLyMon_GUI extends JFrame {
 		
 		
 		JButton btn_themMon = new JButton("Thêm");
-		btn_themMon.setBounds(1350, 710, 100, 40); 
+		btn_themMon.setBounds(1100, 580, 100, 40); 
 		btn_themMon.setFont(new Font("Arial", Font.BOLD, 20)); 
 		btn_themMon.setForeground(Color.BLACK);
 		btn_themMon.setBackground(new Color(255, 153, 0));
-		contentPane.add(btn_themMon);
+		pQuanLyMon.add(btn_themMon);
 		
 //		aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 		
@@ -487,6 +326,7 @@ public class QuanLyMon_GUI extends JFrame {
 
 		            // Đổ dữ liệu mới vào bảng
 		            for (Mon mon : dsMon) {
+		            	URL imageUrl = getClass().getResource("/images/imageMon/" + mon.getHinhAnh());
 		            	String path = "src/images/imageMon/" + mon.getHinhAnh();
 		     		    ImageIcon icon = new ImageIcon(path);
 		     		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
@@ -546,6 +386,7 @@ public class QuanLyMon_GUI extends JFrame {
 		        }
 		        if(column == 6) {
 		        	if (row >= 0 && row < table.getRowCount()) {
+		        		System.err.println("haha");
 		        		frameThem_ChinhMon("Chỉnh sửa món ăn",dsMon,model.getValueAt(row, 0).toString(), model.getValueAt(row, 1).toString(), model.getValueAt(row, 2).toString(), model.getValueAt(row, 3).toString(), model.getValueAt(row, 7).toString(),"Chỉnh sửa",model);
 		        	}
 		        }
@@ -714,6 +555,7 @@ public class QuanLyMon_GUI extends JFrame {
                 if (result) {
                 	model.setRowCount(0);
     		        for (Mon mon : dsMon) {
+    		        	URL imageUrl = getClass().getResource("/images/imageMon/" + mon.getHinhAnh());
     		        	String path = "src/images/imageMon/" + mon.getHinhAnh();
 		     		    ImageIcon icon = new ImageIcon(path);
 		     		    Image image = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
@@ -780,7 +622,7 @@ public class QuanLyMon_GUI extends JFrame {
         frameThem_Chinh.setVisible(true);
     }
     public JPanel getPanel() {
-        return contentPane;
+        return pQuanLyMon;
     }
 
 }

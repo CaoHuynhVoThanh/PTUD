@@ -451,5 +451,45 @@ public class DonDatBan_DAO {
 		    return tongTienCoc;
 		}
 
-
+		public static boolean xoaBanRaKhoiDon(String maDDB, String maBan) {
+			String sql = "DELETE FROM ChiTietDonDatBan WHERE maDDB = ? AND maBan = ?";
+			try {
+				ConnectDB.getInstance().connect();
+			    Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setString(1, maDDB);
+				stmt.setString(2, maBan);
+				stmt.executeUpdate();
+				return true;
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			return false;
+		}
+		
+		public static DonDatBan layDonDatBanTheoMa(String maDDB){
+		    String sql = "SELECT * FROM DonDatBan WHERE maDDB = ?";
+		    try {
+		    	ConnectDB.getInstance().connect();
+			    Connection conn = ConnectDB.getInstance().getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);
+		        stmt.setString(1, maDDB);
+		        ResultSet rs = stmt.executeQuery();
+	            if (rs.next()) {
+	                String ma = rs.getString("maDDB");
+	                String manv =rs.getString("maNV");
+	                String makh =rs.getString("maKH");
+	                LocalDateTime d1 = rs.getTimestamp("thoiGianDat").toLocalDateTime();
+	                LocalDateTime d2 = rs.getTimestamp("thoiGianNhan").toLocalDateTime();
+	                int sk = rs.getInt("soKhach");
+	                double tc = rs.getDouble("tienCoc");
+	                int tt = rs.getInt("trangThai");
+	                DonDatBan ddb = new DonDatBan(ma, null, manv, makh, d1, d2, sk, tc, tt);
+	                return ddb;
+	            }
+		    } catch (Exception e) {
+				// TODO: handle exception
+			}
+		    return null; // không tìm thấy
+		}
 }
