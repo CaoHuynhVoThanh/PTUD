@@ -1,5 +1,7 @@
 package gui;
 
+import javax.swing.JDialog;
+import java.awt.Point;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -7,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -47,11 +51,14 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 import com.toedter.calendar.JDateChooser;
 
 import dao.NhanDon_DAO;
-import entities.DonDatBanView;
+//import entities.DonDatBanViewa;
 
 //import dao.Ban_DAO;
 //import entities.Ban;
@@ -87,7 +94,7 @@ public class NhanDon_GUI extends JFrame {
 	 * Create the frame.
 	 */
 	public NhanDon_GUI() {
-		ArrayList<DonDatBanView> donList = NhanDon_DAO.getAllDon();
+		List<Map<String, Object>> donList = NhanDon_DAO.getAllDon();
 
 		JDC_ngaychon.setDate(new Date());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -268,8 +275,6 @@ public class NhanDon_GUI extends JFrame {
 		panel_DSDon = new JPanel();
 		panel_DSDon.setLayout(null);
 		panel_DSDon.setBounds(320, 160, 1200, 600); 
-//		panel_DSDon.setBounds(0, 0, 1100, 600); 
-//		panel_DSDon.setBackground(Color.red);
 		contentPane.add(panel_DSDon);
 		
 		panel_DSDon.add(lblTitle = new JLabel("Danh sách đơn chờ nhận"));
@@ -304,27 +309,6 @@ public class NhanDon_GUI extends JFrame {
 		    }
 		});
 		
-//		txtNgayNhan = new JTextField("   Ngày nhận");
-//		txtNgayNhan.setBounds(230, 0, 200, 30);
-//		panel_TimKiem.add(txtNgayNhan);
-//		txtNgayNhan.setForeground(Color.GRAY); // Đặt màu chữ xám để giống placeholder
-//		txtNgayNhan.addFocusListener(new FocusListener() {
-//		    @Override
-//		    public void focusGained(FocusEvent e) {
-//		        if (txtNgayNhan.getText().equals("   Ngày nhận")) {
-//		        	txtNgayNhan.setText("");
-//		        	txtNgayNhan.setForeground(Color.BLACK); // Đổi màu chữ về đen khi nhập
-//		        }
-//		    }
-//
-//		    @Override
-//		    public void focusLost(FocusEvent e) {
-//		        if (txtNgayNhan.getText().trim().isEmpty()) {
-//		        	txtNgayNhan.setText("   Ngày nhận");
-//		        	txtNgayNhan.setForeground(Color.GRAY); // Đặt lại màu chữ xám
-//		        }
-//		    }
-//		});
 		JDC_ngaychon = new JDateChooser();
         
         JDC_ngaychon.setBounds(230, 0, 200, 30);
@@ -442,7 +426,7 @@ public class NhanDon_GUI extends JFrame {
 		
 		panelRight.add(box2, BorderLayout.EAST);
 		panel_DSDon.add(panelRight);
-//		panel_DSDon.setBackground(Color.red);
+
 //      aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 		
 		JPanel panelDanhSach = new JPanel();
@@ -450,21 +434,21 @@ public class NhanDon_GUI extends JFrame {
         panelDanhSach.setBackground(Color.WHITE);
 
         for (int i = 0; i < donList.size(); i++) {
-            DonDatBanView don = donList.get(i);
-            final DonDatBanView finalDon = don;
+        	Map<String, Object> don = donList.get(i);
+        	
+        	String maDDB = (String) don.get("maDDB");
+            int soBan = (int) don.get("soBan");
+            int soMon = (int) don.get("soMon");
+            double tienCoc = (double) don.get("tienCoc");
+            String tenKH = (String) don.get("tenKH");
+            String soDT = (String) don.get("soDienThoai");
+            Timestamp tgNhan = (Timestamp) don.get("thoiGianNhan");
+            String maNV = (String) don.get("maNV");
 
-            LocalDateTime thoiGian = don.getDonDatBan().getThoiGianNhan();
+            LocalDateTime thoiGian = tgNhan.toLocalDateTime();
             String thoiGianNhan = String.format("%02dh%02d", thoiGian.getHour(), thoiGian.getMinute());
 
-            JPanel panelDon = taoPanelDon(
-                don.getDonDatBan().getMaDDB(),
-                don.getSoBan(),
-                don.getSoMon(),
-                don.getDonDatBan().getTienCoc(),
-                don.getTenKhachHang(),
-                thoiGianNhan,
-                don.getSoDienThoai()
-            );
+            JPanel panelDon = taoPanelDon(maDDB, soBan, soMon, tienCoc, tenKH, thoiGianNhan, soDT);
 
             panelDon.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -474,24 +458,6 @@ public class NhanDon_GUI extends JFrame {
                 	JLabel[] lblThongTin = new JLabel[8];
                 	panelRight.removeAll();
                 	Box box2 = taoBoxThongTinDatBan(don,lblThongTin,donList,panelRight,panelDanhSach);
-
-                	JLabel lblTenKH = lblThongTin[0];
-                	JLabel lblSoDT = lblThongTin[1];
-                	JLabel lblSoBan = lblThongTin[2];
-                	JLabel lblSoMon = lblThongTin[3];
-                	JLabel lblThoiGianDat = lblThongTin[4];
-                	JLabel lblThoiGianNhan = lblThongTin[5];
-                	JLabel lblTienCoc = lblThongTin[6];
-                	JLabel lblNhanVien = lblThongTin[7];
-
-//                	lblTenKH.setText(don.getTenKhachHang());
-//                	lblSoDT.setText(don.getSoDienThoai());
-//                	lblSoBan.setText(String.valueOf(don.getSoBan()));
-//                	lblSoMon.setText(String.valueOf(don.getSoMon()));
-//                	lblThoiGianDat.setText(don.getDonDatBan().getThoiGianDat().toString());
-//                	lblThoiGianNhan.setText(don.getDonDatBan().getThoiGianNhan().toString());
-//                	lblTienCoc.setText(String.valueOf(don.getDonDatBan().getTienCoc()));
-//                	lblNhanVien.setText(don.getDonDatBan().getMaNV());
 
                 	panelRight.add(box2);
                 	panelRight.revalidate();
@@ -527,9 +493,9 @@ public class NhanDon_GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String soDienThoai = txtSoDienThoai.getText().trim();
 
-                ArrayList<DonDatBanView> dsKetQua;
+                List<Map<String, Object>> dsKetQua;
 
-                // ✅ Nếu rỗng -> lấy toàn bộ đơn
+                //Nếu 1 -> lấy toàn bộ đơn
                 if (soDienThoai.equals("1")) {
                     dsKetQua = NhanDon_DAO.getAllDon();
                     System.err.println(dsKetQua.size());
@@ -543,20 +509,50 @@ public class NhanDon_GUI extends JFrame {
                 if (dsKetQua == null || dsKetQua.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Không tìm thấy đơn đặt bàn nào.");
                 } else {
-                    for (DonDatBanView don : dsKetQua) {
-                        JPanel panelDon = taoPanelDon(
-                            don.getDonDatBan().getMaDDB(),
-                            don.getSoBan(),
-                            don.getSoMon(),
-                            don.getDonDatBan().getTienCoc(),
-                            don.getTenKhachHang(),
-                            don.getDonDatBan().getThoiGianNhan() != null ?
-                                String.format("%02dh%02d", don.getDonDatBan().getThoiGianNhan().getHour(),
-                                                              don.getDonDatBan().getThoiGianNhan().getMinute()) : "",
-                            don.getSoDienThoai()
-                        );
-                        panelDanhSach.add(panelDon);
-                    }
+                	for (Map<String, Object> don : dsKetQua) {
+                	    String maDDB = (String) don.get("maDDB");
+                	    int soBan = (int) don.get("soBan");
+                	    int soMon = (int) don.get("soMon");
+                	    double tienCoc = (double) don.get("tienCoc");
+                	    String tenKH = (String) don.get("tenKH");
+                	    String soDT = (String) don.get("soDienThoai");
+
+                	    Timestamp tgNhan = (Timestamp) don.get("thoiGianNhan");
+                	    String thoiGianNhan = "";
+                	    if (tgNhan != null) {
+                	        LocalDateTime ldt = tgNhan.toLocalDateTime();
+                	        thoiGianNhan = String.format("%02dh%02d", ldt.getHour(), ldt.getMinute());
+                	    }
+
+                	    JPanel panelDon = taoPanelDon(maDDB, soBan, soMon, tienCoc, tenKH, thoiGianNhan, soDT);
+                	    panelDon.addMouseListener(new MouseAdapter() {
+	                        @Override
+	                        public void mouseClicked(MouseEvent e) {
+	                            JLabel[] lblThongTin = new JLabel[8];
+	                            panelRight.removeAll();
+	                            Box box2 = taoBoxThongTinDatBan(don, lblThongTin, donList, panelRight,panelDanhSach);
+
+	                            panelRight.add(box2);
+	                            panelRight.revalidate();
+	                            panelRight.repaint();
+	                        }
+
+	                        @Override
+	                        public void mouseEntered(MouseEvent e) {
+	                            panelDon.setBackground(new Color(230, 240, 255));
+	                        }
+
+	                        @Override
+	                        public void mouseExited(MouseEvent e) {
+	                            panelDon.setBackground(Color.WHITE);
+	                        }
+	                    });
+
+	                    panelDanhSach.add(panelDon);
+
+                	    panelDanhSach.add(panelDon);
+                	}
+
                 }
 
                 panelDanhSach.revalidate();
@@ -570,24 +566,52 @@ public class NhanDon_GUI extends JFrame {
                 Date ngayChon = JDC_ngaychon.getDate();
 
                 if (ngayChon != null) {
-                    ArrayList<DonDatBanView> dsKetQua = NhanDon_DAO.timDonTheoNgayNhan(ngayChon);
+                	ArrayList<Map<String, Object>> dsKetQua = NhanDon_DAO.timDonTheoNgayNhan(ngayChon);
 
                     // Cập nhật giao diện
                     panelDanhSach.removeAll();
-                    for (DonDatBanView donMoi : dsKetQua) {
-                        JPanel panelDonMoi = taoPanelDon(
-                            donMoi.getDonDatBan().getMaDDB(),
-                            donMoi.getSoBan(),
-                            donMoi.getSoMon(),
-                            donMoi.getDonDatBan().getTienCoc(),
-                            donMoi.getTenKhachHang(),
-                            donMoi.getDonDatBan().getThoiGianNhan() != null ?
-                                String.format("%02dh%02d", donMoi.getDonDatBan().getThoiGianNhan().getHour(),
-                                              donMoi.getDonDatBan().getThoiGianNhan().getMinute()) : "",
-                            donMoi.getSoDienThoai()
-                        );
-                        panelDanhSach.add(panelDonMoi);
-                    }
+                    for (Map<String, Object> don : dsKetQua) {
+                	    String maDDB = (String) don.get("maDDB");
+                	    int soBan = (int) don.get("soBan");
+                	    int soMon = (int) don.get("soMon");
+                	    double tienCoc = (double) don.get("tienCoc");
+                	    String tenKH = (String) don.get("tenKH");
+                	    String soDT = (String) don.get("soDienThoai");
+
+                	    Timestamp tgNhan = (Timestamp) don.get("thoiGianNhan");
+                	    String thoiGianNhan = "";
+                	    if (tgNhan != null) {
+                	        LocalDateTime ldt = tgNhan.toLocalDateTime();
+                	        thoiGianNhan = String.format("%02dh%02d", ldt.getHour(), ldt.getMinute());
+                	    }
+
+                	    JPanel panelDon = taoPanelDon(maDDB, soBan, soMon, tienCoc, tenKH, thoiGianNhan, soDT);
+                	    panelDon.addMouseListener(new MouseAdapter() {
+	                        @Override
+	                        public void mouseClicked(MouseEvent e) {
+	                            JLabel[] lblThongTin = new JLabel[8];
+	                            panelRight.removeAll();
+	                            Box box2 = taoBoxThongTinDatBan(don, lblThongTin, donList, panelRight,panelDanhSach);
+
+	                            panelRight.add(box2);
+	                            panelRight.revalidate();
+	                            panelRight.repaint();
+	                        }
+
+	                        @Override
+	                        public void mouseEntered(MouseEvent e) {
+	                            panelDon.setBackground(new Color(230, 240, 255));
+	                        }
+
+	                        @Override
+	                        public void mouseExited(MouseEvent e) {
+	                            panelDon.setBackground(Color.WHITE);
+	                        }
+	                    });
+
+	                    panelDanhSach.add(panelDon);
+                	    panelDanhSach.add(panelDon);
+                	}
 
                     panelDanhSach.revalidate();
                     panelDanhSach.repaint();
@@ -658,7 +682,7 @@ public class NhanDon_GUI extends JFrame {
         return panelDon;
     }
 	
-	public Box taoBoxThongTinDatBan(DonDatBanView don, JLabel[] lblThongTin,ArrayList<DonDatBanView> donList, JPanel panelRight, JPanel panelDanhSach) {
+	public Box taoBoxThongTinDatBan(Map<String, Object> don , JLabel[] lblThongTin,List<Map<String, Object>> donList, JPanel panelRight, JPanel panelDanhSach) {
 	    Box box2 = Box.createVerticalBox();
 	    box2.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
@@ -679,15 +703,25 @@ public class NhanDon_GUI extends JFrame {
 	        "Thời gian đặt:", "Thời gian nhận:", "Tiền cọc:", "Nhân viên thực hiện:"
 	    };
 
+	    String tenKhachHang = (String) don.get("tenKH");
+	    String soDienThoai = (String) don.get("soDienThoai");
+	    int soBan = (Integer) don.get("soBan");
+	    int soMon = (Integer) don.get("soMon");
+
+	    Timestamp thoiGianDat = (Timestamp) don.get("thoiGianDat");
+	    Timestamp thoiGianNhan = (Timestamp) don.get("thoiGianNhan");
+
+	    Double tienCoc = (Double) don.get("tienCoc");
+	    String maNV = (String) don.get("maNV");
 	    String[] values = {
-	        don.getTenKhachHang(),
-	        don.getSoDienThoai(),
-	        String.valueOf(don.getSoBan()),
-	        String.valueOf(don.getSoMon()),
-	        don.getDonDatBan().getThoiGianDat().toString(),
-	        don.getDonDatBan().getThoiGianNhan().toString(),
-	        String.valueOf(don.getDonDatBan().getTienCoc()),
-	        don.getDonDatBan().getMaNV()
+	    		tenKhachHang,
+	    	    soDienThoai,
+	    	    String.valueOf(soBan),
+	    	    String.valueOf(soMon),
+	    	    thoiGianDat != null ? thoiGianDat.toString() : "",
+	    	    thoiGianNhan != null ? thoiGianNhan.toString() : "",
+	    	    tienCoc != null ? String.valueOf(tienCoc) : "0",
+	    	    maNV
 	    };
 
 	    for (int i = 0; i < labels.length; i++) {
@@ -724,33 +758,46 @@ public class NhanDon_GUI extends JFrame {
 	                "Bạn có chắc muốn hủy đơn đặt bàn này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
 	            if (confirm == JOptionPane.YES_OPTION) {
 	                NhanDon_DAO dao = new NhanDon_DAO();
-	                boolean ketQua = dao.huyDonVaCapNhatTatCaBan(don.getDonDatBan().getMaDDB());
+	                boolean ketQua = dao.huyDonVaCapNhatTatCaBan((String) don.get("maDDB"));
+
 	                
 	                if (ketQua) {
 	                    JOptionPane.showMessageDialog(null, "Hủy đơn thành công!");
 
 	                    // Cập nhật lại danh sách đơn đặt bàn
 	                    panelDanhSach.removeAll();
-	                    ArrayList<DonDatBanView> donListMoi = NhanDon_DAO.getAllDon();
-	                    for (DonDatBanView donMoi : donListMoi) {
-	                        JPanel panelDonMoi = taoPanelDon(
-	                            donMoi.getDonDatBan().getMaDDB(),
-	                            donMoi.getSoBan(),
-	                            donMoi.getSoMon(),
-	                            donMoi.getDonDatBan().getTienCoc(),
-	                            donMoi.getTenKhachHang(),
-	                            donMoi.getDonDatBan().getThoiGianNhan() != null ?
-	                                String.format("%02dh%02d", donMoi.getDonDatBan().getThoiGianNhan().getHour(),
-	                                    donMoi.getDonDatBan().getThoiGianNhan().getMinute()) : "",
-	                            donMoi.getSoDienThoai()
-	                        );
+	                    List<Map<String, Object>> donListMoi = NhanDon_DAO.getAllDon();
+	                    for (Map<String, Object> donMoi : donListMoi) {
+	                    	LocalDateTime thoiGian = null;
+		                    Object tgNhanObj = don.get("thoiGianNhan");
+		                    if (tgNhanObj instanceof LocalDateTime) {
+		                        thoiGian = (LocalDateTime) tgNhanObj;
+		                    } else if (tgNhanObj instanceof Timestamp) {
+		                        thoiGian = ((Timestamp) tgNhanObj).toLocalDateTime();
+		                    }
+		                    String thoiGianNhan = "";
+		                    if (thoiGian != null) {
+		                        thoiGianNhan = String.format("%02dh%02d", thoiGian.getHour(), thoiGian.getMinute());
+		                    }
+
+		                    JPanel panelDonMoi = taoPanelDon(
+		                        (String) donMoi.get("maDDB"),
+		                        (int) donMoi.get("soBan"),
+		                        (int) donMoi.get("soMon"),
+		                        (double) donMoi.get("tienCoc"),
+		                        (String) donMoi.get("tenKH"),
+		                        thoiGianNhan,
+		                        (String) donMoi.get("soDienThoai")
+		                    );
+
+//	                	    panelDanhSach.add(panelDon);
 	                        panelDonMoi.setAlignmentX(Component.CENTER_ALIGNMENT);
 	                        panelDonMoi.addMouseListener(new MouseAdapter() {
 		                        @Override
 		                        public void mouseClicked(MouseEvent e) {
 		                            JLabel[] lblThongTin = new JLabel[8];
 		                            panelRight.removeAll();
-		                            Box box2 = taoBoxThongTinDatBan(don, lblThongTin, donList, panelRight,panelDanhSach);
+		                            Box box2 = taoBoxThongTinDatBan(donMoi, lblThongTin, donList, panelRight,panelDanhSach);
 
 		                            panelRight.add(box2);
 		                            panelRight.revalidate();
@@ -793,6 +840,151 @@ public class NhanDon_GUI extends JFrame {
 	    btnGiaHan.setFont(new Font("SansSerif", Font.BOLD, 17));
 	    btnGiaHan.setFocusPainted(false);
 	    btnGiaHan.setPreferredSize(new Dimension(130, 60));
+	    btnGiaHan.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            
+	            JDialog dialog = new JDialog((Frame) null, "Gia hạn thời gian", true);
+	            dialog.setUndecorated(true); // Bỏ viền nếu muốn giống popup
+	            dialog.setLayout(new BorderLayout());
+
+	            JPanel panel = new JPanel();
+	            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	            panel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+	            panel.setBackground(Color.WHITE);
+
+	            // Lấy thời gian hiện tại của đơn
+	            Timestamp oldTime = (Timestamp) don.get("thoiGianNhan");
+	            LocalDateTime oldDateTime = oldTime.toLocalDateTime();
+	            int gioCu = oldDateTime.getHour();
+	            int phutCu = oldDateTime.getMinute();
+
+	            JLabel lblTitle = new JLabel("Gia hạn thời gian nhận bàn");
+	            lblTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
+	            lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	            JLabel lblCurrent = new JLabel("Hiện tại: " + String.format("%02dh%02d", gioCu, phutCu));
+	            lblCurrent.setFont(new Font("SansSerif", Font.PLAIN, 13));
+	            lblCurrent.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	            JComboBox<Integer> comboGio = new JComboBox<>();
+	            for (int i = gioCu; i < 22; i++) comboGio.addItem(i);
+	            comboGio.setSelectedItem(gioCu);
+
+	            JComboBox<Integer> comboPhut = new JComboBox<>();
+	            for (int i = 0; i < 60; i += 5) comboPhut.addItem(i);
+	            comboPhut.setSelectedItem(phutCu);
+
+	            JPanel timePanel = new JPanel();
+	            timePanel.setBackground(Color.WHITE);
+	            timePanel.add(new JLabel("Giờ:"));
+	            timePanel.add(comboGio);
+	            timePanel.add(new JLabel("Phút:"));
+	            timePanel.add(comboPhut);
+
+	            JButton btnXacNhan = new JButton("Xác nhận");
+	            btnXacNhan.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            btnXacNhan.addActionListener(new ActionListener() {
+	                @Override
+	                public void actionPerformed(ActionEvent e) {
+	                    int newHour = (int) comboGio.getSelectedItem();
+	                    int newMinute = (int) comboPhut.getSelectedItem();
+
+	                    LocalDate ngay = oldDateTime.toLocalDate();
+	                    LocalTime gioMoi = LocalTime.of(newHour, newMinute);
+	                    LocalDateTime thoiGianMoi = LocalDateTime.of(ngay, gioMoi);
+
+	                    NhanDon_DAO dao = new NhanDon_DAO();
+	                    boolean result = dao.giaHanThoiGianNhan((String) don.get("maDDB"), thoiGianMoi);
+
+	                    if (result) {
+	                        JOptionPane.showMessageDialog(null, "Gia hạn thành công!");
+	                     // Cập nhật lại danh sách đơn đặt bàn
+		                    panelDanhSach.removeAll();
+		                    List<Map<String, Object>> donListMoi = NhanDon_DAO.getAllDon();
+		                    
+		                    for (Map<String, Object> donMoi : donListMoi) {
+		                    	LocalDateTime thoiGian = null;
+			                    Object tgNhanObj = donMoi.get("thoiGianNhan");
+			                    if (tgNhanObj instanceof LocalDateTime) {
+			                        thoiGian = (LocalDateTime) tgNhanObj;
+			                    } else if (tgNhanObj instanceof Timestamp) {
+			                        thoiGian = ((Timestamp) tgNhanObj).toLocalDateTime();
+			                    }
+			                    String thoiGianNhan = "";
+			                    if (thoiGian != null) {
+			                        thoiGianNhan = String.format("%02dh%02d", thoiGian.getHour(), thoiGian.getMinute());
+			                    }
+
+			                    JPanel panelDonMoi = taoPanelDon(
+			                        (String) donMoi.get("maDDB"),
+			                        (int) donMoi.get("soBan"),
+			                        (int) donMoi.get("soMon"),
+			                        (double) donMoi.get("tienCoc"),
+			                        (String) donMoi.get("tenKH"),
+			                        thoiGianNhan,
+			                        (String) donMoi.get("soDienThoai")
+			                    );
+//			                    System.err.println(thoiGianNhan);
+
+//		                	    panelDanhSach.add(panelDon);
+		                        panelDonMoi.setAlignmentX(Component.CENTER_ALIGNMENT);
+		                        panelDonMoi.addMouseListener(new MouseAdapter() {
+			                        @Override
+			                        public void mouseClicked(MouseEvent e) {
+			                            JLabel[] lblThongTin = new JLabel[8];
+			                            panelRight.removeAll();
+			                            Box box2 = taoBoxThongTinDatBan(donMoi, lblThongTin, donList, panelRight,panelDanhSach);
+			                            System.err.println("Lan 2"+donMoi.get("thoiGianNhan"));
+			                            panelRight.add(box2);
+			                            panelRight.revalidate();
+			                            panelRight.repaint();
+			                        }
+
+			                        @Override
+			                        public void mouseEntered(MouseEvent e) {
+			                        	panelDonMoi.setBackground(new Color(230, 240, 255));
+			                        }
+
+			                        @Override
+			                        public void mouseExited(MouseEvent e) {
+			                        	panelDonMoi.setBackground(Color.WHITE);
+			                        }
+			                    });
+		                        panelDanhSach.add(panelDonMoi);
+		                    }
+		                    panelDanhSach.revalidate();
+		                    panelDanhSach.repaint();
+
+		                    // Xóa thông tin chi tiết bên phải
+//		                    panelRight.removeAll();
+//		                    panelRight.revalidate();
+//		                    panelRight.repaint();
+	                        dialog.dispose();
+	                    } else {
+	                        JOptionPane.showMessageDialog(null, "Gia hạn thất bại.");
+	                    }
+	                }
+	            });
+
+	            panel.add(lblTitle);
+	            panel.add(Box.createVerticalStrut(5));
+	            panel.add(lblCurrent);
+	            panel.add(Box.createVerticalStrut(10));
+	            panel.add(timePanel);
+	            panel.add(Box.createVerticalStrut(10));
+	            panel.add(btnXacNhan);
+
+	            dialog.add(panel, BorderLayout.CENTER);
+	            dialog.pack();
+
+	            // Hiển thị dialog ở ngay phía trên nút
+	            Point location = btnGiaHan.getLocationOnScreen();
+	            dialog.setLocation(location.x, location.y - dialog.getHeight());
+	            dialog.setVisible(true);
+	        }
+	    });
+
 
 	    boxHuyDon_GiaHan.add(btnHuyDon);
 	    boxHuyDon_GiaHan.add(Box.createHorizontalGlue());
@@ -815,7 +1007,7 @@ public class NhanDon_GUI extends JFrame {
 	    btnNhanBan.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-	            String maDDB_NB = don.getDonDatBan().getMaDDB();
+	        	String maDDB_NB = (String) don.get("maDDB");
 	            if (maDDB_NB == null || maDDB_NB.isEmpty()) {
 	                JOptionPane.showMessageDialog(null, "Vui lòng chọn bàn trước khi nhận.");
 	                return;
@@ -825,22 +1017,29 @@ public class NhanDon_GUI extends JFrame {
 	            if (nhanBan) {
 	                panelDanhSach.removeAll();
 	                
-	                ArrayList<DonDatBanView> donList = NhanDon_DAO.getAllDon();
+	                List<Map<String, Object>> donList = NhanDon_DAO.getAllDon();
 
-	                for (int i = 0; i < donList.size(); i++) {
-	                    DonDatBanView don = donList.get(i);
-
-	                    LocalDateTime thoiGian = don.getDonDatBan().getThoiGianNhan();
-	                    String thoiGianNhan = String.format("%02dh%02d", thoiGian.getHour(), thoiGian.getMinute());
+	                for (Map<String, Object> don : donList) {
+	                    LocalDateTime thoiGian = null;
+	                    Object tgNhanObj = don.get("thoiGianNhan");
+	                    if (tgNhanObj instanceof LocalDateTime) {
+	                        thoiGian = (LocalDateTime) tgNhanObj;
+	                    } else if (tgNhanObj instanceof Timestamp) {
+	                        thoiGian = ((Timestamp) tgNhanObj).toLocalDateTime();
+	                    }
+	                    String thoiGianNhan = "";
+	                    if (thoiGian != null) {
+	                        thoiGianNhan = String.format("%02dh%02d", thoiGian.getHour(), thoiGian.getMinute());
+	                    }
 
 	                    JPanel panelDon = taoPanelDon(
-	                        don.getDonDatBan().getMaDDB(),
-	                        don.getSoBan(),
-	                        don.getSoMon(),
-	                        don.getDonDatBan().getTienCoc(),
-	                        don.getTenKhachHang(),
+	                        (String) don.get("maDDB"),
+	                        (int) don.get("soBan"),
+	                        (int) don.get("soMon"),
+	                        (double) don.get("tienCoc"),
+	                        (String) don.get("tenKH"),
 	                        thoiGianNhan,
-	                        don.getSoDienThoai()
+	                        (String) don.get("soDienThoai")
 	                    );
 
 	                    panelDon.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -873,6 +1072,9 @@ public class NhanDon_GUI extends JFrame {
 
 	                panelDanhSach.revalidate();
 	                panelDanhSach.repaint();
+	                panelRight.removeAll();
+                    panelRight.revalidate();
+                    panelRight.repaint();
 
 	                JOptionPane.showMessageDialog(null, "Nhận bàn thành công!");
 	            } else {
