@@ -202,7 +202,7 @@ public class NhanDon_DAO {
 	                 "FROM [dbo].[DonDatBan] ddb " +
 	                 "JOIN [dbo].[ChiTietDonDatBan] ct ON ddb.maDDB = ct.maDDB " +
 	                 "JOIN [dbo].[KhachHang] kh ON ddb.maKH = kh.maKH " +
-	                 "JOIN [dbo].[ChiTietDonGoiMon] ctdgm ON ctdgm.maDGM = ct.maDGM " +
+	                 "LEFT JOIN [dbo].[ChiTietDonGoiMon] ctdgm ON ctdgm.maDGM = ct.maDGM " +
 	                 "GROUP BY ddb.maDDB, ddb.maKH, ddb.maNV, ddb.soKhach, ddb.thoiGianDat, ddb.thoiGianNhan, ddb.tienCoc, ddb.trangThai, kh.SoDienThoai, kh.tenKH";
 
 	    try (PreparedStatement pst = con.prepareStatement(sql);
