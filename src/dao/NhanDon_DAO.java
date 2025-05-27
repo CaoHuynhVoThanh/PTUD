@@ -10,6 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.*;
 
 import connectDB.ConnectDB;
 import entities.Ban;
@@ -17,64 +20,6 @@ import entities.DonDatBan;
 import entities.DonDatBanView;
 
 public class NhanDon_DAO {
-	public static ArrayList<DonDatBanView> getAllDon() {
-	    ConnectDB.getInstance().connect();
-	    Connection conN = ConnectDB.getInstance().getConnection();
-	    ArrayList<DonDatBanView> dsDonView = new ArrayList<>();
-
-	    String sql = "SELECT ddb.maDDB, ddb.maKH, ddb.maNV, ddb.soKhach, ddb.thoiGianDat, ddb.thoiGianNhan, ddb.tienCoc, ddb.trangThai, COUNT(DISTINCT ct.MaBan) AS SoBan,COUNT(DISTINCT ctdgm.soLuong) AS SoMon,kh.SoDienThoai, kh.tenKH " +
-	                 "FROM [dbo].[DonDatBan] ddb " +
-	                 "JOIN [dbo].[ChiTietDonDatBan] ct ON ddb.maDDB = ct.maDDB " +
-	                 "JOIN [dbo].[KhachHang] kh ON ddb.maKH = kh.maKH " +
-	                 "JOIN [dbo].[ChiTietDonGoiMon] ctdgm ON ctdgm.maDGM = ct.maDGM " +
-	                 "GROUP BY ddb.maDDB, ddb.maKH, ddb.maNV, ddb.soKhach, ddb.thoiGianDat, ddb.thoiGianNhan, ddb.tienCoc, ddb.trangThai, kh.SoDienThoai, kh.tenKH;";
-	    try {
-	        PreparedStatement pst = conN.prepareStatement(sql);
-	        ResultSet rs = pst.executeQuery();
-	        while (rs.next()) {
-	        	String maDon = rs.getString("maDDB");
-	        	String maKH = rs.getString("maKH");
-	        	String tenKH = rs.getString("tenKH");
-	        	String maNV = rs.getString("maNV");
-	        	int soKhach = rs.getInt("SoKhach");
-	        	Timestamp thoiGianDat = rs.getTimestamp("thoiGianDat");
-	            Timestamp thoiGianNhan = rs.getTimestamp("thoiGianNhan");
-	            double tienCoc = rs.getDouble("tienCoc");
-	            int trangThai = rs.getInt("trangThai");
-	            int soBan = rs.getInt("SoBan");
-	            int soMon = rs.getInt("SoMon");
-	            String sdt = rs.getString("SoDienThoai");
-	            
-	            LocalDateTime thoiGianNhanBan = null;
-	            if (thoiGianNhan != null) {
-	            	thoiGianNhanBan = thoiGianNhan.toLocalDateTime();
-//	            	if (thoiGianNhanBan != null) {
-//	            	    int hour = thoiGianNhanBan.getHour();
-//	            	    int minute = thoiGianNhanBan.getMinute();
-//	            	    int second = thoiGianNhanBan.getSecond();
-//	            	    
-//	            	    thoiGianNhanBan 
-////	            	    System.out.println("Giờ: " + hour + ", Phút: " + minute + ", Giây: " + second);
-//	            	}
-	            }
-	            LocalDateTime thoiGianDatBan = null;
-	            if (thoiGianDat != null) {
-	            	thoiGianDatBan = thoiGianDat.toLocalDateTime();
-	            }
-
-	            DonDatBan ddb = new DonDatBan(maDon, "", maNV, maKH, thoiGianDatBan, thoiGianNhanBan, soKhach, tienCoc, trangThai);
-	            if(trangThai==1) {
-	            	DonDatBanView ddbv = new DonDatBanView(ddb, soBan, soMon, sdt, tenKH, tienCoc);
-		            dsDonView.add(ddbv);
-	            }	            
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-
-	    return dsDonView;
-	}
-	
 	public boolean nhanBan(String maDDB) {
 	    String sql = "UPDATE DonDatBan SET trangThai = 0 WHERE maDDB = ? AND trangThai <> 0";
 
@@ -120,7 +65,7 @@ public class NhanDon_DAO {
 	        rs = pstGetBan.executeQuery();
 
 	        // 3. Cập nhật trạng thái từng bàn về False (trống)
-	        String sqlUpdateBan = "UPDATE Ban SET tinhTrang = 0 WHERE maBan = ?";
+	        String sqlUpdateBan = "UPDATE Ban SET tinhTrang = 1 WHERE maBan = ?";
 	        pstUpdateBan = con.prepareStatement(sqlUpdateBan);
 
 	        while (rs.next()) {
@@ -153,10 +98,10 @@ public class NhanDon_DAO {
 	    }
 	}
 	
-	public static ArrayList<DonDatBanView> timDonTheoSoDienThoai(String soDienThoai) {
+	public static ArrayList<Map<String, Object>> timDonTheoSoDienThoai(String soDienThoai) {
 	    ConnectDB.getInstance().connect();
 	    Connection con = ConnectDB.getInstance().getConnection();
-	    ArrayList<DonDatBanView> dsDonView = new ArrayList<>();
+	    ArrayList<Map<String, Object>> dsDonView = new ArrayList<>();
 
 	    String sql = "SELECT ddb.maDDB, ddb.maKH, ddb.maNV, ddb.soKhach, ddb.thoiGianDat, ddb.thoiGianNhan, ddb.tienCoc, ddb.trangThai, " +
 	                 "COUNT(DISTINCT ct.MaBan) AS SoBan, COUNT(DISTINCT ctdgm.soLuong) AS SoMon, kh.SoDienThoai, kh.tenKH " +
@@ -172,27 +117,23 @@ public class NhanDon_DAO {
 	        ResultSet rs = pst.executeQuery();
 
 	        while (rs.next()) {
-	            String maDon = rs.getString("maDDB");
-	            String maKH = rs.getString("maKH");
-	            String tenKH = rs.getString("tenKH");
-	            String maNV = rs.getString("maNV");
-	            int soKhach = rs.getInt("SoKhach");
-	            Timestamp thoiGianDat = rs.getTimestamp("thoiGianDat");
-	            Timestamp thoiGianNhan = rs.getTimestamp("thoiGianNhan");
-	            double tienCoc = rs.getDouble("tienCoc");
 	            int trangThai = rs.getInt("trangThai");
-	            int soBan = rs.getInt("SoBan");
-	            int soMon = rs.getInt("SoMon");
-	            String sdt = rs.getString("SoDienThoai");
+	            if (trangThai == 1) {  // chỉ lấy đơn đang hoạt động
+	                Map<String, Object> don = new HashMap<>();
+	                don.put("maDDB", rs.getString("maDDB"));
+	                don.put("maKH", rs.getString("maKH"));
+	                don.put("maNV", rs.getString("maNV"));
+	                don.put("soKhach", rs.getInt("soKhach"));
+	                don.put("thoiGianDat", rs.getTimestamp("thoiGianDat"));
+	                don.put("thoiGianNhan", rs.getTimestamp("thoiGianNhan"));
+	                don.put("tienCoc", rs.getDouble("tienCoc"));
+	                don.put("trangThai", trangThai);
+	                don.put("soBan", rs.getInt("SoBan"));
+	                don.put("soMon", rs.getInt("SoMon"));
+	                don.put("soDienThoai", rs.getString("SoDienThoai"));
+	                don.put("tenKH", rs.getString("tenKH"));
 
-	            LocalDateTime thoiGianNhanBan = thoiGianNhan != null ? thoiGianNhan.toLocalDateTime() : null;
-	            LocalDateTime thoiGianDatBan = thoiGianDat != null ? thoiGianDat.toLocalDateTime() : null;
-
-	            DonDatBan ddb = new DonDatBan(maDon, "", maNV, maKH, thoiGianDatBan, thoiGianNhanBan, soKhach, tienCoc, trangThai);
-	            
-	            if (trangThai == 1) {
-	                DonDatBanView ddbv = new DonDatBanView(ddb, soBan, soMon, sdt, tenKH, tienCoc);
-	                dsDonView.add(ddbv);
+	                dsDonView.add(don);
 	            }
 	        }
 	    } catch (SQLException e) {
@@ -202,8 +143,9 @@ public class NhanDon_DAO {
 	    return dsDonView;
 	}
 
-	public static ArrayList<DonDatBanView> timDonTheoNgayNhan(java.util.Date ngayChon) {
-	    ArrayList<DonDatBanView> dsDonView = new ArrayList<>();
+
+	public static ArrayList<Map<String, Object>> timDonTheoNgayNhan(java.util.Date ngayChon) {
+	    ArrayList<Map<String, Object>> dsDonView = new ArrayList<>();
 	    Connection con = ConnectDB.getInstance().getConnection();
 
 	    String sql = "SELECT ddb.maDDB, ddb.maKH, ddb.maNV, ddb.soKhach, ddb.thoiGianDat, ddb.thoiGianNhan, " +
@@ -222,27 +164,23 @@ public class NhanDon_DAO {
 	        ResultSet rs = pst.executeQuery();
 
 	        while (rs.next()) {
-	            // Mapping tương tự getAllDon()
-	            String maDon = rs.getString("maDDB");
-	            String maKH = rs.getString("maKH");
-	            String tenKH = rs.getString("tenKH");
-	            String maNV = rs.getString("maNV");
-	            int soKhach = rs.getInt("SoKhach");
-	            Timestamp thoiGianDat = rs.getTimestamp("thoiGianDat");
-	            Timestamp thoiGianNhan = rs.getTimestamp("thoiGianNhan");
-	            double tienCoc = rs.getDouble("tienCoc");
 	            int trangThai = rs.getInt("trangThai");
-	            int soBan = rs.getInt("SoBan");
-	            int soMon = rs.getInt("SoMon");
-	            String sdt = rs.getString("SoDienThoai");
-
-	            LocalDateTime tgNhan = thoiGianNhan != null ? thoiGianNhan.toLocalDateTime() : null;
-	            LocalDateTime tgDat = thoiGianDat != null ? thoiGianDat.toLocalDateTime() : null;
-
-	            DonDatBan ddb = new DonDatBan(maDon, "", maNV, maKH, tgDat, tgNhan, soKhach, tienCoc, trangThai);
 	            if (trangThai == 1) {
-	                DonDatBanView ddbv = new DonDatBanView(ddb, soBan, soMon, sdt, tenKH, tienCoc);
-	                dsDonView.add(ddbv);
+	                Map<String, Object> don = new HashMap<>();
+	                don.put("maDDB", rs.getString("maDDB"));
+	                don.put("maKH", rs.getString("maKH"));
+	                don.put("maNV", rs.getString("maNV"));
+	                don.put("soKhach", rs.getInt("soKhach"));
+	                don.put("thoiGianDat", rs.getTimestamp("thoiGianDat"));
+	                don.put("thoiGianNhan", rs.getTimestamp("thoiGianNhan"));
+	                don.put("tienCoc", rs.getDouble("tienCoc"));
+	                don.put("trangThai", trangThai);
+	                don.put("soBan", rs.getInt("SoBan"));
+	                don.put("soMon", rs.getInt("SoMon"));
+	                don.put("soDienThoai", rs.getString("SoDienThoai"));
+	                don.put("tenKH", rs.getString("tenKH"));
+
+	                dsDonView.add(don);
 	            }
 	        }
 	    } catch (SQLException e) {
@@ -252,6 +190,76 @@ public class NhanDon_DAO {
 	    return dsDonView;
 	}
 
+	
+	
+	public static List<Map<String, Object>> getAllDon() {
+		ConnectDB.getInstance().connect();
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    List<Map<String, Object>> dsDonView = new ArrayList<>();
+
+	    String sql = "SELECT ddb.maDDB, ddb.maKH, ddb.maNV, ddb.soKhach, ddb.thoiGianDat, ddb.thoiGianNhan, ddb.tienCoc, ddb.trangThai, " +
+	                 "COUNT(DISTINCT ct.MaBan) AS SoBan, COUNT(DISTINCT ctdgm.maMon) AS SoMon, kh.SoDienThoai, kh.tenKH " +
+	                 "FROM [dbo].[DonDatBan] ddb " +
+	                 "JOIN [dbo].[ChiTietDonDatBan] ct ON ddb.maDDB = ct.maDDB " +
+	                 "JOIN [dbo].[KhachHang] kh ON ddb.maKH = kh.maKH " +
+	                 "JOIN [dbo].[ChiTietDonGoiMon] ctdgm ON ctdgm.maDGM = ct.maDGM " +
+	                 "GROUP BY ddb.maDDB, ddb.maKH, ddb.maNV, ddb.soKhach, ddb.thoiGianDat, ddb.thoiGianNhan, ddb.tienCoc, ddb.trangThai, kh.SoDienThoai, kh.tenKH";
+
+	    try (PreparedStatement pst = con.prepareStatement(sql);
+	         ResultSet rs = pst.executeQuery()) {
+
+	        while (rs.next()) {
+	            Map<String, Object> row = new HashMap<>();
+	            row.put("maDDB", rs.getString("maDDB"));
+	            row.put("maKH", rs.getString("maKH"));
+	            row.put("tenKH", rs.getString("tenKH"));
+	            row.put("maNV", rs.getString("maNV"));
+	            row.put("soKhach", rs.getInt("soKhach"));
+	            row.put("thoiGianDat", rs.getTimestamp("thoiGianDat"));
+	            row.put("thoiGianNhan", rs.getTimestamp("thoiGianNhan"));
+	            row.put("tienCoc", rs.getDouble("tienCoc"));
+	            row.put("trangThai", rs.getInt("trangThai"));
+	            row.put("soBan", rs.getInt("SoBan"));
+	            row.put("soMon", rs.getInt("SoMon"));
+	            row.put("soDienThoai", rs.getString("SoDienThoai"));
+
+	            if (rs.getInt("trangThai") == 1) {
+	                dsDonView.add(row);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return dsDonView;
+	}
+
+
+	public boolean giaHanThoiGianNhan(String maDDB, LocalDateTime thoiGianMoi) {
+		ConnectDB.getInstance().connect();
+	    Connection con = ConnectDB.getInstance().getConnection();
+	    String sql = "UPDATE DonDatBan SET thoiGianNhan = ? WHERE maDDB = ?";
+	    PreparedStatement stmt = null;
+	    try {
+	    	stmt = con.prepareStatement(sql);
+	        stmt.setTimestamp(1, Timestamp.valueOf(thoiGianMoi));
+	        stmt.setString(2, maDDB);
+
+	        int rowsUpdated = stmt.executeUpdate();
+	        return rowsUpdated > 0;
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        try {
+	            if (stmt != null) stmt.close();
+	            if (con != null) con.close();
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	}
 
 
 
