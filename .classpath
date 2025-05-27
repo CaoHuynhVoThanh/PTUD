@@ -9,5 +9,8 @@
 	<classpathentry kind="lib" path="libs/jfreechart-1.0.19-demo.jar"/>
 	<classpathentry kind="lib" path="libs/mssql-jdbc-12.8.1.jre11.jar"/>
 	<classpathentry kind="lib" path="libs/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="D:/Nam3 PTUD/code/PTUD/libs/core-3.5.3.jar"/>
+	<classpathentry kind="lib" path="D:/Nam3 PTUD/code/PTUD/libs/javase-3.5.3.jar"/>
+	<classpathentry kind="lib" path="libs/opencv-460.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

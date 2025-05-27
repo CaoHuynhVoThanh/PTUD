@@ -13,6 +13,9 @@ public class Mon {
 		this.donGia = donGia;
 		this.hinhAnh = hinhAnh;
 	}
+	public void setMaMon(String maMon) {
+		this.maMon = maMon;
+	}
 	public String getMaMon() {
 		return maMon;
 	}

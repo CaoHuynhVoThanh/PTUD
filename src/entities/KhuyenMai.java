@@ -10,8 +10,8 @@ public class KhuyenMai {
     private double phanTram;
     private LocalDateTime thoiGianBatDau;
     private LocalDateTime thoiGianKetThuc;
-    private String thanhVien; // "Có" hoặc "Không"
-    private String loai;      // VD: "Giảm giá", "Mua 1 tặng 1", v.v.
+    private String thanhVien;
+    private String loai;      
 
     // Constructor
     public KhuyenMai(String ma, String ten, double phanTram, LocalDateTime thoiGianBatDau,
