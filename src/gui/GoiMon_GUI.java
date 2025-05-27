@@ -852,7 +852,7 @@ public class GoiMon_GUI extends JFrame{
 	                ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
 	            }
 	            
-	            JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!\nMã đơn: " + maDGMMoi, 
+	            JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!", 
 	                "Thành công", JOptionPane.INFORMATION_MESSAGE);
 	            
 	            tableModelDGM.setRowCount(0);

@@ -401,12 +401,11 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	    loadComboLoaiMon();
 	    leftPanel.add(cboCategory);
 
-	    // Table for all items
 	    String[] colNames = {"Tên món", "Đơn giá", "Loại món", "Thêm"};
 	    DefaultTableModel modelAllItems = new DefaultTableModel(colNames, 0) {
 	        @Override
 	        public boolean isCellEditable(int row, int column) {
-	            return column == 3; // Only the "Thêm" column is editable
+	            return column == 3;
 	        }
 	    };
 
@@ -440,7 +439,6 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	    bottomPanel.setBounds(20, 540, 560, 120);
 	    rightPanel.add(bottomPanel);
 
-	 // Inside the showDatMonDialog() method, in the bottom panel section
 	    lblMaBan = new JLabel("Mã bàn: ");
 	    lblMaBan.setFont(new Font("Tahoma", Font.BOLD, 16));
 	    lblMaBan.setBounds(280, 10, 270, 30);
@@ -487,17 +485,18 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 
 	    btnConfirm.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-		        xacNhanDonGoiMon();
+		    	if (modelSelected.getRowCount() > 0) {
+		            JOptionPane.showMessageDialog(null, "Đã lưu danh sách món thành công!");
+		        } else {
+		            JOptionPane.showMessageDialog(null, "Chưa chọn món nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+		        }
+		        dialog.dispose();
 		    }
 		});
 	    // Add panels to dialog
 	    dialog.add(leftPanel);
 	    dialog.add(rightPanel);
 
-	    // Add event handlers
-	    btnSearch.addActionListener(e -> {
-	        // Add search functionality
-	    });
 
 	    cboCategory.addActionListener(e -> {
 	    	 String selectedCategory = cboCategory.getSelectedItem().toString();
@@ -638,8 +637,8 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	            ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
 	        }
 
-	        JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!\nMã đơn: " + maDGM, 
-	            "Thành công", JOptionPane.INFORMATION_MESSAGE);
+//	        JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!", 
+//	            "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
 	        // Clear selected items and reset
 	        modelSelected.setRowCount(0);
@@ -854,6 +853,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		if (cmd.equals("XÁC NHẬN")) {
 			if (JOptionPane.showConfirmDialog(null, "Xác nhận đặt bàn không?")==JOptionPane.YES_OPTION) {
 				if (createDDB()) {
+					xacNhanDonGoiMon();
 					JOptionPane.showMessageDialog(null, "Đặt bàn thành công!");
 					DatBan_GUI.hiddenButton.doClick();
 					this.dispose();
