@@ -499,6 +499,10 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
             	if (jrxmlStream == null) {
             	    throw new RuntimeException("Không tìm thấy file: " + jrxmlFile);
             	}
+            	for (Map.Entry<String, Object> entry : params.entrySet()) {
+            	    System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+            	}
+
 
             	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
                 JasperPrint print = JasperFillManager.fillReport(report, params, dataSource);

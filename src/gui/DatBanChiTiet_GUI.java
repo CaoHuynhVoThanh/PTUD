@@ -18,6 +18,8 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -86,6 +88,8 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	private JTextArea txtGhiChu;
 	private String ghiChu = "";
 	private DefaultTableModel modelSelected;
+	private double tongTienCoc = 0.0;
+	public static double tongMonDatTruoc=0.0;
 	/**
 	 * Launch the application.
 	 */
@@ -210,7 +214,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		lblCnThanhTon.setBounds(510, 437, 204, 27);
 		contentPanel.add(lblCnThanhTon);
 		
-		lb_coc = new JLabel("200,000");
+		lb_coc = new JLabel("0");
 		lb_coc.setBackground(new Color(255, 0, 0));
 		lb_coc.setForeground(new Color(255, 0, 0));
 		lb_coc.setFont(new Font("Tahoma", Font.BOLD, 22));
@@ -301,7 +305,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 		cancelButton.addActionListener(this);
-	
+		
 		btnDatMon.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -487,8 +491,10 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		    public void actionPerformed(ActionEvent e) {
 		    	if (modelSelected.getRowCount() > 0) {
 		            JOptionPane.showMessageDialog(null, "Đã lưu danh sách món thành công!");
+		            lb_coc.setText(tongTienCoc+tongMonDatTruoc+"");
 		        } else {
 		            JOptionPane.showMessageDialog(null, "Chưa chọn món nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+		            tongMonDatTruoc=0.0;
 		        }
 		        dialog.dispose();
 		    }
@@ -576,7 +582,23 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	    }
 	    lb_tongban.setText(tongban+"");
 	    lb_soghe.setText(tongghe+"");
+	    SpinnerNumberModel model = (SpinnerNumberModel) tf_sokhach.getModel();
+	    model.setMaximum(tongghe);
 	    table.setModel(dtm); 
+		tongTienCoc = 0.0;
+		int rowCount = table.getRowCount();
+		for (int i = 0; i < rowCount; i++) {
+		    Object value = table.getValueAt(i, 3); // Cột "Tiền cọc"
+		    System.out.println("hihi"+value);
+		    if (value != null) {
+		        try {
+		            tongTienCoc += Double.parseDouble(value.toString());
+		        } catch (NumberFormatException e) {
+		            System.err.println("Lỗi định dạng số tại dòng " + i + ": " + value);
+		        }
+		    }
+		}
+		lb_coc.setText(tongTienCoc+"");
 	}
 	private void updateLblMaBan() {
 	    if (dsbd == null || dsbd.isEmpty()) {
@@ -842,6 +864,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	        double thanhTien = Double.parseDouble(model.getValueAt(i, 2).toString());
 	        total += thanhTien;
 	    }
+	    tongMonDatTruoc = total;
 	    lblTotal.setText(String.format("Tổng tiền: %,.0f VNĐ", total));
 	}
 

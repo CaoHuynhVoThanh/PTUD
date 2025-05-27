@@ -39,9 +39,9 @@ public class LichSu_DAO {
                 // Chuyển đổi trạng thái từ INT sang String
                 String trangThai;
                 switch (trangThaiInt) {
-                    case 0: trangThai = "Đã hủy"; break;
+                    case 2: trangThai = "Đã hủy"; break;
                     case 1: trangThai = "Chờ nhận bàn"; break;
-                    case 2: trangThai = "Đã nhận bàn"; break;
+                    case 0: trangThai = "Đã nhận bàn"; break;
                     case 3: trangThai = "Đã thanh toán"; break;
                     default: trangThai = "Không xác định";
                 }

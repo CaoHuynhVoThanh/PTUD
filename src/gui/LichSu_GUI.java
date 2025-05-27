@@ -558,7 +558,7 @@ public class LichSu_GUI extends JFrame {
         lblStatus.setBounds(767, 11, 80, 30);
         filterPanelDatBan.add(lblStatus);
 
-        String[] statuses = {"Tất cả trạng thái", "Đã hủy", "Chờ nhận bàn", "Đã nhận bàn", "Đã thanh toán"};
+        String[] statuses = {"Tất cả trạng thái", "Đã nhận bàn",  "Chờ nhận bàn", "Đã hủy",  "Đã thanh toán"};
         JComboBox<String> statusComboBox = new JComboBox<>(statuses);
         statusComboBox.setBounds(857, 10, 120, 30);
         filterPanelDatBan.add(statusComboBox);

@@ -139,7 +139,7 @@ public class Application extends JFrame implements ActionListener{
 		role.setHorizontalAlignment(SwingConstants.RIGHT);
 		role.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 		role.setForeground(new Color(255, 255, 255));
-		role.setBounds(1220, 74, 135, 29);
+		role.setBounds(1092, 74, 263, 29);
 		panel_1.add(role);
 		
 		JLabel lb_ngay = new JLabel("");

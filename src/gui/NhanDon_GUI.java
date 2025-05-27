@@ -283,7 +283,7 @@ public class NhanDon_GUI extends JFrame {
 		lblTitle.setFont(new Font("SansSerif", Font.BOLD, 20));
 		
 		JPanel panel_TimKiem = new JPanel();
-		panel_TimKiem.setBounds(0, 50, 1100, 30);
+		panel_TimKiem.setBounds(30, 50, 1100, 30);
 		panel_DSDon.add(panel_TimKiem);
 		panel_TimKiem.setLayout(null); 
 
@@ -483,7 +483,7 @@ public class NhanDon_GUI extends JFrame {
 
        
         JScrollPane scrollPane = new JScrollPane(panelDanhSach);
-        scrollPane.setBounds(0, 110, 600, 500);
+        scrollPane.setBounds(30, 110, 600, 500);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panel_DSDon.add(scrollPane);

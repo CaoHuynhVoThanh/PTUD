@@ -12,6 +12,8 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,7 +92,7 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 		lblSKhch.setBounds(419, 73, 77, 27);
 		contentPanel.add(lblSKhch);
 		
-		tf_sokhach = new JSpinner();
+		tf_sokhach = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
 		tf_sokhach.setBounds(526, 75, 213, 27);
 		contentPanel.add(tf_sokhach);
 		
@@ -111,13 +113,13 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 		JLabel lblTngSBn = new JLabel("Tổng số bàn:");
 		lblTngSBn.setForeground(Color.WHITE);
 		lblTngSBn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblTngSBn.setBounds(510, 280, 116, 27);
+		lblTngSBn.setBounds(510, 289, 116, 27);
 		contentPanel.add(lblTngSBn);
 		
 		JLabel lblTngSGh = new JLabel("Tổng số ghế:");
 		lblTngSGh.setForeground(Color.WHITE);
 		lblTngSGh.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblTngSGh.setBounds(510, 312, 116, 27);
+		lblTngSGh.setBounds(510, 321, 116, 27);
 		contentPanel.add(lblTngSGh);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -136,25 +138,24 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 		scrollPane.setViewportView(table);
 		
 		lb_tongban = new JLabel("0");
-		lb_tongban.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tongban.setHorizontalAlignment(SwingConstants.LEFT);
 		lb_tongban.setForeground(Color.WHITE);
 		lb_tongban.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lb_tongban.setBounds(623, 280, 116, 27);
+		lb_tongban.setBounds(623, 289, 116, 27);
 		contentPanel.add(lb_tongban);
 		
 		lb_tongghe = new JLabel("0");
-		lb_tongghe.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_tongghe.setHorizontalAlignment(SwingConstants.LEFT);
 		lb_tongghe.setForeground(Color.WHITE);
 		lb_tongghe.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lb_tongghe.setBounds(623, 321, 116, 27);
 		contentPanel.add(lb_tongghe);
 		
-		JLabel lblTngSBn_1_2 = new JLabel("0");
-		lblTngSBn_1_2.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblTngSBn_1_2.setForeground(Color.WHITE);
-		lblTngSBn_1_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblTngSBn_1_2.setBounds(623, 400, 116, 27);
-		contentPanel.add(lblTngSBn_1_2);
+		JLabel lblDngNgayKhng = new JLabel("Dùng ngay không tính cọc");
+		lblDngNgayKhng.setForeground(Color.WHITE);
+		lblDngNgayKhng.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblDngNgayKhng.setBounds(510, 400, 229, 27);
+		contentPanel.add(lblDngNgayKhng);
 		
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -195,6 +196,8 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 	    }
 	    lb_tongban.setText(tongban+"");
 	    lb_tongghe.setText(tongghe+"");
+	    SpinnerNumberModel model = (SpinnerNumberModel) tf_sokhach.getModel();
+	    model.setMaximum(tongghe);
 	    table.setModel(dtm); 
 	}
 	
@@ -253,5 +256,4 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 			}
 		}
 	}
-
 }

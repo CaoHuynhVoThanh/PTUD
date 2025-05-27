@@ -94,7 +94,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 	private UniqueArrayList listcb = new UniqueArrayList();
 	private JScrollPane scrollPane;
 	private JLabel lb_tongdatban_1;
-	private JLabel lb_tonggoimon_1;
+	private JLabel lb_coctruoc;
 	private JPanel panel_trangchu;
 	private JButton btn_tim;
 	private JButton btn_khoiphuc;
@@ -475,11 +475,11 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		lb_tongdatban_1.setBounds(389, 211, 115, 26);
 		panel_4.add(lb_tongdatban_1);
 		
-		lb_tonggoimon_1 = new JLabel("0.0");
-		lb_tonggoimon_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		lb_tonggoimon_1.setFont(new Font("Arial", Font.BOLD, 12));
-		lb_tonggoimon_1.setBounds(389, 508, 115, 26);
-		panel_4.add(lb_tonggoimon_1);
+		lb_coctruoc = new JLabel("0.0");
+		lb_coctruoc.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_coctruoc.setFont(new Font("Arial", Font.BOLD, 12));
+		lb_coctruoc.setBounds(389, 508, 115, 26);
+		panel_4.add(lb_coctruoc);
 		
 		JLabel lblNewLabel_5_1_1_1_1 = new JLabel("Cọc trước món:");
 		lblNewLabel_5_1_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
@@ -510,7 +510,6 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		int cnt=0;
 		for (DonDatBan x: ds) {
 			KhachHang kh = KhachHang_DAO.getKhachHangTheoMa(x.getMaKH());
-			System.out.println(x.getMaKH());
 			JPanel panel_6_1 = new JPanel();
 			panel_6_1.setLayout(null);
 			panel_6_1.setPreferredSize(new Dimension(620, 100));
@@ -631,31 +630,86 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		if (ds.size()==0) {
 			tbmon.setModel(tableModel);
 		}
-		Double tonggiamon=0.0;
+		Double tonggiamon = 0.0;
 		String ghiChu = "";
-		for (String ma: ds) {
-	        DonGoiMon don = DonGoiMon_DAO.getDonGoiMonMoiNhatTrongNgay(ma);
-	        if (don==null) continue;
-	        ghiChu+=""+don.getGhiChu();
-	        ArrayList<ChiTietDonGoiMon> ctdgm = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
-	        for (ChiTietDonGoiMon x: ctdgm) {
-	        	for (Mon y: mon) {
-	        		if (x.getMaMon().equals(y.getMaMon())) {
-	        			tableModel.addRow(new Object[] {y.getTenMon(), y.getLoaiMon(), y.getDonGia(), x.getSoLuong(), x.getSoLuongDaThanhToan(), x.getSoLuong()*y.getDonGia()});
-	        		}
-	        	}
-	        }
-	        tbmon.setModel(tableModel);
+
+		// Map lưu trữ món theo mã món để cộng dồn số lượng
+		Map<String, Object[]> monMap = new HashMap<>();
+
+		for (String ma : ds) {
+		    DonGoiMon don = DonGoiMon_DAO.getDonGoiMonMoiNhatTrongNgay(ma);
+		    if (don == null) continue;
+
+		    ghiChu += don.getGhiChu();  // có thể cần thêm khoảng trắng/ngắt dòng nếu nối nhiều ghi chú
+
+		    ArrayList<ChiTietDonGoiMon> ctdgm = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
+
+		    for (ChiTietDonGoiMon x : ctdgm) {
+		        for (Mon y : mon) {
+		            if (x.getMaMon().equals(y.getMaMon())) {
+		                String maMon = y.getMaMon();
+		                String tenMon = y.getTenMon();
+		                String loaiMon = y.getLoaiMon();
+		                double donGia = y.getDonGia();
+		                int soLuong = x.getSoLuong();
+		                int daThanhToan = x.getSoLuongDaThanhToan();
+		                double thanhTien = soLuong * donGia;
+
+		                if (monMap.containsKey(maMon)) {
+		                    Object[] row = monMap.get(maMon);
+		                    int slOld = (int) row[3];
+		                    int daTT_Old = (int) row[4];
+		                    double thanhTienOld = (double) row[5];
+
+		                    row[3] = slOld + soLuong;
+		                    row[4] = daTT_Old + daThanhToan;
+		                    row[5] = thanhTienOld + thanhTien;
+		                } else {
+		                    monMap.put(maMon, new Object[] { tenMon, loaiMon, donGia, soLuong, daThanhToan, thanhTien });
+		                }
+		            }
+		        }
+		    }
 		}
+
+		// Đổ dữ liệu từ Map vào tableModel
+		for (Object[] row : monMap.values()) {
+		    tableModel.addRow(row);
+		}
+
+		tbmon.setModel(tableModel);
+
+//		Double tonggiamon=0.0;
+//		String ghiChu = "";
+//		for (String ma: ds) {
+//	        DonGoiMon don = DonGoiMon_DAO.getDonGoiMonMoiNhatTrongNgay(ma);
+//	        if (don==null) continue;
+//	        ghiChu+=""+don.getGhiChu();
+//	        ArrayList<ChiTietDonGoiMon> ctdgm = ChiTietDonGoiMon_DAO.getChiTietDonGoiMonTheoMaDGM(don.getMaDGM());
+//	        for (ChiTietDonGoiMon x: ctdgm) {
+//	        	for (Mon y: mon) {
+//	        		if (x.getMaMon().equals(y.getMaMon())) {
+//	        			tableModel.addRow(new Object[] {y.getTenMon(), y.getLoaiMon(), y.getDonGia(), x.getSoLuong(), x.getSoLuongDaThanhToan(), x.getSoLuong()*y.getDonGia()});
+//	        		}
+//	        	}
+//	        }
+//	        tbmon.setModel(tableModel);
+//		}
 		ta_ghichu.setText(ghiChu);
 		int rowCount = tableModel.getRowCount();
 		System.out.println("dong:"+rowCount);
+		double datt = 0.0;
 		for (int i = 0; i < rowCount; i++) {
-		    Object value = tableModel.getValueAt(i, 5); // cột thứ 4: chỉ số 3
+		    Object value = tableModel.getValueAt(i, 5); 
+		    Object price = tableModel.getValueAt(i, 2); 
+		    Object quanlity = tableModel.getValueAt(i, 4); 
 		    if (value != null) {
 		        try {
 		            // Trường hợp value là Double hoặc String
 		            double phuThu = Double.parseDouble(value.toString());
+		            double dongia = Double.parseDouble(price.toString());
+		            int sl = Integer.parseInt(quanlity.toString());
+		            datt = dongia*sl;
 		            tonggiamon += phuThu;
 		        } catch (NumberFormatException e) {
 		            System.err.println("Lỗi định dạng số tại dòng " + i + ": " + value);
@@ -663,7 +717,8 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		    }
 		}
 		lb_tonggoimon.setText(tonggiamon+"");
-		Double tamtinh = Double.parseDouble(lb_tongdatban.getText())+Double.parseDouble(lb_tonggoimon.getText());
+		lb_coctruoc.setText(datt+"");
+		Double tamtinh = Double.parseDouble(lb_tongdatban.getText())+Double.parseDouble(lb_tonggoimon.getText()) -datt - Double.parseDouble(lb_tongdatban_1.getText());
 		lb_tamTinh.setText(tamtinh+"");
 	}
 	
@@ -680,7 +735,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 		lb_tongdatban.setText("0.0");
 		lb_tongdatban_1.setText("0.0");
 		lb_tonggoimon.setText("0.0");
-		lb_tonggoimon_1.setText("0.0");
+		lb_coctruoc.setText("0.0");
 		ta_ghichu.removeAll();
 		lb_tamTinh.setText("0.0");
 	}
