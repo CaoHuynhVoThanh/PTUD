@@ -35,6 +35,7 @@ import java.util.TimerTask;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -54,7 +55,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import dao.QuanLyKhuyenMai_DAO;
+import dao.KhuyenMai_DAO;
 import dao.QuanLyMon_DAO;
 import entities.KhuyenMai;
 import entities.Mon;
@@ -73,6 +74,7 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 	private JTextField textField_ngayKetThuc;
 	private JDateChooser JDC_NgayBatDau;
 	private JDateChooser JDC_NgayKetThuc;
+	private JPanel pn_km = new JPanel();
 
 	/**
 	 * Launch the application.
@@ -94,8 +96,8 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 	 * Create the frame.
 	 */
 	public QuanLyKhuyenMai_GUI() {
-		ArrayList<KhuyenMai> dsKM = QuanLyKhuyenMai_DAO.getAllKhuyenMai();
-	
+		ArrayList<KhuyenMai> dsKM = KhuyenMai_DAO.getAllKhuyenMai();
+		pn_km.setLayout(null);
 		JDC_ngaychon.setDate(new Date());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setExtendedState(MAXIMIZED_BOTH);
@@ -271,20 +273,18 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 		mi_ThongKe_1.setBounds(20, 541, 291, 61);
 		panel.add(mi_ThongKe_1);
 //		aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-		
-		
+		contentPane.add(pn_km);
 		JPanel panel_dropdown = new JPanel();
-		panel_dropdown.setBounds(320, 160, 900, 40);
-		contentPane.add(panel_dropdown);
+		panel_dropdown.setBounds(40, 20, 900, 40);
 		panel_dropdown.setLayout(null);
 		
-		JComboBox<String> comboBox_loai = new JComboBox<>();
-		comboBox_loai.setBounds(0, 0, 150, 35); 
-		comboBox_loai.setFont(new Font("Arial", Font.BOLD, 20));
-		comboBox_loai.addItem("Tất cả");
-		comboBox_loai.addItem("Bạc");
-		comboBox_loai.addItem("Vàng");
-		comboBox_loai.addItem("Kim cương");
+		JComboBox<String> comboBox_doiTuong = new JComboBox<>();
+		comboBox_doiTuong.setBounds(20, 20, 150, 35); 
+		comboBox_doiTuong.setFont(new Font("Arial", Font.BOLD, 20));
+		comboBox_doiTuong.addItem("Tất cả");
+		comboBox_doiTuong.addItem("Bạc");
+		comboBox_doiTuong.addItem("Vàng");
+		comboBox_doiTuong.addItem("Kim Cương");
 		
 		
 //		Set<String> loaiSet = new HashSet<>();
@@ -293,10 +293,10 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 //		}
 //		
 //		for (String loai : loaiSet) {
-//		    comboBox_loai.addItem(loai);
+//		    comboBox_doiTuong.addItem(loai);
 //		}
 //		
-		panel_dropdown.add(comboBox_loai);
+		panel_dropdown.add(comboBox_doiTuong);
 		
 		
 		JLabel lblNgayKetThuc = new JLabel("Ngày kết thúc");
@@ -319,11 +319,11 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 
 		
 		JPanel panel_table = new JPanel();
-		panel_table.setBounds(320, 220, 1100, 450);
+		panel_table.setBounds(40, 100, 1100, 450);
 		panel_table.setLayout(new BorderLayout()); 
 		contentPane.add(panel_table);
 		
-		String[] columnNames = {"Mã khuyến mãi","Tên khuyến mãi" ,"Thành viên", "Thời gian bắt đầu","Thời gian kết thúc", "Loại khuyến mãi", "Tỷ lệ(%)","Xóa", "Chỉnh sửa"};
+		String[] columnNames = {"Mã khuyến mãi","Tên khuyến mãi" ,"Thành viên", "Thời gian bắt đầu","Thời gian kết thúc", "Loại khuyến mãi", "Tỷ lệ(%)", "Giới hạn","Xóa", "Chỉnh sửa"};
 		DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 		JTable table = new JTable(model);
 		
@@ -335,6 +335,7 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
         table.getColumnModel().getColumn(5).setPreferredWidth(130);
         table.getColumnModel().getColumn(6).setPreferredWidth(50);
         table.getColumnModel().getColumn(7).setPreferredWidth(30);
+        table.getColumnModel().getColumn(8).setPreferredWidth(30);
         table.getColumnModel().getColumn(8).setPreferredWidth(30);
 
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -350,8 +351,9 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 		    	km.getThanhVien(),
 		    	km.getThoiGianBatDau(),
 		    	km.getThoiGianKetThuc(),
-		    	km.getLoai(),
+		    	km.getLoai()?"Công Khai":"Riêng",
 		    	km.getPhanTram(),
+		    	km.isGioiHanMoiTaiKhoan()?"Có":"Không",
 		        "Xóa", "Sửa"
 		    });
 		}
@@ -359,16 +361,18 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 			table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer); 
 		}
 
-		
-		
-		
-		
 		JButton btn_KhuyenMai = new JButton("Thêm");
-		btn_KhuyenMai.setBounds(1300, 700, 100, 40); 
+		btn_KhuyenMai.setBounds(1040, 560, 100, 40); 
 		btn_KhuyenMai.setFont(new Font("Arial", Font.BOLD, 20)); 
 		btn_KhuyenMai.setForeground(Color.BLACK);
 		btn_KhuyenMai.setBackground(new Color(255, 153, 0));
 		contentPane.add(btn_KhuyenMai);
+		
+		setContentPane(pn_km);
+		pn_km.add(btn_KhuyenMai);
+		pn_km.add(comboBox_doiTuong);
+		pn_km.add(panel_table);
+		pn_km.add(panel_dropdown);
 		
 //		aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 		
@@ -385,13 +389,12 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 		            
 		            model.setRowCount(0);
 
-		            ArrayList<KhuyenMai> dsKM = QuanLyKhuyenMai_DAO.timKhuyenMaiKetThucTruoc(ngayChon);
+		            ArrayList<KhuyenMai> dsKM = KhuyenMai_DAO.timKhuyenMaiKetThucTruoc(ngayChon);
 		            JButton btnXoa = new JButton();
 		            
-		            btnXoa.setIcon(new ImageIcon("src/images/App/iconDelete.png")); // Đường dẫn đến file icon
 		            btnXoa.setToolTipText("Xóa"); // Tooltip khi di chuột
 		            btnXoa.setText("Xóa");
-		            btnXoa.setIcon(new ImageIcon("icon/xoa.png"));
+		            btnXoa.setIcon(new ImageIcon(getClass().getResource("/images/App/Pencil.png"))); 
 
 
 		            for (KhuyenMai km : dsKM) {
@@ -420,7 +423,7 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 		    public void mousePressed(MouseEvent e) {
 		        int row = table.rowAtPoint(e.getPoint()); 
 		        int column = table.columnAtPoint(e.getPoint());
-		        if (column == 7) {
+		        if (column == 8) {
 		            if (row >= 0 && row < table.getRowCount()) {
 		                String maKM = (String) model.getValueAt(row, 0);
 		                String tenKM = (String) model.getValueAt(row, 1);
@@ -433,7 +436,7 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 		                        JOptionPane.WARNING_MESSAGE);
 		                
 		                if (confirm == JOptionPane.YES_OPTION) {	                	
-		                    System.err.println(QuanLyKhuyenMai_DAO.deleteKhuyenMai(maKM));
+		                    System.err.println(KhuyenMai_DAO.deleteKhuyenMai(maKM));
 		                    model.removeRow(row);
 		                    JOptionPane.showMessageDialog(null, "Đã xóa: " + maKM);
 
@@ -441,7 +444,7 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 		                }
 		            }
 		        }
-		        if (column == 8) {
+		        if (column == 9) {
 		            if (row >= 0 && row < table.getRowCount()) {
 		                // Lấy các giá trị từ bảng và ép kiểu chính xác
 		                String maKM = model.getValueAt(row, 0).toString();
@@ -470,7 +473,7 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 		                }
 
 		                // Gọi hàm chỉnh sửa khuyến mãi với các tham số đã chuẩn bị
-		                hienThiFormChinhSua("Chỉnh sửa khuyến mãi", maKM, tenKM, loaiTV, ngayBD, ngayKT, soTien,model,"Chỉnh sửa",comboBox_loai.getSelectedItem().toString());
+		                hienThiFormChinhSua("Chỉnh sửa khuyến mãi", maKM, tenKM, loaiTV, ngayBD, ngayKT, soTien,model,"Chỉnh sửa",comboBox_doiTuong.getSelectedItem().toString());
 		            }
 		        }
 
@@ -486,7 +489,7 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 
 		    @Override
 		    public void actionPerformed(ActionEvent e) {	        
-		    	hienThiFormChinhSua("Thêm khuyến mãi", "", "", "", null, null, 0.0, model,"Thêm",comboBox_loai.getSelectedItem().toString());
+		    	hienThiFormChinhSua("Thêm khuyến mãi", "", "", "", null, null, 0.0, model,"Thêm",comboBox_doiTuong.getSelectedItem().toString());
 
 		    }
 		});
@@ -509,21 +512,6 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
         txtTenKM.setText(tenKM);
         txtTenKM.setFont(fontTo);
         
-//        JLabel lblHinhThuc = new JLabel("Hình thức khuyến mãi:");
-//        lblHinhThuc.setBounds(50, 80, 200, 30);
-//        lblHinhThuc.setFont(fontTo);
-//        JRadioButton radPhanTram = new JRadioButton("Theo % hóa đơn");
-//        radPhanTram.setBounds(250, 80, 150, 30);
-//        radPhanTram.setFont(fontTo);
-//        radPhanTram.setBackground(Color.WHITE);
-//        radPhanTram.setSelected(true);
-//        JRadioButton radSoTien = new JRadioButton("Theo số tiền");
-//        radSoTien.setBounds(410, 80, 120, 30);
-//        radSoTien.setFont(fontTo);
-//        radSoTien.setBackground(Color.WHITE);
-//        ButtonGroup groupHinhThuc = new ButtonGroup();
-//        groupHinhThuc.add(radPhanTram);
-//        groupHinhThuc.add(radSoTien);
         
         JLabel lblSoTien = new JLabel("Tỷ lệ khuyến mãi(%):");
         lblSoTien.setBounds(50, 90, 200, 30);
@@ -559,12 +547,27 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
         lblLoaiThanhVien.setBounds(50, 270, 200, 30);
         lblLoaiThanhVien.setFont(fontTo);
         JComboBox<String> cbLoaiThanhVien = new JComboBox<>();
+        cbLoaiThanhVien.addItem("Tất cả");
         cbLoaiThanhVien.addItem("Bạc");
         cbLoaiThanhVien.addItem("Vàng");
-        cbLoaiThanhVien.addItem("Kim cương");
+        cbLoaiThanhVien.addItem("Kim Cương");
         cbLoaiThanhVien.setBounds(250, 270, 280, 30);
         cbLoaiThanhVien.setSelectedItem(loaiTV);
         cbLoaiThanhVien.setFont(fontTo);
+        
+        JLabel lblLoaiKhuyenMai = new JLabel("Mã dùng chung:");
+        lblLoaiKhuyenMai.setBounds(50, 330, 200, 30);
+        lblLoaiKhuyenMai.setFont(fontTo);
+        JCheckBox cb_loai = new JCheckBox();
+        cb_loai.setSelected(true);
+        cb_loai.setBounds(230, 330, 30, 30);
+        
+        JLabel lblDungMotLan = new JLabel("Mã dùng một lần:");
+        lblDungMotLan.setBounds(290, 330, 200, 30);
+        lblDungMotLan.setFont(fontTo);
+        JCheckBox cb_motLan = new JCheckBox();
+        cb_motLan.setSelected(true);
+        cb_motLan.setBounds(470, 330, 30, 30);
 
 
 
@@ -601,22 +604,22 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
                     return;
                 }
                 
-                KhuyenMai khuyenMai = new KhuyenMai(maKM, tenKM, soTien, ngayBatDauLocal, ngayKetThucLocal, cb, "Khuyến mãi theo % hóa đơn");
+                KhuyenMai khuyenMai = new KhuyenMai(maKM, tenKM, soTien, ngayBatDauLocal, ngayKetThucLocal, cb, cb_loai.isSelected(), cb_motLan.isSelected());
 
                 boolean result = false;
                 // Cập nhật vào CSDL
                 if (currentAction.equals("Thêm")) {
-                	String maKM = QuanLyKhuyenMai_DAO.sinhMaKhuyenMai();
-                	khuyenMai.setMa(maKM);
+                	String maKM = KhuyenMai_DAO.sinhMaKhuyenMai();
+                	KhuyenMai KM = new KhuyenMai(maKM, tenKM, soTien, ngayBatDauLocal, ngayKetThucLocal, (String) cbLoaiThanhVien.getSelectedItem(), cb_loai.isSelected(), cb_motLan.isSelected());
                 	if(xuLyLoGic(ngayBatDau, ngayKetThuc)) {
-                		result = QuanLyKhuyenMai_DAO.themKhuyenMai(khuyenMai);                		
+                		result = KhuyenMai_DAO.themKhuyenMai(KM);                		
                 	}else {
                 		JOptionPane.showMessageDialog(null,currentAction+ " thất bại!");
                 		hienThiFormChinhSua("Thêm khuyến mãi", "", "", "", null, null, 0.0, model,"Thêm",cb);
                 	}
                 } else if (currentAction.equals("Chỉnh sửa")) {
                 	if(xuLyLoGic(ngayBatDau, ngayKetThuc)) {
-                		result = QuanLyKhuyenMai_DAO.updateKhuyenMai(khuyenMai);
+                		result = KhuyenMai_DAO.updateKhuyenMai(khuyenMai);
                 	}else {   
                 		JOptionPane.showMessageDialog(null,currentAction+ " thất bại!");
                 		hienThiFormChinhSua("Chỉnh sửa khuyến mãi", maKM, tenKM, loaiTV, ngayBD, ngayKT, soTien,model,"Chỉnh sửa",cb);
@@ -626,18 +629,18 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
                 if (result) {
                     
                     model.setRowCount(0);
-                    ArrayList<KhuyenMai> dsKM = QuanLyKhuyenMai_DAO.getAllKhuyenMai(); 
+                    ArrayList<KhuyenMai> dsKM = KhuyenMai_DAO.getAllKhuyenMai(); 
                     for (KhuyenMai km2 : dsKM) {
-		            	model.addRow(new Object[] {
-	        		    	km2.getMa(),
-	        		    	km2.getTen(),
-	        		    	km2.getThanhVien(),
-	        		    	km2.getThoiGianBatDau(),
-	        		    	km2.getThoiGianKetThuc(),
-	        		    	km2.getLoai(),
-	        		    	km2.getPhanTram(),
-	        		        "Xóa", "Sửa"
-	        		    });
+                    	model.addRow(new Object[] {
+    	        		    	km2.getMa(),
+    	        		    	km2.getTen(),
+    	        		    	km2.getThanhVien(),
+    	        		    	km2.getThoiGianBatDau(),
+    	        		    	km2.getThoiGianKetThuc(),
+    	        		    	km2.getLoai(),
+    	        		    	km2.getPhanTram(),
+    	        		    	"Xóa", "Sửa"
+    	        		    });
 		            }
                     JOptionPane.showMessageDialog(null,currentAction+ " thành công!");
                 }
@@ -671,8 +674,10 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
         frameKhuyenMai.add(cbLoaiThanhVien);
         frameKhuyenMai.add(btnChinhSua_Them);
         frameKhuyenMai.add(btnHuy);
-//        frameKhuyenMai.add(lblHinhThuc);
-//        frameKhuyenMai.add(radPhanTram);
+        frameKhuyenMai.add(lblLoaiKhuyenMai);
+        frameKhuyenMai.add(cb_loai);
+        frameKhuyenMai.add(lblDungMotLan);
+        frameKhuyenMai.add(cb_motLan);
 //        frameKhuyenMai.add(radSoTien);
 
         frameKhuyenMai.setVisible(true);
@@ -701,6 +706,8 @@ public class QuanLyKhuyenMai_GUI extends JFrame {
 
         return true;
     }
-
+    public JPanel getPanel() {
+    	return pn_km;
+    }
 
 }

@@ -54,7 +54,7 @@ import javax.swing.table.TableColumn;
 
 import com.toedter.calendar.JDateChooser;
 
-import dao.QuanLyKhuyenMai_DAO;
+import dao.KhuyenMai_DAO;
 import dao.QuanLyMon_DAO;
 import entities.Mon;
 import java.util.HashSet;
@@ -396,7 +396,7 @@ public class QuanLyMon_GUI extends JFrame {
 		        String.format("%,.0f VNĐ", mon.getDonGia()), // format tiền
 		        monAn,
 		        xoa, sua,
-		        path
+//		        path
 		    });
 		}    
 		TableColumn hiddenColumn = table.getColumnModel().getColumn(7);
@@ -697,12 +697,13 @@ public class QuanLyMon_GUI extends JFrame {
                     }
                 }
 
-                Mon monMoi = new Mon(maMon, tenMon, loaiMon, donGia, hinhAnh);
+                Mon monMoi = null;
                 boolean result = false;
                 if (currentBtn.equals("Thêm")) {
 //                	System.err.println(duongDan[0]+hinhAnh);
                 	String maMon = QuanLyMon_DAO.taoMaMon();
-                	monMoi.setMaMon(maMon);
+//                	monMoi.setMaMon(maMon);
+                	monMoi = new Mon(maMon, tenMon, loaiMon, donGia, hinhAnh);
                 	result = QuanLyMon_DAO.addMon(monMoi);
                 	
                 	
@@ -779,7 +780,7 @@ public class QuanLyMon_GUI extends JFrame {
         frameThem_Chinh.setVisible(true);
     }
     public JPanel getPanel() {
-        return pQuanLyMon;
+        return contentPane;
     }
 
 }

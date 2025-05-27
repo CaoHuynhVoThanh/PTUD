@@ -7,36 +7,36 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="libs/jfreechart-1.0.19-demo.jar"/>
-	<classpathentry kind="lib" path="libs/mssql-jdbc-12.8.1.jre11.jar"/>
-	<classpathentry kind="lib" path="libs/jcalendar-1.4.jar"/>
-	<classpathentry kind="lib" path="libs/jakarta.activation-1.2.2.jar"/>
-	<classpathentry kind="lib" path="libs/commons-email-1.5.jar"/>
-	<classpathentry kind="lib" path="libs/javax.mail-1.6.2.jar"/>
-	<classpathentry kind="lib" path="libs/jcommon-1.0.23.jar"/>
-	<classpathentry kind="lib" path="libs/jfreechart-1.0.19.jar"/>
-	<classpathentry kind="lib" path="libs/swingx-all-1.6.5-1-javadoc.jar"/>
-	<classpathentry kind="lib" path="libs/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="libs/commons-collections4-4.5.0.jar"/>
-	<classpathentry kind="lib" path="libs/commons-digester3-3.2.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-annotations-2.15.2.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-core-2.15.2.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-databind-2.15.2.jar"/>
-	<classpathentry kind="lib" path="libs/jackson-dataformat-xml-2.15.2.jar"/>
-	<classpathentry kind="lib" path="libs/stax2-api-4.2.1.jar"/>
-	<classpathentry kind="lib" path="libs/woodstox-core-6.5.1.jar"/>
 	<classpathentry kind="lib" path="libs/commons-beanutils-1.9.4.jar"/>
-	<classpathentry kind="lib" path="libs/jasperreports-fonts-6.20.0.jar"/>
-	<classpathentry kind="lib" path="libs/jasperreports-pdf-7.0.3.jar"/>
-	<classpathentry kind="lib" path="libs/itext-2.1.7.js1.jar"/>
-	<classpathentry kind="lib" path="libs/jasperreports-6.17.0.jar"/>
+	<classpathentry kind="lib" path="libs/commons-collections4-4.5.0.jar"/>
+	<classpathentry kind="lib" path="libs/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="libs/commons-digester3-3.2.jar"/>
+	<classpathentry kind="lib" path="libs/commons-email-1.5.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="libs/groovy-3.0.9.jar"/>
 	<classpathentry kind="lib" path="libs/groovy-json-3.0.9.jar"/>
 	<classpathentry kind="lib" path="libs/groovy-sql-3.0.9.jar"/>
 	<classpathentry kind="lib" path="libs/groovy-xml-3.0.9.jar"/>
-	<classpathentry kind="lib" path="libs/commons-digester-2.1.jar"/>
+	<classpathentry kind="lib" path="libs/itext-2.1.7.js1.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-annotations-2.15.2.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-core-2.15.2.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-databind-2.15.2.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-dataformat-xml-2.15.2.jar"/>
+	<classpathentry kind="lib" path="libs/jakarta.activation-1.2.2.jar"/>
+	<classpathentry kind="lib" path="libs/jasperreports-6.17.0.jar"/>
+	<classpathentry kind="lib" path="libs/jasperreports-fonts-6.20.0.jar"/>
 	<classpathentry kind="lib" path="libs/jasperreports-functions-6.17.0.jar"/>
 	<classpathentry kind="lib" path="libs/jasperreports-javaflow-6.17.0.jar"/>
+	<classpathentry kind="lib" path="libs/jasperreports-pdf-7.0.3.jar"/>
+	<classpathentry kind="lib" path="libs/javax.mail-1.6.2.jar"/>
+	<classpathentry kind="lib" path="libs/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="libs/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="libs/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="libs/jfreechart-1.0.19-demo.jar"/>
 	<classpathentry kind="lib" path="libs/joda-time-2.10.10.jar"/>
+	<classpathentry kind="lib" path="libs/mssql-jdbc-12.8.1.jre11.jar"/>
+	<classpathentry kind="lib" path="libs/stax2-api-4.2.1.jar"/>
+	<classpathentry kind="lib" path="libs/swingx-all-1.6.5-1-javadoc.jar"/>
+	<classpathentry kind="lib" path="libs/woodstox-core-6.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -11,7 +12,13 @@ import javax.swing.border.EmptyBorder;
 
 import dao.DonDatBan_DAO;
 import dao.HoaDon_DAO;
+import dao.KhachHang_DAO;
+import dao.KhuyenMai_DAO;
+import dao.ThanhVien_DAO;
+import entities.KhachHang;
+import entities.KhuyenMai;
 import entities.NhanVien;
+import entities.ThanhVien;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -29,6 +36,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,7 +51,6 @@ import java.awt.event.ActionEvent;
 public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField tf_km;
 	private JTextField tf_tv;
 	private JLabel lb_tgdb;
 	private JLabel lb_tgtt;
@@ -55,16 +62,23 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 	private JButton btn_chuyenkhoan;
 	private JButton btn_huy;
 	private JLabel lb_vat;
-	private JLabel lb_km;
-	private JLabel lb_tv;
+	private JLabel lb_dtl;
 	private JButton btn_xemtruoc;
 	private ArrayList<String> dsddb;
-	private JLabel lb_makm;
-	private JLabel lb_kmgiam;
 	private JLabel lb_tentv;
 	private JLabel lb_rank;
+	private JButton btn_tv;
 	public static List<Map<String, ?>> dataList = new ArrayList<>();
 	public static Map<String, Object> params = new HashMap<>();
+	private ArrayList<KhuyenMai> dskm = null;
+	private ThanhVien thanhvien = null;
+	private JTextField textField;
+	private JLabel lb_kmTienGiam;
+	private JTextField tf_km = new JTextField();
+	private JButton btn_km;
+	private KhuyenMai kmad = null;
+	private JLabel lb_phanTramGiam;
+	private JLabel lb_tenkm;
 
 	/**
 	 * Launch the application.
@@ -116,48 +130,28 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		lblNewLabel_1_1_1_1.setBounds(23, 164, 143, 23);
 		contentPanel.add(lblNewLabel_1_1_1_1);
 		
-		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Mã khuyến mãi:");
-		lblNewLabel_1_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_1_1_1_1.setBounds(23, 197, 143, 23);
-		contentPanel.add(lblNewLabel_1_1_1_1_1);
-		
 		JLabel lblNewLabel_1_1_1_1_1_1 = new JLabel("Thẻ thành viên:");
 		lblNewLabel_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblNewLabel_1_1_1_1_1_1.setBounds(23, 249, 143, 23);
+		lblNewLabel_1_1_1_1_1_1.setBounds(23, 199, 143, 23);
 		contentPanel.add(lblNewLabel_1_1_1_1_1_1);
-		
-		tf_km = new JTextField();
-		tf_km.setBounds(131, 197, 96, 23);
-		contentPanel.add(tf_km);
-		tf_km.setColumns(10);
-		
-		JButton btnNewButton = new JButton("O");
-		btnNewButton.setBounds(237, 195, 54, 25);
-		contentPanel.add(btnNewButton);
 		
 		tf_tv = new JTextField();
 		tf_tv.setColumns(10);
-		tf_tv.setBounds(131, 249, 96, 23);
+		tf_tv.setBounds(131, 199, 96, 23);
 		contentPanel.add(tf_tv);
 		
-		JButton btnNewButton_1 = new JButton("O");
-		btnNewButton_1.setBounds(237, 247, 54, 25);
-		contentPanel.add(btnNewButton_1);
-		
-		lb_makm = new JLabel("");
-		lb_makm.setBounds(23, 226, 45, 13);
-		contentPanel.add(lb_makm);
-		
-		lb_kmgiam = new JLabel("");
-		lb_kmgiam.setBounds(131, 226, 45, 13);
-		contentPanel.add(lb_kmgiam);
+		btn_tv = new JButton("O");
+		btn_tv.setBounds(237, 197, 54, 25);
+		contentPanel.add(btn_tv);
+		btn_tv.addActionListener(this);
+		btn_tv.setActionCommand("Tìm TV");
 		
 		lb_rank = new JLabel("");
-		lb_rank.setBounds(131, 280, 45, 13);
+		lb_rank.setBounds(210, 232, 72, 13);
 		contentPanel.add(lb_rank);
 		
 		lb_tentv = new JLabel("");
-		lb_tentv.setBounds(23, 280, 45, 13);
+		lb_tentv.setBounds(23, 230, 152, 13);
 		contentPanel.add(lb_tentv);
 		
 		lb_tgdb = new JLabel("0000000");
@@ -184,17 +178,11 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		lb_vat.setBounds(270, 164, 143, 23);
 		contentPanel.add(lb_vat);
 		
-		lb_km = new JLabel("0000000");
-		lb_km.setHorizontalAlignment(SwingConstants.RIGHT);
-		lb_km.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lb_km.setBounds(270, 197, 143, 23);
-		contentPanel.add(lb_km);
-		
-		lb_tv = new JLabel("0000000");
-		lb_tv.setHorizontalAlignment(SwingConstants.RIGHT);
-		lb_tv.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lb_tv.setBounds(270, 249, 143, 23);
-		contentPanel.add(lb_tv);
+		lb_dtl = new JLabel("0000000");
+		lb_dtl.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_dtl.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lb_dtl.setBounds(301, 199, 112, 23);
+		contentPanel.add(lb_dtl);
 		
 		JLabel lblNewLabel_1_1_1_1_1_1_1 = new JLabel("Nhân viên quầy:");
 		lblNewLabel_1_1_1_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -262,6 +250,41 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		btn_xemtruoc.setBorderPainted(false);
 		btn_xemtruoc.setBounds(301, 466, 101, 21);
 		contentPanel.add(btn_xemtruoc);
+		
+		lb_kmTienGiam = new JLabel("");
+		lb_kmTienGiam.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_kmTienGiam.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lb_kmTienGiam.setBounds(301, 251, 112, 23);
+		contentPanel.add(lb_kmTienGiam);
+		
+		btn_km = new JButton("O");
+		btn_km.setBounds(237, 249, 54, 25);
+		contentPanel.add(btn_km);
+		btn_km.addActionListener(this);
+		btn_km.setActionCommand("timkm");
+		
+		textField = new JTextField();
+		textField.setColumns(10);
+		textField.setBounds(131, 251, 96, 23);
+		contentPanel.add(textField);
+		
+		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Mã khuyến mãi:");
+		lblNewLabel_1_1_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblNewLabel_1_1_1_1_1.setBounds(23, 251, 143, 23);
+		contentPanel.add(lblNewLabel_1_1_1_1_1);
+		
+		lb_tenkm = new JLabel("");
+		lb_tenkm.setBounds(23, 280, 143, 13);
+		contentPanel.add(lb_tenkm);
+		
+		JLabel lb_kmgiam = new JLabel("");
+		lb_kmgiam.setBounds(131, 280, 45, 13);
+		contentPanel.add(lb_kmgiam);
+		
+		lb_phanTramGiam = new JLabel("");
+		lb_phanTramGiam.setHorizontalAlignment(SwingConstants.RIGHT);
+		lb_phanTramGiam.setBounds(187, 280, 101, 13);
+		contentPanel.add(lb_phanTramGiam);
 		btn_xemtruoc.addActionListener(this);
 	}
 	public void setTT(LocalDateTime tgd, String tamtinh) {
@@ -271,11 +294,12 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 		double tam = Double.parseDouble(tamtinh);
 		lb_vat.setText((tam*0.1)+"");
 		lb_tennv.setText(Application.nhanvien.getTenNV());
-		lb_km.setText("0.0");
-		lb_tv.setText("0.0");
-		double tong = Double.parseDouble(tamtinh)+Double.parseDouble(lb_vat.getText())-Double.parseDouble(lb_km.getText())-Double.parseDouble(lb_tv.getText());
+		lb_kmTienGiam.setText("0.0");
+		lb_dtl.setText("0.0");
+		double tong = Double.parseDouble(tamtinh)+Double.parseDouble(lb_vat.getText())-Double.parseDouble(lb_kmTienGiam.getText())-Double.parseDouble(lb_dtl.getText());
 		lb_tongtt.setText(tong+"");
 	}
+	
 	public static String norText(String str) {
         if (str == null) return null;
 
@@ -343,8 +367,9 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				String ma ="HD"+ formattedDate+num+"";
 				String makm = "";
 				if (tf_km.getText().equals("")) makm=null;
-				String matv = "";
-				if (tf_tv.getText().equals("")) matv=null;
+				String matv;
+				if (thanhvien==null) matv =null;
+				else matv = thanhvien.getMaTV();
 				double tongtien = Double.parseDouble(lb_tongtt.getText());
 				HoaDon_DAO.insertHoaDon(ma, Application.nhanvien.getMaNV(), LocalDateTime.now(), makm, tongtien, "Tiền mặt", matv, tongtien/10000);
 				for (String s: dsddb) {
@@ -382,8 +407,9 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				String ma ="HD"+ formattedDate+num+"";
 				String makm = "";
 				if (tf_km.getText().equals("")) makm=null;
-				String matv = "";
-				if (tf_tv.getText().equals("")) matv=null;
+				String matv;
+				if (thanhvien==null) matv =null;
+				else matv = thanhvien.getMaTV();
 				double tongtien = Double.parseDouble(lb_tongtt.getText());
 				HoaDon_DAO.insertHoaDon(ma, Application.nhanvien.getMaNV(), LocalDateTime.now(), makm, tongtien, "Chuyển khoản", matv, tongtien/10000);
 				for (String s: dsddb) {
@@ -419,8 +445,9 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				String ma ="HD"+ formattedDate+num+"";
 				String makm = "";
 				if (tf_km.getText().equals("")) makm=null;
-				String matv = "";
-				if (tf_tv.getText().equals("")) matv=null;
+				String matv;
+				if (thanhvien==null) matv =null;
+				else matv = thanhvien.getMaTV();
 				double tongtien = Double.parseDouble(lb_tongtt.getText());
 				HoaDon_DAO.insertHoaDon(ma, Application.nhanvien.getMaNV(), LocalDateTime.now(), makm, tongtien, "Thẻ", matv, tongtien/10000);
 				for (String s: dsddb) {
@@ -469,6 +496,10 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
             params.put("dateTime", d.toString());
             try {
             	InputStream jrxmlStream = getClass().getResourceAsStream(jrxmlFile);
+            	if (jrxmlStream == null) {
+            	    throw new RuntimeException("Không tìm thấy file: " + jrxmlFile);
+            	}
+
             	JasperReport report = JasperCompileManager.compileReport(jrxmlStream);
                 JasperPrint print = JasperFillManager.fillReport(report, params, dataSource);
                 JasperViewer.viewReport(print, false);
@@ -476,6 +507,51 @@ public class ThanhToanChiTiet_GUI extends JDialog implements ActionListener{
 				// TODO: handle exception
 			}
             
+		}
+		if (cmd.equals("Tìm TV")) {
+			String ma = tf_tv.getText().trim();
+			thanhvien = ThanhVien_DAO.timThanhVienTheoMa(ma);
+			if (thanhvien==null) {
+				JOptionPane.showMessageDialog(null, "Không tìm thấy thông tin thành viên");
+				thanhvien = null;
+				lb_dtl.setText("");
+				lb_tentv.setText("");
+				lb_rank.setText("");
+				lb_tenkm.setText("");
+				lb_kmTienGiam.setText("");
+				lb_phanTramGiam.setText("");
+			}
+			else {
+				Double tt = Double.parseDouble(lb_tamtinh.getText());
+				Double vat = Double.parseDouble(lb_vat.getText());
+				int dtl = (int)((tt+vat)/10000);
+				lb_dtl.setText("+"+dtl+" điểm ");
+				lb_tentv.setText(thanhvien.getTenTV());
+				lb_rank.setText(thanhvien.getHangThe());
+			}
+		}
+		if (cmd.equals("timkm")) {
+			String matv = tf_tv.getText();
+			String hang = lb_rank.getText();
+			System.out.println(matv+" "+hang);
+			kmad = KhuyenMai_DAO.getKhuyenMaiTotNhat(matv, hang);
+			if (kmad==null) {
+				JOptionPane.showMessageDialog(null, "Không có khuyến mãi phù hợp");
+				lb_tenkm.setText("");
+				lb_kmTienGiam.setText("");
+				lb_phanTramGiam.setText("");
+			}
+			else {
+				lb_tenkm.setText(kmad.getTen());
+				DecimalFormat df = new DecimalFormat("#.##%");
+				lb_phanTramGiam.setText("Giảm "+df.format(kmad.getPhanTram()));
+				Double tt = Double.parseDouble(lb_tamtinh.getText());
+				Double vat = Double.parseDouble(lb_vat.getText());
+				Double giamKm = (tt+vat)*kmad.getPhanTram();
+				lb_kmTienGiam.setText("-"+Math.round(giamKm*100)/100.0);
+				Double total = tt+vat-giamKm;
+				lb_tongtt.setText(""+Math.round(total*100)/100.0);
+			}
 		}
 	}
 

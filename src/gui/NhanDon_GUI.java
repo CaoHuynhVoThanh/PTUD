@@ -66,7 +66,6 @@ public class NhanDon_GUI extends JFrame {
 	private JTextField txtSoDienThoai;
 	private JTextField txtNgayNhan;
 	private JPanel panel_DSDon;
-	private JPanel panel_DSDon;
 
 	/**
 	 * Launch the application.

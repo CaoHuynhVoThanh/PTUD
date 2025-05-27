@@ -12,13 +12,13 @@ public class ThanhVien {
     private Date ngayCap;
 
     // Constructor
-    public ThanhVien(String maTV, String tenTV, String email, Date ngaySinh, String hangThe, int diemTichLuy, Date ngayCap) {
+    public ThanhVien(String maTV, String tenTV, String email, Date ngaySinh, int diemTichLuy, Date ngayCap) {
         this.maTV = maTV;
         this.tenTV = tenTV;
         this.email = email;
         this.ngaySinh = ngaySinh;
-        this.hangThe = hangThe;
         this.diemTichLuy = diemTichLuy;
+        setHangThe();
         this.ngayCap = ngayCap;
     }
 
@@ -60,10 +60,12 @@ public class ThanhVien {
         return hangThe;
     }
 
-    public void setHangThe(String hangThe) {
-        this.hangThe = hangThe;
+    public void setHangThe() {
+        if (this.diemTichLuy<100) hangThe="Bạc";
+        else if (this.diemTichLuy<1000) hangThe="Vàng";
+        else hangThe="Kim Cương";
     }
-
+    
     public int getDiemTichLuy() {
         return diemTichLuy;
     }

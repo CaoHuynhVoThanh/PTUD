@@ -103,6 +103,12 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         tf_manv.setBounds(23, 82, 206, 28);
         panel.add(tf_manv);
         tf_manv.setColumns(10);
+        tf_manv.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tf_mk.requestFocusInWindow();
+            }
+        });
         
         JLabel lblNewLabel_1 = new JLabel("Mã nhân viên:");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -117,6 +123,12 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         tf_mk = new JPasswordField();
         tf_mk.setBounds(23, 143, 206, 28);
         panel.add(tf_mk);
+        tf_mk.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btn_dangnhap.doClick();
+            }
+        });
         
         btn_dangnhap = new JButton("ĐĂNG NHẬP");
         btn_dangnhap.setFont(new Font("Tahoma", Font.BOLD, 16));

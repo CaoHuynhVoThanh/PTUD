@@ -1,6 +1,7 @@
 package gui;
 
-import dao.QuanLyThanhVien_DAO;
+import dao.KhachHang_DAO;
+import dao.ThanhVien_DAO;
 import connectDB.ConnectDB;
 import entities.ThanhVien;
 import javax.swing.*;
@@ -35,7 +36,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
     private JDateChooser ngayCapChooser;
     private JTable table;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-    private QuanLyThanhVien_DAO dao;
+    private ThanhVien_DAO dao;
     private DefaultTableModel model;
 
     // Các trường lọc
@@ -63,7 +64,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
 
     public QuanLyThanhVien_GUI() {
         Connection conn = ConnectDB.getInstance().getConnection();
-        dao = new QuanLyThanhVien_DAO(conn);
+        dao = new ThanhVien_DAO(conn);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setExtendedState(MAXIMIZED_BOTH);
@@ -570,8 +571,13 @@ public class QuanLyThanhVien_GUI extends JFrame {
                 }
 
                 if (!dao.isMaTVExistsInKhachHang(maTV)) {
-                    JOptionPane.showMessageDialog(null, "Số điện thoại chưa tồn tại trong bảng KhachHang! Vui lòng thêm vào KhachHang trước.");
-                    return;
+                	LocalDate today = LocalDate.now();
+                	int slkh = KhachHang_DAO.getSLKHHomNay()+1;
+                	String formattedNumber = String.format("%04d", slkh);
+            		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+            		String formattedDate = today.format(formatter);
+            		String makh = formattedDate+formattedNumber;
+            		KhachHang_DAO.insertKhachHang(makh, tenTV, maTV, LocalDate.now());
                 }
 
                 LocalDate currentDate = LocalDate.now();
@@ -588,10 +594,10 @@ public class QuanLyThanhVien_GUI extends JFrame {
                     return;
                 }
 
-                String hangThe = "Silver";
+                String hangThe = "Bạc";
                 int diemTichLuy = 0;
                 Date ngayCap = new Date();
-                ThanhVien tv = new ThanhVien(maTV, tenTV, email, ngaySinh, hangThe, diemTichLuy, ngayCap);
+                ThanhVien tv = new ThanhVien(maTV, tenTV, email, ngaySinh, diemTichLuy, ngayCap);
                 dao.addThanhVien(tv);
                 hangTheField.setText(hangThe);
                 diemTichLuyField.setText(String.valueOf(diemTichLuy));
@@ -617,7 +623,7 @@ public class QuanLyThanhVien_GUI extends JFrame {
                         JOptionPane.showMessageDialog(null, "Vui lòng nhập Tên thành viên!");
                         return;
                     }
-                    ThanhVien tv = new ThanhVien(maTV, tenTV, null, null, null, 0, null);
+                    ThanhVien tv = new ThanhVien(maTV, tenTV, null, null, 0, null);
                     dao.updateThanhVien(tv);
                     loadData();
                     JOptionPane.showMessageDialog(null, "Cập nhật tên thành viên thành công!");

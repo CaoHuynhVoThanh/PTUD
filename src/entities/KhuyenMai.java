@@ -10,12 +10,13 @@ public class KhuyenMai {
     private double phanTram;
     private LocalDateTime thoiGianBatDau;
     private LocalDateTime thoiGianKetThuc;
-    private String thanhVien; // "Có" hoặc "Không"
-    private String loai;      // VD: "Giảm giá", "Mua 1 tặng 1", v.v.
+    private String thanhVien;
+    private boolean loai;     
+    private boolean gioiHanMoiTaiKhoan;
 
     // Constructor
     public KhuyenMai(String ma, String ten, double phanTram, LocalDateTime thoiGianBatDau,
-                     LocalDateTime thoiGianKetThuc, String thanhVien, String loai) {
+                     LocalDateTime thoiGianKetThuc, String thanhVien, boolean loai, boolean gioiHanMoiTaiKhoan) {
         this.ma = ma;
         this.ten = ten;
         this.phanTram = phanTram;
@@ -23,6 +24,7 @@ public class KhuyenMai {
         this.thoiGianKetThuc = thoiGianKetThuc;
         this.thanhVien = thanhVien;
         this.loai = loai;
+        this.gioiHanMoiTaiKhoan = gioiHanMoiTaiKhoan;
     }
 
     // Getter & Setter
@@ -74,27 +76,32 @@ public class KhuyenMai {
         this.thanhVien = thanhVien;
     }
 
-    public String getLoai() {
+    public boolean getLoai() {
         return loai;
     }
 
-    public void setLoai(String loai) {
+    public void setLoai(boolean loai) {
         this.loai = loai;
     }
+    
+    
 
-    // toString
-    @Override
-    public String toString() {
-        return "KhuyenMai{" +
-                "ma='" + ma + '\'' +
-                ", ten='" + ten + '\'' +
-                ", phanTram=" + phanTram +
-                ", thoiGianBatDau=" + thoiGianBatDau +
-                ", thoiGianKetThuc=" + thoiGianKetThuc +
-                ", thanhVien='" + thanhVien + '\'' +
-                ", loai='" + loai + '\'' +
-                '}';
-    }
+    public boolean isGioiHanMoiTaiKhoan() {
+		return gioiHanMoiTaiKhoan;
+	}
+
+	public void setGioiHanMoiTaiKhoan(boolean gioiHanMoiTaiKhoan) {
+		this.gioiHanMoiTaiKhoan = gioiHanMoiTaiKhoan;
+	}
+
+	@Override
+	public String toString() {
+		return "KhuyenMai [ma=" + ma + ", ten=" + ten + ", phanTram=" + phanTram + ", thoiGianBatDau=" + thoiGianBatDau
+				+ ", thoiGianKetThuc=" + thoiGianKetThuc + ", thanhVien=" + thanhVien + ", loai=" + loai
+				+ ", gioiHanMoiTaiKhoan=" + gioiHanMoiTaiKhoan + "]";
+	}
+
+	
 }
 
 

@@ -716,6 +716,7 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 				}
 			}
 			double prepayment=0;
+			ThanhToanChiTiet_GUI.dataList.clear();
 			for (int row = 0; row < tbmon.getRowCount(); row++) {
 				System.out.println(tbmon.getRowCount());
 			    Map<String, Object> item = new HashMap<>();
@@ -726,8 +727,8 @@ public class ThanhToan_GUI extends JFrame implements ActionListener{
 			    int soLuong = (Integer) tbmon.getValueAt(row, 4);
 			    double donGia = (Double) tbmon.getValueAt(row, 5);
 			    prepayment += soLuong * donGia;
-			    item.put("prepayment", prepayment);
 			    ThanhToanChiTiet_GUI.dataList.add(item);
+			    System.out.println(tbmon.getValueAt(row, 5));
 			}
 			ThanhToanChiTiet_GUI.params.put("prepayment", prepayment);
 			LocalDateTime thoiGianDatBan = Collections.min(time);

@@ -338,6 +338,26 @@ public class QuanLy_GUI extends JFrame{
 		        contentPanel.repaint();
 		    }
 		});
+		mntmQLPhuPhi.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		    	// Reset màu tất cả các menu item
+		        resetMenuItemsColor(menuBar);
+		        
+		        // Đặt màu nền cho item được chọn
+		        mntmQLPhuPhi.setBackground(new Color(51, 153, 255)); // Màu xanh dương
+		        mntmQLPhuPhi.setForeground(Color.WHITE);
+		        contentPanel.removeAll();
+		        
+		        // Tạo và thêm panel quản lý nhân sự
+		        QuanLyKhuyenMai_GUI quanLyKhuyenMai_GUI = new QuanLyKhuyenMai_GUI();
+		        JPanel pKhuyenMai = quanLyKhuyenMai_GUI.getPanel();
+		        pKhuyenMai.setBounds(0, 0, 1254, 664); // Đặt kích thước phù hợp
+		        contentPanel.add(pKhuyenMai);
+		        
+		        contentPanel.revalidate();
+		        contentPanel.repaint();
+		    }
+		});
 		mntmQLBan.doClick();
 	}
 	private void resetMenuItemsColor(JMenuBar menuBar) {
