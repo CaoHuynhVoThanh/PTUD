@@ -759,7 +759,7 @@ public class GoiMon_GUI extends JFrame{
 	    model.addElement("Chọn bàn");
 	    ArrayList<String> dsBanPhucVu = new ArrayList<>();
 	    for (Ban ban: dsBan) {
-	        if (ban.getTinhTrang() == 2 || ban.getTinhTrang() == 3) {
+	        if (ban.getTinhTrang() == 2) {
 	        	dsBanPhucVu.add(ban.getMaBan());
 	        	model.addElement(ban.getMaBan());
 	        }
@@ -852,7 +852,7 @@ public class GoiMon_GUI extends JFrame{
 	                ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
 	            }
 	            
-	            JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!\nMã đơn: " + maDGMMoi, 
+	            JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!", 
 	                "Thành công", JOptionPane.INFORMATION_MESSAGE);
 	            
 	            tableModelDGM.setRowCount(0);

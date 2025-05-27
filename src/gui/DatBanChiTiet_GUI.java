@@ -3,22 +3,31 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import java.awt.Component;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,14 +37,23 @@ import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import connectDB.ConnectDB;
+import dao.ChiTietDonDatBan_DAO;
+import dao.ChiTietDonGoiMon_DAO;
 import dao.DonDatBan_DAO;
 import dao.DonGoiMon_DAO;
 import dao.KhachHang_DAO;
+import dao.Mon_DAO;
 import entities.Ban;
+import entities.ChiTietDonGoiMon;
+import entities.DonGoiMon;
+import entities.Mon;
 import entities.NhanVien;
+import gui.GoiMon_GUI.SpinnerEditor;
 
 import javax.swing.JRadioButton;
 
@@ -58,7 +76,16 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 	private JLabel lblTngSGh;
 	private JLabel lb_tongban;
 	private JLabel lb_soghe;
-
+	private ArrayList<Mon> dsMon = Mon_DAO.getAllMon();
+	private JTable tblSelected;
+	private JTable tblAllItems;
+	private JLabel lblTotal;
+	private JComboBox cboCategory;
+	private ArrayList<String> dsMaBan;
+	private JLabel lblMaBan = new JLabel("Mã bàn: ");;
+	private JTextArea txtGhiChu;
+	private String ghiChu = "";
+	private DefaultTableModel modelSelected;
 	/**
 	 * Launch the application.
 	 */
@@ -200,7 +227,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 				{null, null, null, null},
 			},
 			new String[] {
-				"M\u00E3 b\u00E0n", "S\u1ED1 gh\u1EBF", "Ph\u1EE5 ph\u00ED", "Ti\u1EC1n c\u1ECDc "
+				"Mã bàn", "Loại bàn", "Phụ phí", "Tiền cọc"
 			}
 		));
 		scrollPane.setViewportView(table);
@@ -275,32 +302,22 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		buttonPane.add(cancelButton);
 		cancelButton.addActionListener(this);
 	
-		
+		btnDatMon.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        showDatMonDialog();
+		    }
+		});
+
 		
 	}
 	public void setDate(String s) {
 		tf_ngayNhan.setText(s);
 	}
 	
-	public void setDsBan(ArrayList<Ban> ds) {
-		dsbd = ds;
-		int tongban =ds.size();
-		int tongghe =0;
-	    DefaultTableModel dtm = new DefaultTableModel(
-	    new Object[]{"Mã Bàn", "Loại Bàn", "Phụ Phí", "Tiền cọc"}, 0);
-	    double tongTien =0;
-	    for (Ban x : ds) {
-	        System.out.println(x.getMaBan()); // Kiểm tra log
-	        dtm.addRow(new Object[]{x.getMaBan(), x.getLoaiBan(), x.getPhuPhi(), x.getPhiCoc()});
-	        tongTien+=x.getPhiCoc();
-	        tongghe+=x.getLoaiBan();
-	        lb_coc.setText(tongTien+"");
-	    }
-	    lb_tongban.setText(tongban+"");
-	    lb_soghe.setText(tongghe+"");
-	    table.setModel(dtm); 
+	public ArrayList<String> getDsMaBan() {
+	    return this.dsMaBan;
 	}
-	
 	public boolean createDDB() {
 		int sl = DonDatBan_DAO.getSLDDBHomNay()+1;
 		String formattedNumber = String.format("%05d", sl);
@@ -322,7 +339,16 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 		
 		int soKhach = (int) tf_sokhach.getValue();
-		double tiencoc = Double.parseDouble(lb_coc.getText());
+		String tienCocText = lb_coc.getText();
+		double tiencoc = 0.0;
+		// Cách 1: Loại bỏ dấu phẩy trực tiếp (đơn giản, nếu bạn chắc chắn định dạng)
+		try {
+		    String cleanedTienCocText = tienCocText.replace(",", ""); // Xóa bỏ tất cả dấu phẩy
+		    tiencoc = Double.parseDouble(cleanedTienCocText);
+		    System.out.println("Tiền cọc (cách 1): " + tiencoc);
+		} catch (NumberFormatException e) {
+		    System.err.println("Lỗi chuyển đổi tiền cọc" + e.getMessage());
+		}
 		LocalDateTime dateTime = LocalDateTime.parse(input, formatter);
 		String hoten = tf_tenkh.getText();
 		String sdt = tf_sdt.getText();
@@ -344,6 +370,481 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		DonDatBan_DAO.insertChiTietDonDatBan(madon, maban, madgm);
 		return true;
 	}
+	
+	private void showDatMonDialog() {
+	    // Create and configure the dialog
+	    JDialog dialog = new JDialog(this, "Đặt món", true);
+	    dialog.setSize(1200, 700);
+	    dialog.setLocationRelativeTo(null);
+	    dialog.setLayout(null);
+
+	    // Left panel with all items
+	    JPanel leftPanel = new JPanel(null);
+	    leftPanel.setBounds(0, 0, 600, 700);
+	    leftPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+
+	    // Search components
+	    JTextField txtSearch = new JTextField();
+	    txtSearch.setBounds(20, 20, 250, 30);
+	    txtSearch.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	    leftPanel.add(txtSearch);
+
+	    JButton btnSearch = new JButton("Tìm kiếm");
+	    btnSearch.setBounds(280, 20, 100, 30);
+	    btnSearch.setBackground(new Color(255, 153, 0));
+	    btnSearch.setForeground(Color.WHITE);
+	    leftPanel.add(btnSearch);
+
+	    // ComboBox for food categories
+	    cboCategory = new JComboBox<>();
+	    cboCategory.setBounds(430, 20, 150, 30);
+	    loadComboLoaiMon();
+	    leftPanel.add(cboCategory);
+
+	    String[] colNames = {"Tên món", "Đơn giá", "Loại món", "Thêm"};
+	    DefaultTableModel modelAllItems = new DefaultTableModel(colNames, 0) {
+	        @Override
+	        public boolean isCellEditable(int row, int column) {
+	            return column == 3;
+	        }
+	    };
+
+	    tblAllItems = new JTable(modelAllItems);
+	    JScrollPane scrollAllItems = new JScrollPane(tblAllItems);
+	    scrollAllItems.setBounds(20, 70, 560, 580);
+	    leftPanel.add(scrollAllItems);
+
+	    // Right panel with selected items
+	    JPanel rightPanel = new JPanel(null);
+	    rightPanel.setBounds(600, 0, 600, 700);
+	    rightPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+
+	    // Table for selected items
+	    String[] colNamesSelected = {"Tên món ăn", "SL", "Thành tiền", "Hủy"};
+	    modelSelected = new DefaultTableModel(colNamesSelected, 0);
+	    tblSelected = new JTable(modelSelected);
+	    tblSelected.setRowHeight(30);
+	    
+	    tblSelected.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
+	    tblSelected.getColumnModel().getColumn(3).setCellEditor(
+	        new DeleteButtonEditor(new JCheckBox(), modelSelected)
+	    );
+
+	    JScrollPane scrollSelected = new JScrollPane(tblSelected);
+	    scrollSelected.setBounds(20, 20, 560, 500);
+	    rightPanel.add(scrollSelected);
+
+	    // Bottom panel with buttons
+	    JPanel bottomPanel = new JPanel(null);
+	    bottomPanel.setBounds(20, 540, 560, 120);
+	    rightPanel.add(bottomPanel);
+
+	    lblMaBan = new JLabel("Mã bàn: ");
+	    lblMaBan.setFont(new Font("Tahoma", Font.BOLD, 16));
+	    lblMaBan.setBounds(280, 10, 270, 30);
+	    bottomPanel.add(lblMaBan); // Initialize with an empty list
+	    // Update the total label bounds to not overlap
+	    lblTotal = new JLabel("Tổng tiền: 0 VNĐ");
+	    lblTotal.setFont(new Font("Tahoma", Font.BOLD, 16));
+	    lblTotal.setBounds(10, 10, 260, 30);
+	    bottomPanel.add(lblTotal);
+	    updateLblMaBan();
+	    // Buttons
+	    JButton btnNote = new JButton("Ghi chú");
+	    btnNote.setBounds(10, 60, 120, 40);
+	    btnNote.setBackground(new Color(153, 153, 153));
+	    btnNote.setForeground(Color.WHITE);
+	    btnNote.setFont(new Font("Tahoma", Font.BOLD, 14));
+	    bottomPanel.add(btnNote);
+
+	    btnNote.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        hienThiHopThoaiGhiChu();
+		    }
+		});
+	    
+	    JButton btnCancel = new JButton("Hủy bỏ");
+	    btnCancel.setBounds(140, 60, 120, 40);
+	    btnCancel.setBackground(Color.BLACK);
+	    btnCancel.setForeground(Color.WHITE);
+	    btnCancel.setFont(new Font("Tahoma", Font.BOLD, 14));
+	    bottomPanel.add(btnCancel);
+
+	    btnCancel.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        huyBoTatCaMon();
+		    }
+		});
+	    
+	    JButton btnConfirm = new JButton("Xác nhận");
+	    btnConfirm.setBounds(270, 60, 120, 40);
+	    btnConfirm.setBackground(new Color(255, 153, 0));
+	    btnConfirm.setForeground(Color.WHITE);
+	    btnConfirm.setFont(new Font("Tahoma", Font.BOLD, 14));
+	    bottomPanel.add(btnConfirm);
+
+	    btnConfirm.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		    	if (modelSelected.getRowCount() > 0) {
+		            JOptionPane.showMessageDialog(null, "Đã lưu danh sách món thành công!");
+		        } else {
+		            JOptionPane.showMessageDialog(null, "Chưa chọn món nào!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+		        }
+		        dialog.dispose();
+		    }
+		});
+	    // Add panels to dialog
+	    dialog.add(leftPanel);
+	    dialog.add(rightPanel);
+
+
+	    cboCategory.addActionListener(e -> {
+	    	 String selectedCategory = cboCategory.getSelectedItem().toString();
+	    	    DefaultTableModel model = (DefaultTableModel) tblAllItems.getModel();
+	    	    model.setRowCount(0); // Clear current table
+
+	    	    // If "Tất cả" is selected, show all items
+	    	    if (selectedCategory.equals("Tất cả")) {
+	    	        loadAllItems(model);
+	    	        return;
+	    	    }
+
+	    	    // Filter and show items by category
+	    	    for (Mon mon : dsMon) {
+	    	        if (mon.getLoaiMon().equals(selectedCategory)) {
+	    	            Object[] row = {
+	    	                mon.getTenMon(),
+	    	                mon.getDonGia(),
+	    	                mon.getLoaiMon(),
+	    	                "Thêm"
+	    	            };
+	    	            model.addRow(row);
+	    	        }
+	    	    }
+	    });
+	    
+	    btnConfirm.addActionListener(e -> {
+	        // Add confirm functionality
+	        dialog.dispose();
+	    });
+
+	    // Load initial data
+	    loadAllItems(modelAllItems);
+	    tblAllItems.getColumnModel().getColumn(3).setCellRenderer(new ButtonRenderer());
+	    tblAllItems.getColumnModel().getColumn(3).setCellEditor(
+	        new ButtonEditor(new JCheckBox(), tblAllItems, modelSelected)
+	    );
+	 // Add search functionality
+	    btnSearch.addActionListener(e -> {
+	        String searchText = txtSearch.getText().toLowerCase().trim();
+	        DefaultTableModel model = (DefaultTableModel) tblAllItems.getModel();
+	        model.setRowCount(0); // Clear current table
+
+	        // If search text is empty, show all items
+	        if (searchText.isEmpty()) {
+	            loadAllItems(model);
+	            return;
+	        }
+
+	        // Search and add matching items
+	        for (Mon mon : dsMon) {
+	            if (mon.getTenMon().toLowerCase().contains(searchText)) {
+	                Object[] row = {
+	                    mon.getTenMon(),
+	                    mon.getDonGia(),
+	                    mon.getLoaiMon(),
+	                    "Thêm"
+	                };
+	                model.addRow(row);
+	            }
+	        }
+	    });
+
+	    dialog.setVisible(true);
+	}
+	public void setDsBan(ArrayList<Ban> ds) {
+		dsbd = ds;
+		int tongban =ds.size();
+		int tongghe =0;
+	    DefaultTableModel dtm = new DefaultTableModel(
+	    new Object[]{"Mã Bàn", "Loại Bàn", "Phụ Phí", "Tiền cọc"}, 0);
+	    double tongTien =0;
+	    for (Ban x : ds) {
+	        System.out.println(x.getMaBan()); // Kiểm tra log
+	        dtm.addRow(new Object[]{x.getMaBan(), x.getLoaiBan(), x.getPhuPhi(), x.getPhiCoc()});
+	        tongghe+=x.getLoaiBan();
+	    }
+	    lb_tongban.setText(tongban+"");
+	    lb_soghe.setText(tongghe+"");
+	    table.setModel(dtm); 
+	}
+	private void updateLblMaBan() {
+	    if (dsbd == null || dsbd.isEmpty()) {
+	        lblMaBan.setText("Mã bàn: ");
+	        return;
+	    }
+
+	    StringBuilder maBanList = new StringBuilder("Mã bàn: ");
+	    for (Ban ban : dsbd) {
+	        maBanList.append(ban.getMaBan()).append(", ");
+	    }
+
+	    // Remove trailing comma and space
+	    maBanList.setLength(maBanList.length() - 2);
+	    lblMaBan.setText(maBanList.toString());
+	}
+	private void xacNhanDonGoiMon() {
+	    try {
+	        // Get date and time values
+	        String ngayChon = tf_ngayNhan.getText();
+	        String hour = (String) combGio.getSelectedItem();
+	        String minute = (String) combPhut.getSelectedItem();
+	        String timeStr = ngayChon + " " + hour + ":" + minute;
+	        
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	        LocalDateTime thoiGian = LocalDateTime.parse(timeStr, formatter);
+	        LocalDate ngayDat = thoiGian.toLocalDate();
+
+	        // Check if there are selected items
+	        if (modelSelected.getRowCount() == 0) {
+	            JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất một món!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+	            return;
+	        }
+
+	        // Generate order ID
+	        String ngayThangNam = ngayDat.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+	        int soThuTu = DonGoiMon_DAO.demSoDonTrongNgay(ngayDat) + 1;
+	        String maDGM = String.format("GM%s%04d", ngayThangNam, soThuTu);
+
+	        // Create and save DonGoiMon
+	        DonGoiMon donGoiMon = new DonGoiMon(maDGM, thoiGian, ghiChu);
+	        DonGoiMon_DAO.themDonGoiMon(donGoiMon);
+
+	        // Update ChiTietDonDatBan for each table
+	        for (Ban ban : dsbd) {
+	            ChiTietDonDatBan_DAO.capNhatMaDGMTheoNgayVaBan(ngayDat, ban.getMaBan(), maDGM);
+	        }
+
+	        // Create ChiTietDonGoiMon for each selected item
+	        for (int i = 0; i < modelSelected.getRowCount(); i++) {
+	            String tenMon = modelSelected.getValueAt(i, 0).toString();
+	            int soLuong = Integer.parseInt(modelSelected.getValueAt(i, 1).toString());
+	            
+	            Mon mon = Mon_DAO.getMonTheoTen(tenMon);
+	            String maMon = mon.getMaMon();
+
+	            ChiTietDonGoiMon chiTiet = new ChiTietDonGoiMon(maMon, maDGM, soLuong, 0);
+	            ChiTietDonGoiMon_DAO.themChiTietDonGoiMon(chiTiet);
+	        }
+
+//	        JOptionPane.showMessageDialog(this, "Tạo đơn gọi món thành công!", 
+//	            "Thành công", JOptionPane.INFORMATION_MESSAGE);
+
+	        // Clear selected items and reset
+	        modelSelected.setRowCount(0);
+	        updateTotal(modelSelected, lblTotal);
+
+	    } catch (Exception ex) {
+	        JOptionPane.showMessageDialog(this, "Lỗi khi tạo đơn: " + ex.getMessage(), 
+	            "Lỗi", JOptionPane.ERROR_MESSAGE);
+	        ex.printStackTrace();
+	    }
+	}
+
+	class ButtonRenderer extends JButton implements TableCellRenderer {
+	    public ButtonRenderer() {
+	        setOpaque(true);
+	    }
+
+	    @Override
+	    public Component getTableCellRendererComponent(JTable table, Object value,
+	            boolean isSelected, boolean hasFocus, int row, int column) {
+	        setText((value == null) ? "" : value.toString());
+	        return this;
+	    }
+	}
+	private void hienThiHopThoaiGhiChu() {
+	    // Tạo JTextArea để nhập ghi chú
+	    txtGhiChu = new JTextArea(8, 25);
+	    txtGhiChu.setText(ghiChu ); // Hiển thị ghi chú cũ nếu có
+	    txtGhiChu.setLineWrap(true);
+	    txtGhiChu.setWrapStyleWord(true);
+	    
+	    // Tạo scroll pane cho text area
+	    JScrollPane scrollPane = new JScrollPane(txtGhiChu);
+	    
+	    // Hiển thị hộp thoại
+	    int result = JOptionPane.showConfirmDialog(
+	        this,
+	        scrollPane,
+	        "Nhập ghi chú",
+	        JOptionPane.OK_CANCEL_OPTION,
+	        JOptionPane.PLAIN_MESSAGE
+	    );
+	    
+	    // Xử lý khi nhấn OK
+	    if (result == JOptionPane.OK_OPTION) {
+	        ghiChu = txtGhiChu.getText().trim();
+	        JOptionPane.showMessageDialog(this, "Đã lưu ghi chú thành công!");
+	    }
+	}
+	private void loadComboLoaiMon() {
+	    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+	    model.addElement("Tất cả"); // Thêm option "Tất cả"
+	    
+	    // Lấy danh sách các loại món duy nhất từ dsMon
+	    ArrayList<String> dsLoaiMon = new ArrayList<>();
+	    for (Mon mon : dsMon) {
+	        if (!dsLoaiMon.contains(mon.getLoaiMon())) {
+	            dsLoaiMon.add(mon.getLoaiMon());
+	            model.addElement(mon.getLoaiMon());
+	        }
+	    }
+	    
+	    cboCategory.setModel(model);
+	}
+	class ButtonEditor extends DefaultCellEditor {
+    protected JButton button;
+    private String label;
+    private boolean isPushed;
+    private final JTable tblAllItems;
+    private final DefaultTableModel modelSelected;
+
+    public ButtonEditor(JCheckBox checkBox, JTable tblAllItems, DefaultTableModel modelSelected) {
+        super(checkBox);
+        this.tblAllItems = tblAllItems;
+        this.modelSelected = modelSelected;
+        button = new JButton();
+        button.setOpaque(true);
+        button.addActionListener(e -> {
+            fireEditingStopped();
+        });
+    }
+
+    @Override
+    public Component getTableCellEditorComponent(JTable table, Object value,
+            boolean isSelected, int row, int column) {
+        label = (value == null) ? "" : value.toString();
+        button.setText(label);
+        isPushed = true;
+        return button;
+    }
+
+    @Override
+    public Object getCellEditorValue() {
+        if (isPushed) {
+            int row = tblAllItems.getSelectedRow();
+            String tenMon = tblAllItems.getValueAt(row, 0).toString();
+            double donGia = Double.parseDouble(tblAllItems.getValueAt(row, 1).toString());
+            
+            // Check if item already exists in selected table
+            boolean found = false;
+            for (int i = 0; i < modelSelected.getRowCount(); i++) {
+                if (modelSelected.getValueAt(i, 0).toString().equals(tenMon)) {
+                    // Item exists - increase quantity
+                    int currentQty = Integer.parseInt(modelSelected.getValueAt(i, 1).toString());
+                    modelSelected.setValueAt(currentQty + 1, i, 1);
+                    modelSelected.setValueAt(donGia * (currentQty + 1), i, 2);
+                    found = true;
+                    break;
+                }
+            }
+            
+            // If item not found, add new row
+            if (!found) {
+                modelSelected.addRow(new Object[]{tenMon, 1, donGia, "Hủy"});
+            }
+
+            // Update total after adding/updating item
+            updateTotal(modelSelected, lblTotal);
+        }
+        isPushed = false;
+        return label;
+    }
+
+    @Override
+    public boolean stopCellEditing() {
+        isPushed = false;
+        return super.stopCellEditing();
+    }
+}
+
+
+	class DeleteButtonEditor extends DefaultCellEditor {
+	    protected JButton button;
+	    private String label;
+	    private boolean isPushed;
+	    private final DefaultTableModel model;
+
+	    public DeleteButtonEditor(JCheckBox checkBox, DefaultTableModel model) {
+	        super(checkBox);
+	        this.model = model;
+	        button = new JButton();
+	        button.setOpaque(true);
+	        button.addActionListener(e -> fireEditingStopped());
+	    }
+
+	    @Override
+	    public Component getTableCellEditorComponent(JTable table, Object value,
+	            boolean isSelected, int row, int column) {
+	        label = (value == null) ? "" : value.toString();
+	        button.setText(label);
+	        isPushed = true;
+	        return button;
+	    }
+
+	    @Override
+	    public Object getCellEditorValue() {
+	        if (isPushed) {
+	            // Get the row to delete
+	            int row = tblSelected.getSelectedRow();
+	            if (row >= 0) {
+	                model.removeRow(row);
+	                updateTotal(model, lblTotal);
+	            }
+	        }
+	        isPushed = false;
+	        return label;
+	    }
+
+	    @Override
+	    public boolean stopCellEditing() {
+	        isPushed = false;
+	        return super.stopCellEditing();
+	    }
+	}
+
+	private void loadAllItems(DefaultTableModel model) {
+	    for (Mon mon : dsMon) {
+	        Object[] row = {
+	            mon.getTenMon(),
+	            mon.getDonGia(),
+	            mon.getLoaiMon(),
+	            "Thêm"  // Text for the button
+	        };
+	        model.addRow(row);
+	    }
+	}
+	private void huyBoTatCaMon() {
+        int confirm = JOptionPane.showConfirmDialog(
+    	        this, 
+    	        "Bạn có chắc chắn muốn hủy tất cả món đã chọn?", 
+    	        "Xác nhận hủy", 
+    	        JOptionPane.YES_NO_OPTION
+    	    );
+    	    if (confirm == JOptionPane.YES_OPTION) {
+    	    	modelSelected.setRowCount(0);
+    	        updateTotal(modelSelected, lblTotal);
+    	    }
+	}
+	private void updateTotal(DefaultTableModel model, JLabel lblTotal) {
+	    double total = 0;
+	    for (int i = 0; i < model.getRowCount(); i++) {
+	        double thanhTien = Double.parseDouble(model.getValueAt(i, 2).toString());
+	        total += thanhTien;
+	    }
+	    lblTotal.setText(String.format("Tổng tiền: %,.0f VNĐ", total));
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -352,6 +853,7 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 		if (cmd.equals("XÁC NHẬN")) {
 			if (JOptionPane.showConfirmDialog(null, "Xác nhận đặt bàn không?")==JOptionPane.YES_OPTION) {
 				if (createDDB()) {
+					xacNhanDonGoiMon();
 					JOptionPane.showMessageDialog(null, "Đặt bàn thành công!");
 					DatBan_GUI.hiddenButton.doClick();
 					this.dispose();
@@ -373,4 +875,16 @@ public class DatBanChiTiet_GUI extends JDialog implements ActionListener{
 			this.dispose();
 		}
 	}
+	private String convertBanListToString() {
+	    if (dsbd == null || dsbd.isEmpty()) {
+	        return "";
+	    }
+	    StringBuilder result = new StringBuilder();
+	    for (Ban ban : dsbd) {
+	        result.append(ban.getMaBan()).append(", ");
+	    }
+	    // Remove last comma and space
+	    return result.substring(0, result.length() - 2);
+	}
+
 }

@@ -120,19 +120,6 @@ public class DungNgayChiTiet_GUI extends JDialog implements ActionListener{
 		lblTngSGh.setBounds(510, 312, 116, 27);
 		contentPanel.add(lblTngSGh);
 		
-		JButton btnNewButton = new JButton("Gọi món trước");
-		btnNewButton.setBackground(new Color(0, 0, 0));
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
-		btnNewButton.setBounds(510, 353, 229, 37);
-		contentPanel.add(btnNewButton);
-		
-		JLabel lblSMnGi = new JLabel("Số món gọi trước:");
-		lblSMnGi.setForeground(Color.WHITE);
-		lblSMnGi.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblSMnGi.setBounds(510, 400, 142, 27);
-		contentPanel.add(lblSMnGi);
-		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(41, 279, 433, 229);
 		contentPanel.add(scrollPane);
